@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "useful_armory:aquite_shrine",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 418200103,
+    "spacing": 30,
+    "separation": 10
+  }
+}

@@ -125,6 +125,7 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
+| Shadow shard | `shadow_shard` |  |  |  |  |  |  | Cold to the touch |
 | Shadow axe | `shadowaxe` | 5 | -3 |  |  | 8000 | 8 |  |
 | Shadow Chestplate | `shadowbody` |  |  | 8 | 2.5 | 560 |  |  |
 | Shadow Boots | `shadowboots` |  |  | 4 | 2.5 | 455 |  |  |
@@ -154,10 +155,14 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
+| Ancient hilt | `ancient_hilt` |  |  |  |  |  |  | The blade is long gone |
 | Bloddy rotten flesh | `bloddyrottenflesh` |  |  |  |  |  |  | ew |
+| Cracked soul gem | `cracked_soul_gem` |  |  |  |  |  |  | Something is still moving inside it |
 | Diamond stick | `diamondstick` |  |  |  |  |  |  | wow expensive why would you make this? |
 | enchanted Magma | `emagma` |  |  |  |  |  |  | wow thats useful |
 | glowing rotten flesh | `erottenflesh` |  |  |  |  |  |  | WHY IS IT GLOWING WTF???? |
+| Faded map scrap | `faded_map_scrap` |  |  |  |  |  |  | Most of the markings have worn away |
+| Forge master's hammer head | `forge_hammer_head` |  |  |  |  |  |  | Still warm |
 | magma sword | `lavasword` | 6.5 | -2.5 |  |  | 10000 |  |  |
 | Long stick | `longstick` |  |  |  |  |  |  | used for weapons that need a longer handle |
 | Pigman sword | `pigmansword` | 7.5 | -3 |  |  | 10000 |  |  |
@@ -167,6 +172,7 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 | Sword handle | `swordpart1` |  |  |  |  |  |  | it may just be a handle but what kind of a handle is this expensive to make |
 | Sword middle | `swordpart2` |  |  |  |  |  |  | it may just be a part of a sword but why is it so expesive of a sword to make |
 | obsidainblade | `swordpart3` |  |  |  |  |  |  | is it jsut a obsidain blade? |
+| Tarnished ring | `tarnished_ring` |  |  |  |  |  |  | It was worth something once |
 | The nether's legacy | `thenetherlegacy` | 10 | -2.5 |  |  | 10000 |  |  |
 
 ## Blocks
@@ -176,6 +182,9 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 | Aquite ore | `aquiteore` | `minecraft:iron_ore` | 1.3 |
 | Colosfite block | `colosfiteblock` | `minecraft:iron_block` | 1 |
 | Colosifite ore | `colosifiteore` | `minecraft:iron_ore` | 2 |
+| Deepslate aquite ore | `deepslate_aquite_ore` | `minecraft:deepslate_iron_ore` | 2.8 |
+| Deepslate colosifite ore | `deepslate_colosifite_ore` | `minecraft:deepslate_iron_ore` | 3.5 |
+| Deepslate shadow ore | `deepslate_shadow_ore` | `minecraft:deepslate_iron_ore` | 3 |
 | Shadow block | `shadowblock` | `minecraft:iron_block` | 2 |
 | Shadow ore | `shadowore` | `minecraft:iron_ore` | 1.5 |
 | Ultimate block | `ultimateblock` | `minecraft:iron_block` | 3 |

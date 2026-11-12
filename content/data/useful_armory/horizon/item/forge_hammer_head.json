@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:forge_hammer_head",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.forge_hammer_head"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Still warm"
+      }
+    ]
+  },
+  "max_stack_size": 16,
+  "rarity": "uncommon"
+}

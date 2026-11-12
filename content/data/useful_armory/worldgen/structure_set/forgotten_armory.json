@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "useful_armory:forgotten_armory",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 418200108,
+    "spacing": 40,
+    "separation": 14
+  }
+}

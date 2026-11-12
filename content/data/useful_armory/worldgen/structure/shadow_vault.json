@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:jigsaw",
+  "biomes": "#useful_armory:has_structure/shadow_vault",
+  "step": "underground_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none",
+  "start_pool": "useful_armory:shadow_vault/start",
+  "size": 1,
+  "start_height": {
+    "type": "minecraft:uniform",
+    "min_inclusive": {
+      "absolute": -52
+    },
+    "max_inclusive": {
+      "absolute": -12
+    }
+  },
+  "max_distance_from_center": 80
+}

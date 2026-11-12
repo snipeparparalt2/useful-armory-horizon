@@ -67,3 +67,25 @@ Placed ore glow uses a separate transparent mineral overlay with `light_emission
 - `cargo horizon-mod check`, built from Horizon `fdc87ae`, accepts the 0.1.6 package.
 
 **Not yet seen in game:** the three-layer ore models. The two-layer emissive models they extend are known to work in 0.1.5, but 0.1.6 itself needs a look in a world: placed ore, ore in the inventory, and breaking particles.
+
+## Places to loot, 0.2.0
+
+Everything new in 0.2.0 is written by `tools/gen_phase1.py`; running it twice gives byte-identical files.
+
+What was checked without the game:
+
+- Structure, template pool, structure set and biome tag files use the same keys and shapes as Horizon's own test of a mod-defined jigsaw structure (`content_root_carries_a_structure_mod`, Horizon `fdc87ae`); the village addition uses `horizon:add_to` as that test does.
+- The nine `.nbt` building files were read back with an independent reader: sizes, block counts, `DataVersion` 5023, and every chest, barrel, spawner and jigsaw block entity are as intended. Previews of each building were rendered from the files and looked over.
+- Every loot table entry in the mod's namespace names an item or block the mod defines (the generator refuses to run otherwise).
+- All JSON parses, and `cargo horizon-mod check` built from Horizon `fdc87ae` accepts the package.
+
+**Not yet seen in game, and the things to try first:**
+
+1. The mod still loads (a malformed worldgen file can make Horizon start without content mods; `logs/latest.log` says so).
+2. `/place structure useful_armory:ruined_forge` and the other seven: the building appears and its chest has loot.
+3. `/locate structure useful_armory:wanderers_camp` in a new world.
+4. The spawners: whether a spawner accepts the mod's own `tower_sentry` and `vault_guardian` types.
+5. The village blacksmith: whether it joins village streets. Its street connector is hand-written.
+6. Deepslate ores below Y 0 in new chunks, and their inventory icons.
+
+Known rough edges: surface buildings sit flat on the highest ground under them, so on slopes one side can be buried or raised. The Pigman outpost is placed by height only, so it can end up inside netherrack or sticking out over a lava lake.

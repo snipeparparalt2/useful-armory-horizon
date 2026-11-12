@@ -1,0 +1,14 @@
+{
+  "template": "minecraft:deepslate_iron_ore",
+  "properties": {
+    "hardness": 3.0,
+    "light": 0
+  },
+  "item": true,
+  "components": {
+    "minecraft:item_model": "useful_armory:deepslate_shadow_ore",
+    "minecraft:item_name": {
+      "translate": "block.useful_armory.deepslate_shadow_ore"
+    }
+  }
+}

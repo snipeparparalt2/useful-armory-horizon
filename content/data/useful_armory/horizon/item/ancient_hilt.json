@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:ancient_hilt",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.ancient_hilt"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "The blade is long gone"
+      }
+    ]
+  },
+  "max_stack_size": 16,
+  "rarity": "uncommon"
+}

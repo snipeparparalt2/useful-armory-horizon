@@ -1,0 +1,20 @@
+{
+  "horizon:add_to": [
+    "minecraft:village/plains/houses",
+    "minecraft:village/desert/houses",
+    "minecraft:village/savanna/houses",
+    "minecraft:village/snowy/houses",
+    "minecraft:village/taiga/houses"
+  ],
+  "elements": [
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:village/armory_blacksmith",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

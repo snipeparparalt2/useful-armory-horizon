@@ -123,6 +123,15 @@
     "useful_armory:colosifiteore",
     "useful_armory:shadowblock",
     "useful_armory:shadowore",
-    "useful_armory:ultimateblock"
+    "useful_armory:ultimateblock",
+    "useful_armory:cracked_soul_gem",
+    "useful_armory:ancient_hilt",
+    "useful_armory:forge_hammer_head",
+    "useful_armory:shadow_shard",
+    "useful_armory:tarnished_ring",
+    "useful_armory:faded_map_scrap",
+    "useful_armory:deepslate_aquite_ore",
+    "useful_armory:deepslate_colosifite_ore",
+    "useful_armory:deepslate_shadow_ore"
   ]
 }

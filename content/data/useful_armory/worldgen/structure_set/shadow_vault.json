@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "useful_armory:shadow_vault",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 418200106,
+    "spacing": 22,
+    "separation": 8
+  }
+}

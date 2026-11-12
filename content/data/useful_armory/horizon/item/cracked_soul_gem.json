@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:cracked_soul_gem",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.cracked_soul_gem"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Something is still moving inside it"
+      }
+    ]
+  },
+  "max_stack_size": 16,
+  "rarity": "rare"
+}

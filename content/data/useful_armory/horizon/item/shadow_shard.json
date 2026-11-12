@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:shadow_shard",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.shadow_shard"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Cold to the touch"
+      }
+    ]
+  },
+  "max_stack_size": 16,
+  "rarity": "uncommon"
+}

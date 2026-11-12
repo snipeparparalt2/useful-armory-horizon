@@ -1,0 +1,14 @@
+{
+  "template": "minecraft:deepslate_iron_ore",
+  "properties": {
+    "hardness": 2.8,
+    "light": 0
+  },
+  "item": true,
+  "components": {
+    "minecraft:item_model": "useful_armory:deepslate_aquite_ore",
+    "minecraft:item_name": {
+      "translate": "block.useful_armory.deepslate_aquite_ore"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:tarnished_ring",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.tarnished_ring"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "It was worth something once"
+      }
+    ]
+  },
+  "max_stack_size": 16,
+  "rarity": "uncommon"
+}

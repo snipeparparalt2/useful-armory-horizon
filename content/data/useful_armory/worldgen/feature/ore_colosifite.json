@@ -15,7 +15,7 @@
         "predicate_type": "minecraft:tag_match",
         "tag": "minecraft:deepslate_ore_replaceables"
       },
-      "state": "useful_armory:colosifiteore"
+      "state": "useful_armory:deepslate_colosifite_ore"
     }
   ]
 }

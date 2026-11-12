@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:faded_map_scrap",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.faded_map_scrap"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Most of the markings have worn away"
+      }
+    ]
+  },
+  "max_stack_size": 16,
+  "rarity": "common"
+}

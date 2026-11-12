@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "useful_armory:wanderers_camp",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 418200102,
+    "spacing": 24,
+    "separation": 8
+  }
+}
