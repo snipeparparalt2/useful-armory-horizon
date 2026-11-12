@@ -1,6 +1,6 @@
 id = "useful_armory"
 name = "Useful Armory"
-version = "0.2.0"
+version = "0.1.7"
 description = "Equipment sets, special weapons, new ores and ruins to loot, revived from the Useful Armory 1.12.2 mod. Made for Horizon fdc87ae."
 authors = ["snipeparpar"]
 api = "0.2"
