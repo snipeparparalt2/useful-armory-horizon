@@ -1,7 +1,7 @@
 {
-  "parent": "item/generated",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "useful_armory:items/rbow"
+    "layer0": "useful_armory:item/rbow"
   },
   "display": {
     "thirdperson_righthand": {

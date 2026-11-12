@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/greatsword_shadow"
+    "layer0": "useful_armory:item/greatsword_shadow"
   }
 }

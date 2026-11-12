@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/https3a2f2fhypebeast"
+    "layer0": "useful_armory:item/https3a2f2fhypebeast"
   }
 }

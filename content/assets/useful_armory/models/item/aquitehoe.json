@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/aquite_hoe"
+    "layer0": "useful_armory:item/aquite_hoe"
   }
 }

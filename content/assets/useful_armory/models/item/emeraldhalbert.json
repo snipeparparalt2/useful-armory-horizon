@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/halberd_emerald"
+    "layer0": "useful_armory:item/halberd_emerald"
   }
 }

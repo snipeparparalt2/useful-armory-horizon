@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/shadow_pickaxe"
+    "layer0": "useful_armory:item/shadow_pickaxe"
   }
 }

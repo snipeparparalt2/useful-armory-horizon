@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/emerald_hoe"
+    "layer0": "useful_armory:item/emerald_hoe"
   }
 }

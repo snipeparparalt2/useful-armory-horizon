@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "useful_armory:items/colosifite_boots"
+    "layer0": "useful_armory:item/colosifite_boots"
   }
 }

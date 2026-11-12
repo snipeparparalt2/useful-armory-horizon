@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "useful_armory:items/emerald_boots"
+    "layer0": "useful_armory:item/emerald_boots"
   }
 }

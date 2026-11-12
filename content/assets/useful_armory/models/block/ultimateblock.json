@@ -1,7 +1,7 @@
 {
-  "parent": "block/cube_all",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "useful_armory:blocks/storage_ultimate",
-    "particle": "useful_armory:blocks/storage_ultimate"
+    "all": "useful_armory:block/storage_ultimate",
+    "particle": "useful_armory:block/storage_ultimate"
   }
 }

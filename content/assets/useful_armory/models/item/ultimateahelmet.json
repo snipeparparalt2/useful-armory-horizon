@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "useful_armory:items/ultimate_helmet"
+    "layer0": "useful_armory:item/ultimate_helmet"
   }
 }

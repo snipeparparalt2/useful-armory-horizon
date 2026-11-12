@@ -1929,7 +1929,10 @@ def build(root, hd_armor=True):
         out[f'models/armor/{legacy_stem}_layer_2.png'] = std2
 
     for rel, img in out.items():
-        p = os.path.join(root, rel)
+        # Horizon's item/block atlases use singular modern texture paths.
+        asset_rel = ('item/' + rel[6:] if rel.startswith('items/') else
+                     'block/' + rel[7:] if rel.startswith('blocks/') else rel)
+        p = os.path.join(root, asset_rel)
         os.makedirs(os.path.dirname(p), exist_ok=True)
         img.save(p)
         mp = p + '.mcmeta'

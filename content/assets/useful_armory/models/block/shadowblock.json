@@ -1,12 +1,12 @@
 {
-  "parent": "block/cube",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "down": "useful_armory:blocks/shadow_block",
-    "up": "useful_armory:blocks/shadow_block",
-    "north": "useful_armory:blocks/shadow_block",
-    "east": "useful_armory:blocks/shadow_block",
-    "south": "useful_armory:blocks/shadow_block",
-    "west": "useful_armory:blocks/shadow_block",
-    "particle": "useful_armory:blocks/shadow_block"
+    "down": "useful_armory:block/shadow_block",
+    "up": "useful_armory:block/shadow_block",
+    "north": "useful_armory:block/shadow_block",
+    "east": "useful_armory:block/shadow_block",
+    "south": "useful_armory:block/shadow_block",
+    "west": "useful_armory:block/shadow_block",
+    "particle": "useful_armory:block/shadow_block"
   }
 }

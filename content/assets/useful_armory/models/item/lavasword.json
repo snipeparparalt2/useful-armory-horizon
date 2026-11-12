@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/idk_sword"
+    "layer0": "useful_armory:item/idk_sword"
   }
 }

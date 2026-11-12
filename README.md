@@ -2,16 +2,16 @@
 
 **An old Minecraft mod, brought back for Minecraft Rust.** Useful Armory started as a Forge 1.12.2 mod I made as a kid. This project ports its equipment and crafting to [Horizon](https://github.com/horizon-rust/horizon), with AI-assisted development and more planned.
 
-[Download content mod](dist/useful_armory-0.1.3.hmod?raw=true) · [Download optional glow mod](dist/useful_armory-0.1.1.hnmod?raw=true) · [Every item and its stats](docs/items.md) · [Roadmap](docs/ROADMAP.md) · [Report a bug](https://github.com/snipeparparalt2/useful-armory-horizon/issues)
+[Download content mod](dist/useful_armory-0.1.4.hmod?raw=true) · [Download optional glow mod](dist/useful_armory-0.1.1.hnmod?raw=true) · [Every item and its stats](docs/items.md) · [Roadmap](docs/ROADMAP.md) · [Report a bug](https://github.com/snipeparparalt2/useful-armory-horizon/issues)
 
 ## Choose your download
 
 | Package | Version | What it adds | Install folder |
 |---|---|---|---|
-| **Content — required** | 0.1.3 | Equipment, textures, recipes, blocks, and ore generation definitions | `horizon-mods/` |
+| **Content — required** | 0.1.4 | Equipment, textures, recipes, blocks, and ore generation definitions | `horizon-mods/` |
 | **Glow — optional native companion** | 0.1.1 | Colored visual lights from selected held, worn, and dropped gear | `horizon-native-mods/` |
 
-Both target **Horizon nightly `fdc87ae` / Minecraft data 26.3**. Compatibility with newer Nightlies is not established. Content 0.1.3 is the recipe-fix patch; the native companion remains at its supplied version 0.1.1. The downloaded filename `useful_armory-0.1.2_1.hmod` contains version **0.1.2**; `_1` is not a new mod version.
+Both target **Horizon nightly `fdc87ae` / Minecraft data 26.3**. Compatibility with newer Nightlies is not established. Content 0.1.4 includes the recipe and texture-loading fixes; the native companion remains at its supplied version 0.1.1. The downloaded filename `useful_armory-0.1.2_1.hmod` contains version **0.1.2**; `_1` is not a new mod version.
 
 ## Install
 
@@ -44,7 +44,7 @@ The regular families include tools, swords, and armor. Several also have **dagge
 
 The current content preserves the supplied build's artwork and balance. Publishing it does not silently replace its textures or rebalance its equipment.
 
-**Fixed in 0.1.3:** the seven-ingot Shadow leggings recipe now produces Shadow leggings instead of a chestplate. The native glow companion remains at 0.1.1.
+**Fixed in 0.1.4:** existing texture files now use the modern atlas paths, fixing invisible item icons and block textures without redrawing any artwork. The 0.1.3 recipe fix is included: the seven-ingot Shadow leggings recipe now produces Shadow leggings instead of a chestplate. The native glow companion remains at 0.1.1.
 
 ### Mining the new ores
 
@@ -110,5 +110,6 @@ Regeneration overwrites texture assets. Review the changes before committing. Na
 When reporting a bug, include the Horizon revision, content/native mod versions, world preset, whether the chunk is new, and steps to reproduce it. A screenshot or short clip helps for rendering problems.
 
 Ideas are welcome, especially improvements that give the existing gear a purpose before adding more sets. See the [roadmap](docs/ROADMAP.md) for priorities and acceptance checks.
+
 
 

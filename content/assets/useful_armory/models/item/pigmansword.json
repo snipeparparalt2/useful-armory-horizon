@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/pigman_sword"
+    "layer0": "useful_armory:item/pigman_sword"
   }
 }

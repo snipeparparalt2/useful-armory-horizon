@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/redstone_shovel"
+    "layer0": "useful_armory:item/redstone_shovel"
   }
 }

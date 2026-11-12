@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/obsidian_shovel"
+    "layer0": "useful_armory:item/obsidian_shovel"
   }
 }

@@ -32,3 +32,9 @@ Ore configuration attaches features to Overworld biomes only. The current genera
 
 Build artifacts include no user accounts, local control tokens, game executables, world saves, or private logs.
 
+
+## Texture-loading fix in 0.1.4
+
+Reproduced invisible inventory icons using the untouched supplied 0.1.2 content on the installed fdc87ae executable. Explicit model parent namespaces alone did not resolve the issue. Relocating `textures/items/` to `textures/item/` and `textures/blocks/` to `textures/block/`, and updating the model references, restored the tested items and blocks in-game.
+
+All supplied PNG files and animation metadata are preserved byte-for-byte, including worn armor textures. No artwork was generated or recolored. The texture generator now writes to the modern paths so future regeneration cannot undo this fix. Representative swords, tools, armor icons, worn armor, ore, and storage-block icons were visually checked in the diagnostic world. The Shadow leggings recipe correction remains included.

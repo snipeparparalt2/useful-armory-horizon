@@ -1,12 +1,12 @@
 {
-  "parent": "block/cube",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "down": "useful_armory:blocks/colosifite_ore",
-    "up": "useful_armory:blocks/colosifite_ore",
-    "north": "useful_armory:blocks/colosifite_ore",
-    "east": "useful_armory:blocks/colosifite_ore",
-    "south": "useful_armory:blocks/colosifite_ore",
-    "west": "useful_armory:blocks/colosifite_ore",
-    "particle": "useful_armory:blocks/colosifite_ore"
+    "down": "useful_armory:block/colosifite_ore",
+    "up": "useful_armory:block/colosifite_ore",
+    "north": "useful_armory:block/colosifite_ore",
+    "east": "useful_armory:block/colosifite_ore",
+    "south": "useful_armory:block/colosifite_ore",
+    "west": "useful_armory:block/colosifite_ore",
+    "particle": "useful_armory:block/colosifite_ore"
   }
 }

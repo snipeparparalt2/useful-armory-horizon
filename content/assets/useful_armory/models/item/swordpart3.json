@@ -1,6 +1,6 @@
 {
-  "parent": "item/generated",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "useful_armory:items/stone_sword_end"
+    "layer0": "useful_armory:item/stone_sword_end"
   }
 }

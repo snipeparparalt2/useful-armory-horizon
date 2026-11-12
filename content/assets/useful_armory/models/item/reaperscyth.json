@@ -1,6 +1,6 @@
 {
-  "parent": "item/handheld",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "useful_armory:items/reaper_scythe"
+    "layer0": "useful_armory:item/reaper_scythe"
   }
 }
