@@ -1,7 +1,7 @@
 id = "useful_armory"
 name = "Useful Armory"
-version = "0.1.5"
-description = "Equipment and crafting port of Useful Armory 1.12.2. Targets Horizon fdc87ae; see included port notes."
+version = "0.1.6"
+description = "Equipment sets, special weapons and three new ores, revived from the Useful Armory 1.12.2 mod. Made for Horizon fdc87ae."
 authors = ["snipeparpar"]
 api = "0.2"
 side = "both"

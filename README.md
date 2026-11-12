@@ -2,15 +2,15 @@
 
 **An old Minecraft mod, brought back for Minecraft Rust.** Useful Armory started as a Forge 1.12.2 mod I made as a kid. This project ports its equipment and crafting to [Horizon](https://github.com/horizon-rust/horizon), with AI-assisted development and more planned.
 
-[Download content mod](dist/useful_armory-0.1.5.hmod?raw=true) · [Every item and its stats](docs/items.md) · [Roadmap](docs/ROADMAP.md) · [Report a bug](https://github.com/snipeparparalt2/useful-armory-horizon/issues)
+[Download content mod](dist/useful_armory-0.1.6.hmod?raw=true) · [Every item and its stats](docs/items.md) · [Roadmap](docs/ROADMAP.md) · [Report a bug](https://github.com/snipeparparalt2/useful-armory-horizon/issues)
 
 ## Download
 
 | Package | Version | What it adds | Install folder |
 |---|---|---|---|
-| **Content — required** | 0.1.5 | Equipment, textures, recipes, blocks, and ore generation definitions | `horizon-mods/` |
+| **Content — required** | 0.1.6 | Equipment, textures, recipes, blocks, and ore generation definitions | `horizon-mods/` |
 
-**Targets Horizon nightly `fdc87ae` / Minecraft data 26.3.** Version 0.1.5 is one standalone content mod. No native companion, library mod, or native game build is needed.
+**Targets Horizon nightly `fdc87ae` / Minecraft data 26.3.** Version 0.1.6 is one standalone content mod. No native companion, library mod, or native game build is needed.
 
 ## Install
 
@@ -24,7 +24,7 @@ The content pack does not need a native build. Keep a backup of important worlds
 
 ## What you can make
 
-Version 0.1.5 removes the old Test Tool and Bruh moment block.
+Version 0.1.5 removed the old Test Tool and Bruh moment block. Version 0.1.6 puts the ores back in stone and removes unused leftover textures from the original mod, including the big crafting table.
 
 **116 standalone items, 6 blocks, and 124 recipes**, collected in the **Useful Armory** creative tab. These counts come from the published content files; block inventory forms are additional to the 116 item definitions.
 
@@ -64,7 +64,7 @@ Aquite and Shadow worn armor and placed ore blocks have selected full-bright tex
 
 These textures do not cast colored light onto nearby blocks or affect mob spawning. Held items and inventory icons do not gain emissive overlays on the targeted Horizon build. The former separate native lighting companion has been removed.
 
-All three ore backgrounds now match vanilla cobblestone pixel-for-pixel outside their mineral patterns.
+**Ores sit in stone (0.1.6).** The ore textures hold only the mineral. Each ore block draws the game's own stone texture underneath, so the rock always matches the stone around it, including under a resource pack, and the mod ships no vanilla pixels.
 
 ### Rainbow armor: what works today
 
@@ -91,7 +91,7 @@ Both packaging paths write a single content `.hmod` into `dist/`. Texture regene
 
 ```sh
 python -m pip install pillow
-python tools/gen_textures.py content/assets/useful_armory/textures --cobblestone /path/to/vanilla/cobblestone.png
+python tools/gen_textures.py content/assets/useful_armory/textures
 ```
 
 Regeneration overwrites texture assets. Review the changes before committing.
@@ -122,7 +122,7 @@ Code, structured gameplay data, and textual documentation are licensed under the
 
 ## Screenshots
 
-Actual in-game captures from content version 0.1.5. See the [screenshot gallery](docs/SCREENSHOTS.md) for captions and full-size files.
+In-game captures from content version 0.1.5, taken before the ores moved from a cobblestone to a stone background in 0.1.6. See the [screenshot gallery](docs/SCREENSHOTS.md) for captions and full-size files.
 
 ![Useful Armory ores and storage blocks](docs/images/ores-and-storage.png)
 

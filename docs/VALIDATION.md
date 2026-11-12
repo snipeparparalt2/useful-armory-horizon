@@ -58,3 +58,12 @@ The former native tests above describe historical versions, not a requirement fo
 Verified Aquite worn armor emissive accents in a nighttime third-person screenshot, with the held sword remaining non-emissive. Verified the current ore textures on placed blocks. Gallery images were captured using Wisdom Horizon 1.3.7 shaders with the native companion absent. Screenshots are original game captures, not generated promotional renders.
 
 Placed ore glow uses a separate transparent mineral overlay with `light_emission: 15` in the block model, because the initial automatic `_e` pairing did not produce visible ore emission in the tested binary. Final nighttime screenshots verify the explicit content-model overlay. The worn armor uses the built-in `_e` equipment texture path. Neither changes world light levels or requires native code.
+
+## Stone ores and package clean-up in 0.1.6
+
+- **Ores in stone.** `block/aquite_ore.png`, `colosifite_ore.png` and `shadow_ore.png` are now mineral-only overlays on a transparent background, with a one-pixel pocket shadow under and to the right of each mineral patch. Every mineral pixel is identical to 0.1.5 (checked pixel by pixel against the 0.1.5 files). The three ore block models draw `minecraft:block/stone` first, the overlay second and, for Aquite and Shadow, the unchanged emissive layer third.
+- **No vanilla pixels shipped.** 0.1.5 copied the vanilla cobblestone texture into the ore backgrounds. 0.1.6 references the player's own stone texture at run time instead. `tools/ore_backgrounds.ps1` is removed and `tools/gen_textures.py` no longer takes `--cobblestone`.
+- **Leftovers removed.** 25 texture files that no model or equipment file referenced, and their 7 animation files, were taken out of the package: the big crafting table's block and screen textures, the old chicken textures, singularity and mask sprites, a duplicate set of bow frames and misplaced armour layers. `mod_logo.png` moved to `docs/images/original-mod-logo.png`. No model points at a missing texture afterwards (checked by script).
+- `cargo horizon-mod check`, built from Horizon `fdc87ae`, accepts the 0.1.6 package.
+
+**Not yet seen in game:** the three-layer ore models. The two-layer emissive models they extend are known to work in 0.1.5, but 0.1.6 itself needs a look in a world: placed ore, ore in the inventory, and breaking particles.

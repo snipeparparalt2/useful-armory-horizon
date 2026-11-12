@@ -717,13 +717,14 @@ ORE_LAYOUTS = {
 }
 
 
-COBBLESTONE_BASE = None
-
-
 def ore(mat, layout, seed):
-    if COBBLESTONE_BASE is None:
-        raise ValueError('Supply --cobblestone with the vanilla 16x16 cobblestone texture')
-    img = COBBLESTONE_BASE.copy()
+    """The mineral only, on a transparent background.
+
+    The ore block models draw the game's own stone texture underneath
+    (`minecraft:block/stone`), so the rock always matches the player's stone, resource
+    packs included, and no vanilla pixels are shipped in the mod.
+    """
+    img = Image.new('RGBA', (16, 16), (0, 0, 0, 0))
     px = img.load()
     ramp = MATERIALS[mat]['ramp']
     rows = ORE_LAYOUTS[layout]
@@ -733,6 +734,8 @@ def ore(mat, layout, seed):
         for x in range(n):
             if filled[y][x]:
                 px[x, y] = ramp[int(rows[y][x])]
+            elif filled[(y - 1) % n][x] or filled[y][(x - 1) % n]:
+                px[x, y] = STONE_SHADOW          # the ore sits in a pocket: shadow below/right
     return img
 
 
@@ -1951,13 +1954,9 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('output')
-    parser.add_argument('--cobblestone', required=True, help='Path to vanilla 16x16 cobblestone.png')
     parser.add_argument('--std-armor', action='store_true')
     parser.add_argument('--halo', action='store_true')
     args = parser.parse_args()
-    COBBLESTONE_BASE = Image.open(args.cobblestone).convert('RGBA')
-    if COBBLESTONE_BASE.size != (16, 16):
-        parser.error('Cobblestone texture must be 16x16')
     HALO = args.halo
     made = build(args.output, hd_armor=not args.std_armor)
-    print(f'wrote {len(made)} textures to {args[0]}')
+    print(f'wrote {len(made)} textures to {args.output}')
