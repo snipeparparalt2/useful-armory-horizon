@@ -1,6 +1,6 @@
 id = "useful_armory"
 name = "Useful Armory"
-version = "0.1.2"
+version = "0.1.3"
 description = "Equipment and crafting port of Useful Armory 1.12.2. Targets Horizon fdc87ae; see included port notes."
 authors = ["snipeparpar"]
 api = "0.2"

@@ -1,6 +1,6 @@
 # Validation and provenance
 
-## Current publication
+## Original 0.1.2 publication
 
 - Content version: **0.1.2**, taken from the supplied `useful_armory-0.1.2_1.hmod`.
 - Source: the matching `useful-armory-horizon-source.zip` supplied in Downloads.
@@ -20,14 +20,15 @@ A launcher refresh/restart is still needed to observe the updated folder state i
 
 The genuine supplied-source native companion was packaged and installed in the native folder. Its game build has not been run as part of this publication task.
 
-## Known content defect retained from the supplied release
+## Recipe fix in 0.1.3
 
-`content/data/useful_armory/recipe/shadowleggins.json` outputs `useful_armory:shadowbody`, a chestplate. The expected leggings result is `useful_armory:shadowlegs`. This is documented for the next patch; the published 0.1.2 payload intentionally matches the supplied finished build.
+`content/data/useful_armory/recipe/shadowleggins.json` now outputs one `useful_armory:shadowlegs` instead of `useful_armory:shadowbody`. Its seven-ingot pattern and ingredients are unchanged. The only content changes from 0.1.2 are this result and the manifest version. The rebuilt archive was checked for the corrected result and an unchanged chestplate recipe. No native rebuild is needed for this data-only fix.
 
 ## Bounds of verification
 
-The latest content is preserved unchanged. Earlier development builds and their tests are not evidence that every behavior in this supplied build works. The native runtime's full game integration and visual lighting still require an in-game build and playtest on the pinned revision. Standalone unit tests do not establish renderer compatibility.
+The original 0.1.2 content was preserved unchanged; 0.1.3 contains the narrow recipe fix described above. Earlier development builds and their tests are not evidence that every behavior in this supplied build works. The native runtime's full game integration and visual lighting still require an in-game build and playtest on the pinned revision. Standalone unit tests do not establish renderer compatibility.
 
 Ore configuration attaches features to Overworld biomes only. The current generator emits animated Ultimate inventory sprites but static 128×64 worn armor textures. The roadmap describes proposed RGB armor work; it is not claimed as shipped.
 
 Build artifacts include no user accounts, local control tokens, game executables, world saves, or private logs.
+
