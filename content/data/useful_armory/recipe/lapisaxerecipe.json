@@ -1,0 +1,20 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "01",
+    "23",
+    "4 "
+  ],
+  "key": {
+    "0": "minecraft:lapis_block",
+    "1": "minecraft:lapis_block",
+    "2": "minecraft:stick",
+    "3": "minecraft:lapis_block",
+    "4": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:lapisaxe",
+    "count": 1
+  }
+}

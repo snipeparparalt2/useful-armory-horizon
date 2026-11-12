@@ -1,0 +1,16 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0",
+    "1"
+  ],
+  "key": {
+    "0": "minecraft:lapis_block",
+    "1": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:lapisdagger",
+    "count": 1
+  }
+}

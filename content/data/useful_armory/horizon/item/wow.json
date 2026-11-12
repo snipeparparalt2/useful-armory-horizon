@@ -1,0 +1,38 @@
+{
+  "template": "minecraft:iron_axe",
+  "components": {
+    "minecraft:item_model": "useful_armory:wow",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.wow"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:attack_damage",
+        "amount": 100,
+        "id": "minecraft:base_attack_damage",
+        "operation": "add_value",
+        "slot": "mainhand"
+      },
+      {
+        "type": "minecraft:attack_speed",
+        "amount": 96,
+        "id": "minecraft:base_attack_speed",
+        "operation": "add_value",
+        "slot": "mainhand"
+      }
+    ],
+    "minecraft:max_damage": 100,
+    "minecraft:tool": {
+      "default_mining_speed": 100,
+      "rules": [
+        {
+          "blocks": "#useful_armory:all_blocks",
+          "correct_for_drops": true,
+          "speed": 100
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 1 ",
+    "345",
+    " 7 "
+  ],
+  "key": {
+    "1": "useful_armory:colosifiteingot",
+    "3": "useful_armory:colosifiteingot",
+    "4": "useful_armory:colosifiteingot",
+    "5": "useful_armory:colosifiteingot",
+    "7": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:colosifitegreatsword",
+    "count": 1
+  }
+}

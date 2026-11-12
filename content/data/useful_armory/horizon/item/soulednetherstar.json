@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:soulednetherstar",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.soulednetherstar"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "the diamonds around it must of made the soul come out"
+      }
+    ]
+  },
+  "max_stack_size": 1
+}

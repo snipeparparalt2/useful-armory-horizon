@@ -1,0 +1,23 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0 2",
+    "345",
+    "678"
+  ],
+  "key": {
+    "0": "useful_armory:aquiteingot",
+    "2": "useful_armory:aquiteingot",
+    "3": "useful_armory:aquiteingot",
+    "4": "useful_armory:aquiteingot",
+    "5": "useful_armory:aquiteingot",
+    "6": "useful_armory:aquiteingot",
+    "7": "useful_armory:aquiteingot",
+    "8": "useful_armory:aquiteingot"
+  },
+  "result": {
+    "id": "useful_armory:aquitebody",
+    "count": 1
+  }
+}

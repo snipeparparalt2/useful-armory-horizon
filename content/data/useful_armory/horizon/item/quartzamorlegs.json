@@ -1,0 +1,36 @@
+{
+  "template": "minecraft:iron_leggings",
+  "components": {
+    "minecraft:item_model": "useful_armory:quartzamorlegs",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.quartzamorlegs"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:max_damage": 375,
+    "minecraft:enchantable": {
+      "value": 9
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:armor",
+        "amount": 4,
+        "id": "minecraft:armor.leggings",
+        "operation": "add_value",
+        "slot": "legs"
+      },
+      {
+        "type": "minecraft:armor_toughness",
+        "amount": 1.3,
+        "id": "minecraft:armor.leggings",
+        "operation": "add_value",
+        "slot": "legs"
+      }
+    ],
+    "minecraft:equippable": {
+      "slot": "legs",
+      "equip_sound": "minecraft:item.armor.equip_iron",
+      "asset_id": "useful_armory:quartz__"
+    }
+  }
+}

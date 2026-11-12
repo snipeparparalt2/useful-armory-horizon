@@ -1,0 +1,20 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "01",
+    "23",
+    "4 "
+  ],
+  "key": {
+    "0": "minecraft:emerald",
+    "1": "minecraft:emerald",
+    "2": "minecraft:stick",
+    "3": "minecraft:emerald",
+    "4": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:emeraldaxe",
+    "count": 1
+  }
+}

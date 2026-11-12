@@ -1,0 +1,23 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0 2",
+    "345",
+    "678"
+  ],
+  "key": {
+    "0": "useful_armory:shadowingot",
+    "2": "useful_armory:shadowingot",
+    "3": "useful_armory:shadowingot",
+    "4": "useful_armory:shadowingot",
+    "5": "useful_armory:shadowingot",
+    "6": "useful_armory:shadowingot",
+    "7": "useful_armory:shadowingot",
+    "8": "useful_armory:shadowingot"
+  },
+  "result": {
+    "id": "useful_armory:shadowbody",
+    "count": 1
+  }
+}

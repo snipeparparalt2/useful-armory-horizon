@@ -1,0 +1,11 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "useful_armory:ultimateblock"
+  ],
+  "result": {
+    "id": "useful_armory:ultimateingot",
+    "count": 9
+  }
+}

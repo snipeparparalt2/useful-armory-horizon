@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "useful_armory:blocks/https3a2f2fhypebeast",
+    "up": "useful_armory:blocks/https3a2f2fhypebeast",
+    "north": "useful_armory:blocks/https3a2f2fhypebeast",
+    "east": "useful_armory:blocks/https3a2f2fhypebeast",
+    "south": "useful_armory:blocks/https3a2f2fhypebeast",
+    "west": "useful_armory:blocks/https3a2f2fhypebeast",
+    "particle": "useful_armory:blocks/https3a2f2fhypebeast"
+  }
+}

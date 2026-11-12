@@ -1,0 +1,36 @@
+{
+  "template": "minecraft:iron_chestplate",
+  "components": {
+    "minecraft:item_model": "useful_armory:shadowbody",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.shadowbody"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:max_damage": 560,
+    "minecraft:enchantable": {
+      "value": 12
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:armor",
+        "amount": 8,
+        "id": "minecraft:armor.chestplate",
+        "operation": "add_value",
+        "slot": "chest"
+      },
+      {
+        "type": "minecraft:armor_toughness",
+        "amount": 2.5,
+        "id": "minecraft:armor.chestplate",
+        "operation": "add_value",
+        "slot": "chest"
+      }
+    ],
+    "minecraft:equippable": {
+      "slot": "chest",
+      "equip_sound": "minecraft:item.armor.equip_iron",
+      "asset_id": "useful_armory:shadow_"
+    }
+  }
+}

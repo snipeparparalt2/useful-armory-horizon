@@ -1,0 +1,22 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "01 ",
+    "345",
+    " 78"
+  ],
+  "key": {
+    "0": "minecraft:diamond",
+    "1": "useful_armory:obsidainingot",
+    "3": "useful_armory:obsidainingot",
+    "4": "useful_armory:soulednetherstar",
+    "5": "useful_armory:obsidainingot",
+    "7": "useful_armory:obsidainingot",
+    "8": "minecraft:diamond"
+  },
+  "result": {
+    "id": "useful_armory:swordpart2",
+    "count": 1
+  }
+}

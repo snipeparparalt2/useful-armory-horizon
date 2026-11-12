@@ -1,0 +1,22 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "012",
+    "34 ",
+    "67 "
+  ],
+  "key": {
+    "0": "useful_armory:ultimateingot",
+    "1": "useful_armory:ultimateingot",
+    "2": "useful_armory:ultimateingot",
+    "3": "useful_armory:ultimateingot",
+    "4": "useful_armory:longstick",
+    "6": "useful_armory:ultimateingot",
+    "7": "useful_armory:longstick"
+  },
+  "result": {
+    "id": "useful_armory:reaperscyth",
+    "count": 1
+  }
+}

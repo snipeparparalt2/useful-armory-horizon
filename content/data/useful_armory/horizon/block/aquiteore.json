@@ -1,0 +1,14 @@
+{
+  "template": "minecraft:iron_ore",
+  "properties": {
+    "hardness": 1.3,
+    "light": 0
+  },
+  "item": true,
+  "components": {
+    "minecraft:item_model": "useful_armory:aquiteore",
+    "minecraft:item_name": {
+      "translate": "block.useful_armory.aquiteore"
+    }
+  }
+}

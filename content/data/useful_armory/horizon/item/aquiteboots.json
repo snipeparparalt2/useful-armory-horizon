@@ -1,0 +1,36 @@
+{
+  "template": "minecraft:iron_boots",
+  "components": {
+    "minecraft:item_model": "useful_armory:aquiteboots",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.aquiteboots"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:max_damage": 338,
+    "minecraft:enchantable": {
+      "value": 11
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:armor",
+        "amount": 3,
+        "id": "minecraft:armor.boots",
+        "operation": "add_value",
+        "slot": "feet"
+      },
+      {
+        "type": "minecraft:armor_toughness",
+        "amount": 1,
+        "id": "minecraft:armor.boots",
+        "operation": "add_value",
+        "slot": "feet"
+      }
+    ],
+    "minecraft:equippable": {
+      "slot": "feet",
+      "equip_sound": "minecraft:item.armor.equip_iron",
+      "asset_id": "useful_armory:aquite"
+    }
+  }
+}

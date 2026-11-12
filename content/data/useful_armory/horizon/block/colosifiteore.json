@@ -1,0 +1,14 @@
+{
+  "template": "minecraft:iron_ore",
+  "properties": {
+    "hardness": 2,
+    "light": 0
+  },
+  "item": true,
+  "components": {
+    "minecraft:item_model": "useful_armory:colosifiteore",
+    "minecraft:item_name": {
+      "translate": "block.useful_armory.colosifiteore"
+    }
+  }
+}

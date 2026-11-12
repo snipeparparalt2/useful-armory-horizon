@@ -1,0 +1,20 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 1",
+    "23",
+    "45"
+  ],
+  "key": {
+    "1": "minecraft:quartz_block",
+    "2": "minecraft:quartz_block",
+    "3": "minecraft:quartz_block",
+    "4": "minecraft:quartz_block",
+    "5": "useful_armory:longstick"
+  },
+  "result": {
+    "id": "useful_armory:quartzhalber",
+    "count": 1
+  }
+}

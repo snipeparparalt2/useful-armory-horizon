@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:swordpart1",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.swordpart1"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "it may just be a handle but what kind of a handle is this expensive to make"
+      }
+    ]
+  },
+  "max_stack_size": 1
+}

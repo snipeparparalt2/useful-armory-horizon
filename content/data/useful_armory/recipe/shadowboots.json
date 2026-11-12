@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0 2",
+    "3 5"
+  ],
+  "key": {
+    "0": "useful_armory:shadowingot",
+    "2": "useful_armory:shadowingot",
+    "3": "useful_armory:shadowingot",
+    "5": "useful_armory:shadowingot"
+  },
+  "result": {
+    "id": "useful_armory:shadowboots",
+    "count": 1
+  }
+}

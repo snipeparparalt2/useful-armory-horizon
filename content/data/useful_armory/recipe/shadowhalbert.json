@@ -1,0 +1,21 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 1 ",
+    "345",
+    "67 "
+  ],
+  "key": {
+    "1": "useful_armory:shadowingot",
+    "3": "useful_armory:shadowingot",
+    "4": "useful_armory:shadowingot",
+    "5": "useful_armory:shadowingot",
+    "6": "useful_armory:shadowingot",
+    "7": "useful_armory:longstick"
+  },
+  "result": {
+    "id": "useful_armory:shadowotehrweapon",
+    "count": 1
+  }
+}

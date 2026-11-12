@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:swordpart3",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.swordpart3"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "is it jsut a obsidain blade?"
+      }
+    ]
+  },
+  "max_stack_size": 1
+}

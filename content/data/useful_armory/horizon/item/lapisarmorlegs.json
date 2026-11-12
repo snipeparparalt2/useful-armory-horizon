@@ -1,0 +1,36 @@
+{
+  "template": "minecraft:iron_leggings",
+  "components": {
+    "minecraft:item_model": "useful_armory:lapisarmorlegs",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.lapisarmorlegs"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:max_damage": 225,
+    "minecraft:enchantable": {
+      "value": 15
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:armor",
+        "amount": 3,
+        "id": "minecraft:armor.leggings",
+        "operation": "add_value",
+        "slot": "legs"
+      },
+      {
+        "type": "minecraft:armor_toughness",
+        "amount": 0.4,
+        "id": "minecraft:armor.leggings",
+        "operation": "add_value",
+        "slot": "legs"
+      }
+    ],
+    "minecraft:equippable": {
+      "slot": "legs",
+      "equip_sound": "minecraft:item.armor.equip_iron",
+      "asset_id": "useful_armory:lapis_"
+    }
+  }
+}

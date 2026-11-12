@@ -1,0 +1,24 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "012",
+    "345",
+    "678"
+  ],
+  "key": {
+    "0": "useful_armory:bloddyrottenflesh",
+    "1": "useful_armory:bloddyrottenflesh",
+    "2": "useful_armory:bloddyrottenflesh",
+    "3": "useful_armory:bloddyrottenflesh",
+    "4": "useful_armory:bloddyrottenflesh",
+    "5": "useful_armory:bloddyrottenflesh",
+    "6": "useful_armory:bloddyrottenflesh",
+    "7": "useful_armory:bloddyrottenflesh",
+    "8": "useful_armory:bloddyrottenflesh"
+  },
+  "result": {
+    "id": "useful_armory:erottenflesh",
+    "count": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "useful_armory:thenetherlegacy",
+    "useful_armory:lavasword",
+    "useful_armory:pigmansword"
+  ],
+  "result": {
+    "id": "useful_armory:souleater",
+    "count": 1
+  }
+}

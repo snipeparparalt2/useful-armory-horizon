@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "useful_armory:blocks/shadow_block",
+    "up": "useful_armory:blocks/shadow_block",
+    "north": "useful_armory:blocks/shadow_block",
+    "east": "useful_armory:blocks/shadow_block",
+    "south": "useful_armory:blocks/shadow_block",
+    "west": "useful_armory:blocks/shadow_block",
+    "particle": "useful_armory:blocks/shadow_block"
+  }
+}

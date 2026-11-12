@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:bloddyrottenflesh",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.bloddyrottenflesh"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "ew"
+      }
+    ]
+  },
+  "max_stack_size": 64
+}

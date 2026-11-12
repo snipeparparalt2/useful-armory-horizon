@@ -1,0 +1,12 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:shadowingot",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.shadowingot"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {}
+  },
+  "max_stack_size": 64
+}

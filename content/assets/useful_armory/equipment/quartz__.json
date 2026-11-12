@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "useful_armory:quartz__"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "useful_armory:quartz__"
+      }
+    ]
+  }
+}

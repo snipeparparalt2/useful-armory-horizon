@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  2",
+    " 4 ",
+    "6  "
+  ],
+  "key": {
+    "2": "useful_armory:swordpart3",
+    "4": "useful_armory:swordpart2",
+    "6": "useful_armory:swordpart1"
+  },
+  "result": {
+    "id": "useful_armory:thenetherlegacy",
+    "count": 1
+  }
+}

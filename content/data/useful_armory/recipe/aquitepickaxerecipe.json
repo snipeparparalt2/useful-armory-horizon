@@ -1,0 +1,20 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "012",
+    " 4 ",
+    " 7 "
+  ],
+  "key": {
+    "0": "useful_armory:aquiteingot",
+    "1": "useful_armory:aquiteingot",
+    "2": "useful_armory:aquiteingot",
+    "4": "minecraft:stick",
+    "7": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:aquitepickaxe",
+    "count": 1
+  }
+}

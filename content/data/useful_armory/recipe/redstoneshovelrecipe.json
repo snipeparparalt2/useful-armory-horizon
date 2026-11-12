@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0",
+    "1",
+    "2"
+  ],
+  "key": {
+    "0": "useful_armory:redstoneingot",
+    "1": "minecraft:stick",
+    "2": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:redstoneshovel",
+    "count": 1
+  }
+}

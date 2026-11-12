@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0 2",
+    "3 5"
+  ],
+  "key": {
+    "0": "useful_armory:ultimateingot",
+    "2": "useful_armory:ultimateingot",
+    "3": "useful_armory:ultimateingot",
+    "5": "useful_armory:ultimateingot"
+  },
+  "result": {
+    "id": "useful_armory:ultimateaboots",
+    "count": 1
+  }
+}

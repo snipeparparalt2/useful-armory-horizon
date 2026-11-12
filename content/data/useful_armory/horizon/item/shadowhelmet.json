@@ -1,0 +1,36 @@
+{
+  "template": "minecraft:iron_helmet",
+  "components": {
+    "minecraft:item_model": "useful_armory:shadowhelmet",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.shadowhelmet"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:max_damage": 385,
+    "minecraft:enchantable": {
+      "value": 12
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:armor",
+        "amount": 4,
+        "id": "minecraft:armor.helmet",
+        "operation": "add_value",
+        "slot": "head"
+      },
+      {
+        "type": "minecraft:armor_toughness",
+        "amount": 2.5,
+        "id": "minecraft:armor.helmet",
+        "operation": "add_value",
+        "slot": "head"
+      }
+    ],
+    "minecraft:equippable": {
+      "slot": "head",
+      "equip_sound": "minecraft:item.armor.equip_iron",
+      "asset_id": "useful_armory:shadow_"
+    }
+  }
+}

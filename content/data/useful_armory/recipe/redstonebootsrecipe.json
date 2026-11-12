@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0 2",
+    "3 5"
+  ],
+  "key": {
+    "0": "useful_armory:redstoneingot",
+    "2": "useful_armory:redstoneingot",
+    "3": "useful_armory:redstoneingot",
+    "5": "useful_armory:redstoneingot"
+  },
+  "result": {
+    "id": "useful_armory:redstonearmorboots",
+    "count": 1
+  }
+}

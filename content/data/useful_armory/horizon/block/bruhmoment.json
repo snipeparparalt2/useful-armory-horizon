@@ -1,0 +1,14 @@
+{
+  "template": "minecraft:iron_block",
+  "properties": {
+    "hardness": 1,
+    "light": 0
+  },
+  "item": true,
+  "components": {
+    "minecraft:item_model": "useful_armory:bruhmoment",
+    "minecraft:item_name": {
+      "translate": "block.useful_armory.bruhmoment"
+    }
+  }
+}

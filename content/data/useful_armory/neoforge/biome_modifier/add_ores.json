@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "useful_armory:ore_aquite",
+    "useful_armory:ore_colosifite",
+    "useful_armory:ore_shadow"
+  ],
+  "step": "underground_ores"
+}

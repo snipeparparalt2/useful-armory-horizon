@@ -1,0 +1,19 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "01",
+    "2 ",
+    "4 "
+  ],
+  "key": {
+    "0": "useful_armory:colosifiteingot",
+    "1": "useful_armory:colosifiteingot",
+    "2": "minecraft:stick",
+    "4": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:colosifitehoe",
+    "count": 1
+  }
+}

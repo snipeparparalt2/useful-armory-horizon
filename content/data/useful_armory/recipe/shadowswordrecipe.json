@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0",
+    "1",
+    "2"
+  ],
+  "key": {
+    "0": "useful_armory:shadowingot",
+    "1": "useful_armory:shadowingot",
+    "2": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:shadowsword",
+    "count": 1
+  }
+}

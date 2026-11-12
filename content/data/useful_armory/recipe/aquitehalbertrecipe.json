@@ -1,0 +1,21 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 1 ",
+    "345",
+    "67 "
+  ],
+  "key": {
+    "1": "useful_armory:aquiteingot",
+    "3": "useful_armory:aquiteingot",
+    "4": "useful_armory:aquiteingot",
+    "5": "useful_armory:aquiteingot",
+    "6": "useful_armory:aquiteingot",
+    "7": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:aquitehalbert",
+    "count": 1
+  }
+}

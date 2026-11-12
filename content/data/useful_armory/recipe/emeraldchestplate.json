@@ -1,0 +1,23 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0 2",
+    "345",
+    "678"
+  ],
+  "key": {
+    "0": "minecraft:emerald",
+    "2": "minecraft:emerald",
+    "3": "minecraft:emerald",
+    "4": "minecraft:emerald",
+    "5": "minecraft:emerald",
+    "6": "minecraft:emerald",
+    "7": "minecraft:emerald",
+    "8": "minecraft:emerald"
+  },
+  "result": {
+    "id": "useful_armory:emeraldarmorbody",
+    "count": 1
+  }
+}

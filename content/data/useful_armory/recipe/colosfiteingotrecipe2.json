@@ -1,0 +1,11 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "useful_armory:colosfiteblock"
+  ],
+  "result": {
+    "id": "useful_armory:colosifiteingot",
+    "count": 9
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "012",
+    "3 5"
+  ],
+  "key": {
+    "0": "useful_armory:colosifiteingot",
+    "1": "useful_armory:colosifiteingot",
+    "2": "useful_armory:colosifiteingot",
+    "3": "useful_armory:colosifiteingot",
+    "5": "useful_armory:colosifiteingot"
+  },
+  "result": {
+    "id": "useful_armory:colosifitearmorhelmet",
+    "count": 1
+  }
+}

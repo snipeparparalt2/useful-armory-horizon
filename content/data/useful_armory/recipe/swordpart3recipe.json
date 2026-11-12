@@ -1,0 +1,22 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 12",
+    "345",
+    "67 "
+  ],
+  "key": {
+    "1": "useful_armory:obsidainingot",
+    "2": "useful_armory:obsidainingot",
+    "3": "useful_armory:obsidainingot",
+    "4": "useful_armory:obsidainingot",
+    "5": "useful_armory:obsidainingot",
+    "6": "useful_armory:obsidainingot",
+    "7": "useful_armory:obsidainingot"
+  },
+  "result": {
+    "id": "useful_armory:swordpart3",
+    "count": 1
+  }
+}

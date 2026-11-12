@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:emagma",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.emagma"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "wow thats useful"
+      }
+    ]
+  },
+  "max_stack_size": 64
+}

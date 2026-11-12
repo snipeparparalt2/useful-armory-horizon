@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:longstick",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.longstick"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "used for weapons that need a longer handle"
+      }
+    ]
+  },
+  "max_stack_size": 64
+}

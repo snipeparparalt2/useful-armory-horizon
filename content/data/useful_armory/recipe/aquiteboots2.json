@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0 2",
+    "3 5"
+  ],
+  "key": {
+    "0": "useful_armory:aquiteingot",
+    "2": "useful_armory:aquiteingot",
+    "3": "useful_armory:aquiteingot",
+    "5": "useful_armory:aquiteingot"
+  },
+  "result": {
+    "id": "useful_armory:aquiteboots",
+    "count": 1
+  }
+}

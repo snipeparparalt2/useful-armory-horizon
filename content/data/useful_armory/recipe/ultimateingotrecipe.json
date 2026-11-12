@@ -1,0 +1,19 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:redstone_block",
+    "minecraft:obsidian",
+    "useful_armory:colosfiteblock",
+    "minecraft:gold_block",
+    "minecraft:iron_block",
+    "minecraft:lapis_block",
+    "minecraft:diamond_block",
+    "minecraft:emerald_block",
+    "minecraft:quartz_block"
+  ],
+  "result": {
+    "id": "useful_armory:ultimateingot",
+    "count": 1
+  }
+}

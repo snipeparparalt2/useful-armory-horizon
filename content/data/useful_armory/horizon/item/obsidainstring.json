@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:obsidainstring",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.obsidainstring"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "yeah but why?"
+      }
+    ]
+  },
+  "max_stack_size": 64
+}

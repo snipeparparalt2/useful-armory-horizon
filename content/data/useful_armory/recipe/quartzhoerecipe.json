@@ -1,0 +1,19 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "01",
+    "2 ",
+    "4 "
+  ],
+  "key": {
+    "0": "minecraft:quartz_block",
+    "1": "minecraft:quartz_block",
+    "2": "minecraft:stick",
+    "4": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:quartzhoe",
+    "count": 1
+  }
+}

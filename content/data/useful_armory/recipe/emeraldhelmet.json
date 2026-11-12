@@ -1,0 +1,19 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "012",
+    "3 5"
+  ],
+  "key": {
+    "0": "minecraft:emerald",
+    "1": "minecraft:emerald",
+    "2": "minecraft:emerald",
+    "3": "minecraft:emerald",
+    "5": "minecraft:emerald"
+  },
+  "result": {
+    "id": "useful_armory:emeraldarmorhelmet",
+    "count": 1
+  }
+}

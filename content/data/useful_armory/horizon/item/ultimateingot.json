@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:ultimateingot",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.ultimateingot"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "\\u00a7l4 wonder what this is for"
+      }
+    ]
+  },
+  "max_stack_size": 64
+}

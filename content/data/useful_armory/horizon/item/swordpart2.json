@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:swordpart2",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.swordpart2"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "it may just be a part of a sword but why is it so expesive of a sword to make"
+      }
+    ]
+  },
+  "max_stack_size": 1
+}

@@ -1,0 +1,21 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 1 ",
+    "345",
+    "67 "
+  ],
+  "key": {
+    "1": "minecraft:lapis_block",
+    "3": "minecraft:lapis_block",
+    "4": "minecraft:lapis_block",
+    "5": "minecraft:lapis_block",
+    "6": "minecraft:lapis_block",
+    "7": "useful_armory:longstick"
+  },
+  "result": {
+    "id": "useful_armory:lapishalbert",
+    "count": 1
+  }
+}

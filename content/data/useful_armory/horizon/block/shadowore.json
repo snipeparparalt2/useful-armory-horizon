@@ -1,0 +1,14 @@
+{
+  "template": "minecraft:iron_ore",
+  "properties": {
+    "hardness": 1.5,
+    "light": 0
+  },
+  "item": true,
+  "components": {
+    "minecraft:item_model": "useful_armory:shadowore",
+    "minecraft:item_name": {
+      "translate": "block.useful_armory.shadowore"
+    }
+  }
+}

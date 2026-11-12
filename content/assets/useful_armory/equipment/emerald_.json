@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "useful_armory:emerald_"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "useful_armory:emerald_"
+      }
+    ]
+  }
+}

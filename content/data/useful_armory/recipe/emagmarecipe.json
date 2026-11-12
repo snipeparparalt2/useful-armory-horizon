@@ -1,0 +1,24 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "012",
+    "345",
+    "678"
+  ],
+  "key": {
+    "0": "minecraft:magma_cream",
+    "1": "minecraft:magma_cream",
+    "2": "minecraft:magma_cream",
+    "3": "minecraft:magma_cream",
+    "4": "minecraft:magma_cream",
+    "5": "minecraft:magma_cream",
+    "6": "minecraft:magma_cream",
+    "7": "minecraft:magma_cream",
+    "8": "minecraft:magma_cream"
+  },
+  "result": {
+    "id": "useful_armory:emagma",
+    "count": 1
+  }
+}

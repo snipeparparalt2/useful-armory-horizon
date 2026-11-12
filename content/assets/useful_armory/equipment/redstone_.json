@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "useful_armory:redstone_"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "useful_armory:redstone_"
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "012",
+    "345",
+    "678"
+  ],
+  "key": {
+    "0": "useful_armory:ultimatenugget",
+    "1": "useful_armory:ultimatenugget",
+    "2": "useful_armory:ultimatenugget",
+    "3": "useful_armory:ultimatenugget",
+    "4": "useful_armory:ultimatenugget",
+    "5": "useful_armory:ultimatenugget",
+    "6": "useful_armory:ultimatenugget",
+    "7": "useful_armory:ultimatenugget",
+    "8": "useful_armory:ultimatenugget"
+  },
+  "result": {
+    "id": "useful_armory:ultimateingot",
+    "count": 1
+  }
+}

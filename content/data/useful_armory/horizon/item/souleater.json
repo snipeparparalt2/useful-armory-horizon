@@ -1,0 +1,31 @@
+{
+  "template": "minecraft:iron_sword",
+  "components": {
+    "minecraft:item_model": "useful_armory:souleater",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.souleater"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:max_damage": 100000,
+    "minecraft:enchantable": {
+      "value": 6
+    },
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:attack_damage",
+        "amount": 12,
+        "id": "minecraft:base_attack_damage",
+        "operation": "add_value",
+        "slot": "mainhand"
+      },
+      {
+        "type": "minecraft:attack_speed",
+        "amount": -2,
+        "id": "minecraft:base_attack_speed",
+        "operation": "add_value",
+        "slot": "mainhand"
+      }
+    ]
+  }
+}

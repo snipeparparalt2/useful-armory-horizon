@@ -1,0 +1,23 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0 2",
+    "345",
+    "678"
+  ],
+  "key": {
+    "0": "useful_armory:redstoneingot",
+    "2": "useful_armory:redstoneingot",
+    "3": "useful_armory:redstoneingot",
+    "4": "useful_armory:redstoneingot",
+    "5": "useful_armory:redstoneingot",
+    "6": "useful_armory:redstoneingot",
+    "7": "useful_armory:redstoneingot",
+    "8": "useful_armory:redstoneingot"
+  },
+  "result": {
+    "id": "useful_armory:redstonearmorbody",
+    "count": 1
+  }
+}

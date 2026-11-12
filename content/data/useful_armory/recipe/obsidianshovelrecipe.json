@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "0",
+    "1",
+    "2"
+  ],
+  "key": {
+    "0": "useful_armory:obsidainingot",
+    "1": "minecraft:blaze_rod",
+    "2": "minecraft:blaze_rod"
+  },
+  "result": {
+    "id": "useful_armory:obsidianshovel",
+    "count": 1
+  }
+}

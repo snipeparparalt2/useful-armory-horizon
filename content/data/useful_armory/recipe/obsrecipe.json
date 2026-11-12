@@ -1,0 +1,24 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "012",
+    "345",
+    "678"
+  ],
+  "key": {
+    "0": "useful_armory:obsidainingot",
+    "1": "useful_armory:obsidainingot",
+    "2": "useful_armory:obsidainingot",
+    "3": "useful_armory:obsidainingot",
+    "4": "minecraft:string",
+    "5": "useful_armory:obsidainingot",
+    "6": "useful_armory:obsidainingot",
+    "7": "useful_armory:obsidainingot",
+    "8": "useful_armory:obsidainingot"
+  },
+  "result": {
+    "id": "useful_armory:obsidainstring",
+    "count": 1
+  }
+}

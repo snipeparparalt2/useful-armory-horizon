@@ -1,0 +1,20 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 1 ",
+    "345",
+    " 7 "
+  ],
+  "key": {
+    "1": "minecraft:lapis_block",
+    "3": "minecraft:lapis_block",
+    "4": "minecraft:lapis_block",
+    "5": "minecraft:lapis_block",
+    "7": "minecraft:stick"
+  },
+  "result": {
+    "id": "useful_armory:lapisgreatsword",
+    "count": 1
+  }
+}

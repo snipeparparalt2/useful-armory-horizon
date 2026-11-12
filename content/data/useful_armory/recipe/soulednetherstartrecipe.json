@@ -1,0 +1,24 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "012",
+    "345",
+    "678"
+  ],
+  "key": {
+    "0": "minecraft:obsidian",
+    "1": "minecraft:diamond",
+    "2": "minecraft:obsidian",
+    "3": "minecraft:diamond",
+    "4": "minecraft:nether_star",
+    "5": "minecraft:diamond",
+    "6": "minecraft:obsidian",
+    "7": "minecraft:diamond",
+    "8": "minecraft:obsidian"
+  },
+  "result": {
+    "id": "useful_armory:soulednetherstar",
+    "count": 1
+  }
+}

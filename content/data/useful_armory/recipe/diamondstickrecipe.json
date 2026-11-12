@@ -1,0 +1,24 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "012",
+    "345",
+    "678"
+  ],
+  "key": {
+    "0": "minecraft:diamond",
+    "1": "minecraft:stick",
+    "2": "minecraft:diamond",
+    "3": "minecraft:diamond",
+    "4": "minecraft:stick",
+    "5": "minecraft:diamond",
+    "6": "minecraft:diamond",
+    "7": "minecraft:stick",
+    "8": "minecraft:diamond"
+  },
+  "result": {
+    "id": "useful_armory:diamondstick",
+    "count": 3
+  }
+}

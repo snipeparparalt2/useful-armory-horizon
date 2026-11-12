@@ -1,0 +1,20 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 1 ",
+    "345",
+    " 7 "
+  ],
+  "key": {
+    "1": "minecraft:redstone_block",
+    "3": "minecraft:redstone_block",
+    "4": "minecraft:redstone_block",
+    "5": "minecraft:redstone_block",
+    "7": "minecraft:redstone_block"
+  },
+  "result": {
+    "id": "useful_armory:redstoneingot",
+    "count": 1
+  }
+}
