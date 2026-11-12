@@ -9,25 +9,7 @@ const manifest=fs.readFileSync(path.join(content,'horizon-mod.toml'),'utf8');
 const field=(text,key)=>{const m=text.match(new RegExp('^'+key+'\\s*=\\s*"([^"]+)"','m'));if(!m)throw Error('Missing field '+key);return m[1];};
 for(const file of files(content))if(file.endsWith('.json'))JSON.parse(fs.readFileSync(file,'utf8'));
 zip(content,`${field(manifest,'id')}-${field(manifest,'version')}.hmod`);
-const native=path.join(root,'native/useful_armory');
-const compat=JSON.parse(fs.readFileSync(path.join(native,'compatibility.json'),'utf8'));
-const bundle=path.join(native,'mixins/useful_armory');
-const mixin=fs.readFileSync(path.join(bundle,'horizon-mixin.toml'),'utf8');
-const id=field(mixin,'id'),version=field(mixin,'version');
-if(field(mixin,'horizon_revision')!==compat.horizon_revision)throw Error('Native compatibility pins differ');
-const os=require('os');
-const temp=fs.mkdtempSync(path.join(os.tmpdir(),'useful-armory-package-'));
-try {
- fs.mkdirSync(path.join(temp,'mixins',id),{recursive:true});
- const nativeManifest={schema:1,id,version,game:compat.game,horizon:compat.horizon_revision,mixins:compat.horizon_mixins_revision};
- fs.writeFileSync(path.join(temp,'horizon-native.json'),JSON.stringify(nativeManifest,null,2)+'\n');
- for(const name of fs.readdirSync(bundle))if(['.rs','.toml'].includes(path.extname(name)))fs.copyFileSync(path.join(bundle,name),path.join(temp,'mixins',id,name));
- zip(temp,`${id}-${version}.hnmod`);
-} finally {
- const checked=path.resolve(temp),parent=path.resolve(os.tmpdir());
- if(path.dirname(checked)!==parent||!path.basename(checked).startsWith('useful-armory-package-'))throw Error('Unsafe temporary cleanup');
- fs.rmSync(checked,{recursive:true});
-}
 const crypto=require('crypto');
 const hashes=fs.readdirSync(path.join(root,'dist')).filter(n=>n.endsWith('.hmod')||n.endsWith('.hnmod')).sort().map(n=>crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'dist',n))).digest('hex')+'  '+n);
 fs.writeFileSync(path.join(root,'dist/SHA256SUMS.txt'),hashes.join('\n')+'\n');
+

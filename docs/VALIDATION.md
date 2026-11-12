@@ -38,3 +38,23 @@ Build artifacts include no user accounts, local control tokens, game executables
 Reproduced invisible inventory icons using the untouched supplied 0.1.2 content on the installed fdc87ae executable. Explicit model parent namespaces alone did not resolve the issue. Relocating `textures/items/` to `textures/item/` and `textures/blocks/` to `textures/block/`, and updating the model references, restored the tested items and blocks in-game.
 
 All supplied PNG files and animation metadata are preserved byte-for-byte, including worn armor textures. No artwork was generated or recolored. The texture generator now writes to the modern paths so future regeneration cannot undo this fix. Representative swords, tools, armor icons, worn armor, ore, and storage-block icons were visually checked in the diagnostic world. The Shadow leggings recipe correction remains included.
+
+## Cleanup and licensing in 0.1.5
+
+Removed the Test Tool (`useful_armory:wow`) and Bruh moment (`useful_armory:bruhmoment`) registrations, model definitions, creative entries, block tags, loot definition, language labels, and their unused test images. Neither had a crafting recipe. Existing saves referencing these removed IDs no longer have corresponding mod definitions.
+
+Current counts: **116 standalone item definitions, 6 block definitions, 124 recipes**. Code/data/documentation are MIT-licensed; artwork is separately reserved. Both current distribution packages include the license notices. Native gameplay code remains unchanged at 0.1.1.
+
+### Standalone emissive update
+
+Version 0.1.5 removes the native companion and ships one content file. Its six emissive overlays target worn Aquite/Shadow armor and placed Aquite/Shadow ores, using Horizon's built-in `_e.png` convention. Held/inventory items remain unchanged. The base worn-armor artwork is unchanged.
+
+Aquite, Colosifite, and Shadow ore backgrounds use vanilla cobblestone. Respectively 187, 172, and 181 background pixels per 16×16 face were copied exactly; the remaining mineral pixels were preserved from the supplied artwork. The third-party cobblestone pixels retain their original rights. Source tools accept a locally supplied vanilla cobblestone texture rather than including a separate copy of it.
+
+The former native tests above describe historical versions, not a requirement for the standalone release. The old native source and packages remain in Git history only.
+
+### Final visual checks
+
+Verified Aquite worn armor emissive accents in a nighttime third-person screenshot, with the held sword remaining non-emissive. Verified the current ore textures on placed blocks. Gallery images were captured using Wisdom Horizon 1.3.7 shaders with the native companion absent. Screenshots are original game captures, not generated promotional renders.
+
+Placed ore glow uses a separate transparent mineral overlay with `light_emission: 15` in the block model, because the initial automatic `_e` pairing did not produce visible ore emission in the tested binary. Final nighttime screenshots verify the explicit content-model overlay. The worn armor uses the built-in `_e` equipment texture path. Neither changes world light levels or requires native code.

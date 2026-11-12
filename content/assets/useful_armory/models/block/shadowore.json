@@ -1,12 +1,160 @@
 {
-  "parent": "minecraft:block/cube",
+  "parent": "minecraft:block/block",
   "textures": {
-    "down": "useful_armory:block/shadow_ore",
-    "up": "useful_armory:block/shadow_ore",
-    "north": "useful_armory:block/shadow_ore",
-    "east": "useful_armory:block/shadow_ore",
-    "south": "useful_armory:block/shadow_ore",
-    "west": "useful_armory:block/shadow_ore",
+    "base": "useful_armory:block/shadow_ore",
+    "glow": "useful_armory:block/shadow_ore_e",
     "particle": "useful_armory:block/shadow_ore"
-  }
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base",
+          "cullface": "down"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base",
+          "cullface": "up"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base",
+          "cullface": "south"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base",
+          "cullface": "east"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#base",
+          "cullface": "west"
+        }
+      }
+    },
+    {
+      "from": [
+        -0.005,
+        -0.005,
+        -0.005
+      ],
+      "to": [
+        16.005,
+        16.005,
+        16.005
+      ],
+      "shade": false,
+      "light_emission": 15,
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow",
+          "cullface": "down"
+        },
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow",
+          "cullface": "up"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow",
+          "cullface": "south"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow",
+          "cullface": "east"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow",
+          "cullface": "west"
+        }
+      }
+    }
+  ]
 }

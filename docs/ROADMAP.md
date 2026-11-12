@@ -1,3 +1,5 @@
+Current distribution constraint: one standalone content .hmod; the native lighting companion has been retired. Native-render suggestions below are research notes, not a planned dependency. Unsupported visual features should wait for content-level Horizon support rather than requiring a separate library mod.
+
 # Useful Armory roadmap
 
 This is a proposal for future work, not a list of features already shipped. The published 0.1.2 content stays unchanged while these improvements are designed and tested.
@@ -81,3 +83,4 @@ First expansion candidate: a small ruined forge containing material clues and a 
 4. **World expansion:** host-specific ores, forge structure, then new mobs.
 
 Treat each release as complete only when its advertised features have been seen working in-game. Track unfinished ideas separately from released functionality.
+

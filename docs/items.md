@@ -168,14 +168,12 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 | Sword middle | `swordpart2` |  |  |  |  |  |  | it may just be a part of a sword but why is it so expesive of a sword to make |
 | obsidainblade | `swordpart3` |  |  |  |  |  |  | is it jsut a obsidain blade? |
 | The nether's legacy | `thenetherlegacy` | 10 | -2.5 |  |  | 10000 |  |  |
-| test tool | `wow` | 100 | 96 |  |  | 100 | 100 |  |
 
 ## Blocks
 
 | Name | Id | Based on | Hardness |
 |---|---|---|---|
 | Aquite ore | `aquiteore` | `minecraft:iron_ore` | 1.3 |
-| Bruh moment | `bruhmoment` | `minecraft:iron_block` | 1 |
 | Colosfite block | `colosfiteblock` | `minecraft:iron_block` | 1 |
 | Colosifite ore | `colosifiteore` | `minecraft:iron_ore` | 2 |
 | Shadow block | `shadowblock` | `minecraft:iron_block` | 2 |

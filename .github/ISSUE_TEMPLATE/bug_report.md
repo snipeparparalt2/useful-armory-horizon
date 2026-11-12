@@ -8,7 +8,7 @@ assignees: ''
 
 **Horizon revision:**
 **Content mod version:**
-**Native companion version, if installed:**
+**Shader pack and version, if used:**
 **Other mods:**
 **World preset and dimension:**
 **New or previously generated chunks:**
@@ -23,3 +23,4 @@ assignees: ''
 
 ### Screenshots or relevant log excerpt
 Remove account details, access tokens, and other private information before sharing logs.
+
