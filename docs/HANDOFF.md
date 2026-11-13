@@ -179,6 +179,15 @@ Trinkets already work **in the off hand** through vanilla attribute modifiers:
 - Give the six relics their uses (trinket and upgrade ingredients).
 
 ### Phase 5: souls, upgrades, bosses, the big dungeon
+Suggested soul forge menu, to declare in `data/useful_armory/horizon/menu/soul_forge.json`
+once the native block container exists: `{"slots": 4, "data_slots": 2, "results": [3]}`. Slot 0
+is the item, slot 1 the relic, slot 2 the full soul jar and slot 3 the result. The data slots
+hold progress and the chosen upgrade. Menus open only from a block container
+(`native_block_entity_container`), and a Horizon client needs a `native_screen` to show them.
+The shadow citadel structure can be built as data with `tools/structkit.py`, but run
+`gen_phase1.py --schema` on the owner's PC. The block-state list isn't in Horizon's source, so a
+sandbox can't validate it.
+
 - Soul jar filled by kills; souls fuel the soul forge.
 - Soul forge block: spends souls and a relic to add up to three upgrades to an item
   (sharpened, reinforced, swift, warded, soulbound, radiant).
@@ -192,6 +201,9 @@ Trinkets already work **in the off hand** through vanilla attribute modifiers:
 
 ### Also wanted in 0.1.7
 - Custom enchantments on a few items (definitions as data, behaviour native).
+  **Checked 2026-11-12:** Horizon `fdc87ae` has no way for a mod to declare enchantments (or
+  armour trims) as data. `docs/mods.md` lists blocks, items, creative tabs, mob effects, entity
+  types and menu types only. So either do enchantments natively or wait for Horizon.
 - Armour trim rework: our own trim patterns and materials. Not researched yet; check how
   Horizon reads trims as mod data first.
 - Emissive accents on new ores, armour, mobs and structure blocks. At this commit emissive
