@@ -344,7 +344,7 @@ def _library(p):
     _beams(p, LIBRARY, 6, axis_z=True, every=4, wood="dark_oak")
     shelf = lambda f: p.rnd.choice(("minecraft:bookshelf", "minecraft:bookshelf", (  # noqa: E731
         f"minecraft:chiseled_bookshelf[facing={f},slot_0_occupied=false,slot_1_occupied=false,"
-        f"slot_2_occupied=false,slot_3_occupied=false,slot_4_occupied=false,slot_5_occupied=false]"))
+        f"slot_2_occupied=false,slot_3_occupied=false,slot_4_occupied=false,slot_5_occupied=false]")))
     # north wall: shelves to y 4, candles on top
     for x in range(x0, x1 + 1):
         for y in range(2, 5):
