@@ -33,6 +33,11 @@
           "speed": 8
         }
       ]
-    }
+    },
+    "minecraft:lore": [
+      {
+        "text": "Harvests crops 5 x 5; kills may drop heads"
+      }
+    ]
   }
 }

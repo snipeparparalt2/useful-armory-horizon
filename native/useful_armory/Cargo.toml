@@ -1,9 +1,9 @@
 [package]
 name = "horizon-mod-useful-armory"
-version = "0.1.1"
+version = "0.1.7"
 edition = "2024"
 publish = false
-description = "Useful Armory's native half for Horizon: glowing gear casts coloured light."
+description = "Useful Armory's native half for Horizon: the glow, armour set bonuses, tool abilities and weapon effects."
 
 # The mod's logic and its tests: the same file the bundle adds to the game.
 [lib]

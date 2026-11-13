@@ -7,7 +7,7 @@
   "start_pool": "useful_armory:aquite_shrine/start",
   "size": 1,
   "start_height": {
-    "absolute": -5
+    "absolute": -4
   },
   "max_distance_from_center": 80,
   "project_start_to_heightmap": "WORLD_SURFACE_WG"

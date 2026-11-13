@@ -504,7 +504,7 @@ PLACE = {
     "name": "aquite_shrine",
     "pieces": {"aquite_shrine": build},
     "step": "surface_structures",
-    "start_height": -5,
+    "start_height": -GROUND,  # piece bottom lands at surface top block + start_height
     "surface": True,
     "terrain": "beard_thin",
     "biomes": [

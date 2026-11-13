@@ -7,16 +7,16 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
-| Aquite axe | `aquiteaxe` | 2 | -3 |  |  | 800 | 6 |  |
-| Aquite Chestplate | `aquitebody` |  |  | 7 | 1 | 416 |  |  |
-| Aquite Boots | `aquiteboots` |  |  | 3 | 1 | 338 |  |  |
-| Aquite dagger | `aquitedagger` | 4.5 | -3 |  |  | 800 |  |  |
-| Aquite greatsword | `aquitegreatsword` | 5.5 | -3.2 |  |  | 800 |  |  |
-| Aquite halbert | `aquitehalbert` | 5.5 | -3 |  |  | 800 |  |  |
-| Aquite Helmet | `aquitehelmet` |  |  | 3 | 1 | 286 |  |  |
-| Aquite hoe | `aquitehoe` | 0 | -3 |  |  | 800 | 6 |  |
+| Aquite axe | `aquiteaxe` | 2 | -3 |  |  | 800 | 6 | Sneak: fells the whole tree |
+| Aquite Chestplate | `aquitebody` |  |  | 7 | 1 | 416 |  | Full set: water breathing and faster swimming |
+| Aquite Boots | `aquiteboots` |  |  | 3 | 1 | 338 |  | Full set: water breathing and faster swimming |
+| Aquite dagger | `aquitedagger` | 4.5 | -3 |  |  | 800 |  | Double damage from behind |
+| Aquite greatsword | `aquitegreatsword` | 5.5 | -3.2 |  |  | 800 |  | Hits also hurt mobs next to the target |
+| Aquite halbert | `aquitehalbert` | 5.5 | -3 |  |  | 800 |  | One more block of reach |
+| Aquite Helmet | `aquitehelmet` |  |  | 3 | 1 | 286 |  | Full set: water breathing and faster swimming |
+| Aquite hoe | `aquitehoe` | 0 | -3 |  |  | 800 | 6 | Harvests and replants grown crops 3 x 3 |
 | Aquite ingot | `aquiteingot` |  |  |  |  |  |  |  |
-| Aquite Leggings | `aquitelegs` |  |  | 6 | 1 | 390 |  |  |
+| Aquite Leggings | `aquitelegs` |  |  | 6 | 1 | 390 |  | Full set: water breathing and faster swimming |
 | Aquite pickaxe | `aquitepickaxe` | 6 | -3 |  |  | 800 | 6 |  |
 | Aquite shovel | `aquiteshovel` | 2.5 | -3 |  |  | 800 | 6 |  |
 | Aquite sword | `aquitesword` | 4.5 | -2.6 |  |  | 800 |  |  |
@@ -25,17 +25,17 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
-| Colosifite Chestplate | `colosifitearmorbody` |  |  | 7 | 1.5 | 480 |  |  |
-| Colosifite Boots | `colosifitearmorboots` |  |  | 2 | 1.5 | 390 |  |  |
-| Colosifite Helmet | `colosifitearmorhelmet` |  |  | 3 | 1.5 | 330 |  |  |
-| Colosifite Leggings | `colosifitearmorlegs` |  |  | 6 | 1.5 | 450 |  |  |
+| Colosifite Chestplate | `colosifitearmorbody` |  |  | 7 | 1.5 | 480 |  | Full set: fire resistance |
+| Colosifite Boots | `colosifitearmorboots` |  |  | 2 | 1.5 | 390 |  | Full set: fire resistance |
+| Colosifite Helmet | `colosifitearmorhelmet` |  |  | 3 | 1.5 | 330 |  | Full set: fire resistance |
+| Colosifite Leggings | `colosifitearmorlegs` |  |  | 6 | 1.5 | 450 |  | Full set: fire resistance |
 | Colosifite axe | `colosifiteaxe` | 4 | -3 |  |  | 500 | 6 |  |
-| Colosifite dagger | `colosifitedagger` | 4 | -2.5 |  |  | 100 |  |  |
-| Colosifite greatsword | `colosifitegreatsword` | 6.5 | -3.5 |  |  | 400 |  |  |
-| Colosifite halbert | `colosifitehalbert` | 7 | -3.5 |  |  | 400 |  |  |
-| Colosifite hoe | `colosifitehoe` | 0 | -3 |  |  | 400 | 7 |  |
+| Colosifite dagger | `colosifitedagger` | 4 | -2.5 |  |  | 100 |  | Double damage from behind |
+| Colosifite greatsword | `colosifitegreatsword` | 6.5 | -3.5 |  |  | 400 |  | Hits also hurt mobs next to the target |
+| Colosifite halbert | `colosifitehalbert` | 7 | -3.5 |  |  | 400 |  | One more block of reach |
+| Colosifite hoe | `colosifitehoe` | 0 | -3 |  |  | 400 | 7 | Harvests and replants grown crops 3 x 3 |
 | Colosifite ingot | `colosifiteingot` |  |  |  |  |  |  |  |
-| Colosifite pickaxe | `colosifitepickaxe` | 2 | -3 |  |  | 500 | 7 |  |
+| Colosifite pickaxe | `colosifitepickaxe` | 2 | -3 |  |  | 500 | 7 | Sneak: mines the whole ore vein |
 | Colosifite shovel | `colosifiteshovel` | 2.5 | -3 |  |  | 500 | 6.5 |  |
 | Colosifite sword | `colosifitesword` | 6 | -3 |  |  | 500 |  |  |
 
@@ -43,16 +43,16 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
-| Emerald Chestplate | `emeraldarmorbody` |  |  | 8 | 4 | 832 |  |  |
-| Emerald Boots | `emeraldarmorboots` |  |  | 4 | 4 | 676 |  |  |
-| Emerald Helmet | `emeraldarmorhelmet` |  |  | 4 | 4 | 572 |  |  |
-| Emerald Leggings | `emeraldarmorlegs` |  |  | 7 | 4 | 780 |  |  |
-| Emerald axe | `emeraldaxe` | 4 | -3 |  |  | 3000 | 7 |  |
-| Emerald dagger | `emeralddagger` | 6 | -3 |  |  | 2000 |  |  |
-| Emerald greatsword | `emeraldgreatsword` | 7 | -3 |  |  | 300 |  |  |
-| Emerald halbert | `emeraldhalbert` | 8 | -3 |  |  | 2000 |  |  |
-| Emerald hoe | `emeraldhoe` | 0 | -3 |  |  | 10000 | 6 |  |
-| Emerald pickaxe | `emeraldpickaxe` | 2 | -3 |  |  | 3000 | 8 |  |
+| Emerald Chestplate | `emeraldarmorbody` |  |  | 8 | 4 | 832 |  | Full set: luck |
+| Emerald Boots | `emeraldarmorboots` |  |  | 4 | 4 | 676 |  | Full set: luck |
+| Emerald Helmet | `emeraldarmorhelmet` |  |  | 4 | 4 | 572 |  | Full set: luck |
+| Emerald Leggings | `emeraldarmorlegs` |  |  | 7 | 4 | 780 |  | Full set: luck |
+| Emerald axe | `emeraldaxe` | 4 | -3 |  |  | 3000 | 7 | Sneak: fells the whole tree |
+| Emerald dagger | `emeralddagger` | 6 | -3 |  |  | 2000 |  | Double damage from behind |
+| Emerald greatsword | `emeraldgreatsword` | 7 | -3 |  |  | 300 |  | Hits also hurt mobs next to the target |
+| Emerald halbert | `emeraldhalbert` | 8 | -3 |  |  | 2000 |  | One more block of reach |
+| Emerald hoe | `emeraldhoe` | 0 | -3 |  |  | 10000 | 6 | Harvests and replants grown crops 3 x 3 |
+| Emerald pickaxe | `emeraldpickaxe` | 2 | -3 |  |  | 3000 | 8 | Sneak: mines the whole ore vein |
 | Emerald shovel | `emeraldshovel` | 3.5 | -3 |  |  | 3000 | 7 |  |
 | Emerald sword | `emeraldsword` | 6.5 | -2.5 |  |  | 3000 |  |  |
 
@@ -60,15 +60,15 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
-| Lapis Chestplate | `lapisarmorbody` |  |  | 5 | 0.4 | 240 |  |  |
-| Lapis Boots | `lapisarmorboots` |  |  | 2 | 0.4 | 195 |  |  |
-| Lapis Helmet | `lapisarmorhelmet` |  |  | 2 | 0.4 | 165 |  |  |
-| Lapis Leggings | `lapisarmorlegs` |  |  | 3 | 0.4 | 225 |  |  |
+| Lapis Chestplate | `lapisarmorbody` |  |  | 5 | 0.4 | 240 |  | Full set: 25% more experience |
+| Lapis Boots | `lapisarmorboots` |  |  | 2 | 0.4 | 195 |  | Full set: 25% more experience |
+| Lapis Helmet | `lapisarmorhelmet` |  |  | 2 | 0.4 | 165 |  | Full set: 25% more experience |
+| Lapis Leggings | `lapisarmorlegs` |  |  | 3 | 0.4 | 225 |  | Full set: 25% more experience |
 | Lapis axe | `lapisaxe` | 4 | -3 |  |  | 600 | 4 |  |
-| Lapis dagger | `lapisdagger` | 3.5 | -2.5 |  |  | 600 |  |  |
-| Lapis greatsword | `lapisgreatsword` | 5 | -3.5 |  |  | 600 |  |  |
-| Lapis halbert | `lapishalbert` | 5.5 | -3.5 |  |  | 600 |  |  |
-| Lapishoe | `lapishoe` | 0 | -3 |  |  | 700 | 5 |  |
+| Lapis dagger | `lapisdagger` | 3.5 | -2.5 |  |  | 600 |  | Double damage from behind |
+| Lapis greatsword | `lapisgreatsword` | 5 | -3.5 |  |  | 600 |  | Hits also hurt mobs next to the target |
+| Lapis halbert | `lapishalbert` | 5.5 | -3.5 |  |  | 600 |  | One more block of reach |
+| Lapishoe | `lapishoe` | 0 | -3 |  |  | 700 | 5 | Harvests and replants grown crops 3 x 3 |
 | Lapis pickaxe | `lapispickaxe` | 1 | -3 |  |  | 700 | 5 |  |
 | lapis shovel | `lapisshovel` | 2.5 | -3 |  |  | 600 | 4.5 |  |
 | Lapis sword | `lapissword` | 3.5 | -3.4 |  |  | 300 |  |  |
@@ -77,31 +77,31 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
-| Obsidain Chestplate | `obsidainarmorbody` |  |  | 7 | 1.5 | 560 |  |  |
-| Obsidain Boots | `obsidainarmorboots` |  |  | 2 | 1.5 | 455 |  |  |
-| Obsidain Helmet | `obsidainarmorhelmet` |  |  | 2 | 1.5 | 385 |  |  |
-| Obsidain Leggings | `obsidainarmorlegs` |  |  | 6 | 1.5 | 525 |  |  |
+| Obsidain Chestplate | `obsidainarmorbody` |  |  | 7 | 1.5 | 560 |  | Full set: knockback resistance, half explosion damage |
+| Obsidain Boots | `obsidainarmorboots` |  |  | 2 | 1.5 | 455 |  | Full set: knockback resistance, half explosion damage |
+| Obsidain Helmet | `obsidainarmorhelmet` |  |  | 2 | 1.5 | 385 |  | Full set: knockback resistance, half explosion damage |
+| Obsidain Leggings | `obsidainarmorlegs` |  |  | 6 | 1.5 | 525 |  | Full set: knockback resistance, half explosion damage |
 | Obsidainingot | `obsidainingot` |  |  |  |  |  |  |  |
 | Obsidain string | `obsidainstring` |  |  |  |  |  |  | yeah but why? |
 | Obsidian axe | `obsidianaxe` | 3 | -2.7 |  |  | 6000 | 6 |  |
-| Obsidian hoe | `obsidianhoe` | 0 | -3 |  |  | 6000 | 6 |  |
-| Obsidian pickaxe | `obsidianpickaxe` | 1 | -3 |  |  | 6000 | 5 |  |
-| Obsidian shovel | `obsidianshovel` | 1.5 | -3 |  |  | 6000 | 6 |  |
+| Obsidian hoe | `obsidianhoe` | 0 | -3 |  |  | 6000 | 6 | Harvests and replants grown crops 3 x 3 |
+| Obsidian pickaxe | `obsidianpickaxe` | 1 | -3 |  |  | 6000 | 5 | Sneak: digs 3 x 3 |
+| Obsidian shovel | `obsidianshovel` | 1.5 | -3 |  |  | 6000 | 6 | Sneak: digs 3 x 3 |
 | Obsidian sword | `obsidiansword` | 5 | -2.9 |  |  | 6000 |  |  |
 
 ## Quartz
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
-| Quartz chestplate | `quartzamorbody` |  |  | 5 | 1.3 | 400 |  |  |
-| Quartz Boots | `quartzamorboots` |  |  | 2 | 1.3 | 325 |  |  |
-| Quartz Helmet | `quartzamorhelmet` |  |  | 2 | 1.3 | 275 |  |  |
-| Quartz Leggings | `quartzamorlegs` |  |  | 4 | 1.3 | 375 |  |  |
+| Quartz chestplate | `quartzamorbody` |  |  | 5 | 1.3 | 400 |  | Full set: speed |
+| Quartz Boots | `quartzamorboots` |  |  | 2 | 1.3 | 325 |  | Full set: speed |
+| Quartz Helmet | `quartzamorhelmet` |  |  | 2 | 1.3 | 275 |  | Full set: speed |
+| Quartz Leggings | `quartzamorlegs` |  |  | 4 | 1.3 | 375 |  | Full set: speed |
 | Quartz axe | `quartzaxe` | 3 | -2.8 |  |  | 450 | 4.5 |  |
-| Quartz dagger | `quartzdagger` | 3.5 | -2.5 |  |  | 400 |  |  |
-| Quartz greatsword | `quartzgreatsword` | 5 | -3.3 |  |  | 400 |  |  |
-| Quartz halbert | `quartzhalber` | 6 | -3.4 |  |  | 400 |  |  |
-| Quartz hoe | `quartzhoe` | 0 | -3 |  |  | 450 | 5 |  |
+| Quartz dagger | `quartzdagger` | 3.5 | -2.5 |  |  | 400 |  | Double damage from behind |
+| Quartz greatsword | `quartzgreatsword` | 5 | -3.3 |  |  | 400 |  | Hits also hurt mobs next to the target |
+| Quartz halbert | `quartzhalber` | 6 | -3.4 |  |  | 400 |  | One more block of reach |
+| Quartz hoe | `quartzhoe` | 0 | -3 |  |  | 450 | 5 | Harvests and replants grown crops 3 x 3 |
 | Quartz pickaxe | `quartzpickaxe` | 1 | -3 |  |  | 450 | 5 |  |
 | Quartz shovel | `quartzshovel` | 1 | -3 |  |  | 450 | 5 |  |
 | Quartz sword | `quartzsword` | 4.2 | -3 |  |  | 450 |  |  |
@@ -110,12 +110,12 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
-| Redstone chestplate | `redstonearmorbody` |  |  | 5 | 1.5 | 432 |  |  |
-| Redstone Boots | `redstonearmorboots` |  |  | 2 | 1.5 | 351 |  |  |
-| Redstone Helmet | `redstonearmorhelmet` |  |  | 2 | 1.5 | 297 |  |  |
-| Redstone Leggings | `redstonearmorlegs` |  |  | 5 | 1.5 | 405 |  |  |
+| Redstone chestplate | `redstonearmorbody` |  |  | 5 | 1.5 | 432 |  | Full set: haste |
+| Redstone Boots | `redstonearmorboots` |  |  | 2 | 1.5 | 351 |  | Full set: haste |
+| Redstone Helmet | `redstonearmorhelmet` |  |  | 2 | 1.5 | 297 |  | Full set: haste |
+| Redstone Leggings | `redstonearmorlegs` |  |  | 5 | 1.5 | 405 |  | Full set: haste |
 | Redstone axe | `redstoneaxe` | 3 | -3 |  |  | 400 | 4 |  |
-| Redstone hoe | `redstonehoe` | 0 | -3 |  |  | 400 | 4 |  |
+| Redstone hoe | `redstonehoe` | 0 | -3 |  |  | 400 | 4 | Harvests and replants grown crops 3 x 3 |
 | Redstone ingot | `redstoneingot` |  |  |  |  |  |  |  |
 | Redstone pickaxe | `redstonepicaxe` | 1 | -3 |  |  | 400 | 4 |  |
 | Redstone shovel | `redstoneshovel` | 1.5 | -3 |  |  | 400 | 4 |  |
@@ -126,17 +126,17 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
 | Shadow shard | `shadow_shard` |  |  |  |  |  |  | Cold to the touch |
-| Shadow axe | `shadowaxe` | 5 | -3 |  |  | 8000 | 8 |  |
-| Shadow Chestplate | `shadowbody` |  |  | 8 | 2.5 | 560 |  |  |
-| Shadow Boots | `shadowboots` |  |  | 4 | 2.5 | 455 |  |  |
-| Shadow dagger | `shadowdagger` | 6 | -2.5 |  |  | 8000 |  |  |
-| Shadow greatsword | `shadowgreatsword` | 9 | -3.4 |  |  | 8000 |  |  |
-| Shadow Helmet | `shadowhelmet` |  |  | 4 | 2.5 | 385 |  |  |
-| Shadow hoe | `shadowhoe` | 0 | -3 |  |  | 8000 | 4 |  |
+| Shadow axe | `shadowaxe` | 5 | -3 |  |  | 8000 | 8 | Sneak: fells the whole tree |
+| Shadow Chestplate | `shadowbody` |  |  | 8 | 2.5 | 560 |  | Full set: night vision |
+| Shadow Boots | `shadowboots` |  |  | 4 | 2.5 | 455 |  | Full set: night vision |
+| Shadow dagger | `shadowdagger` | 6 | -2.5 |  |  | 8000 |  | Double damage from behind |
+| Shadow greatsword | `shadowgreatsword` | 9 | -3.4 |  |  | 8000 |  | Hits also hurt mobs next to the target |
+| Shadow Helmet | `shadowhelmet` |  |  | 4 | 2.5 | 385 |  | Full set: night vision |
+| Shadow hoe | `shadowhoe` | 0 | -3 |  |  | 8000 | 4 | Harvests and replants grown crops 3 x 3 |
 | Shadow ingot | `shadowingot` |  |  |  |  |  |  |  |
-| Shadow Leggings | `shadowlegs` |  |  | 7 | 2.5 | 525 |  |  |
-| Shadow halbert | `shadowotehrweapon` | 10 | -3.5 |  |  | 8000 |  |  |
-| Shadow pickaxe | `shadowpickaxe` | 3 | -3 |  |  | 8000 | 7 |  |
+| Shadow Leggings | `shadowlegs` |  |  | 7 | 2.5 | 525 |  | Full set: night vision |
+| Shadow halbert | `shadowotehrweapon` | 10 | -3.5 |  |  | 8000 |  | One more block of reach |
+| Shadow pickaxe | `shadowpickaxe` | 3 | -3 |  |  | 8000 | 7 | Sneak: mines the whole ore vein |
 | Shadows hovel | `shadowshovel` | 3.5 | -3 |  |  | 8000 | 7 |  |
 | Shadow sword | `shadowsword` | 8 | -3 |  |  | 8000 |  |  |
 
@@ -144,10 +144,10 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
-| Ultimate Chestplate | `ultimateabody` |  |  | 17 | 5 | 800 |  |  |
-| Ultimate Boots | `ultimateaboots` |  |  | 6 | 5 | 650 |  |  |
-| Ultimate Helmet | `ultimateahelmet` |  |  | 6 | 5 | 550 |  |  |
-| Ultimate Leggings | `ultimatealegs` |  |  | 15 | 5 | 750 |  |  |
+| Ultimate Chestplate | `ultimateabody` |  |  | 17 | 5 | 800 |  | Full set: regeneration, no fall damage |
+| Ultimate Boots | `ultimateaboots` |  |  | 6 | 5 | 650 |  | Full set: regeneration, no fall damage |
+| Ultimate Helmet | `ultimateahelmet` |  |  | 6 | 5 | 550 |  | Full set: regeneration, no fall damage |
+| Ultimate Leggings | `ultimatealegs` |  |  | 15 | 5 | 750 |  | Full set: regeneration, no fall damage |
 | Ultimate ingot | `ultimateingot` |  |  |  |  |  |  | \u00a7l4 wonder what this is for |
 | Ultimate nugget | `ultimatenugget` |  |  |  |  |  |  |  |
 
@@ -163,17 +163,17 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 | glowing rotten flesh | `erottenflesh` |  |  |  |  |  |  | WHY IS IT GLOWING WTF???? |
 | Faded map scrap | `faded_map_scrap` |  |  |  |  |  |  | Most of the markings have worn away |
 | Forge master's hammer head | `forge_hammer_head` |  |  |  |  |  |  | Still warm |
-| magma sword | `lavasword` | 6.5 | -2.5 |  |  | 10000 |  |  |
+| magma sword | `lavasword` | 6.5 | -2.5 |  |  | 10000 |  | Sets targets on fire |
 | Long stick | `longstick` |  |  |  |  |  |  | used for weapons that need a longer handle |
-| Pigman sword | `pigmansword` | 7.5 | -3 |  |  | 10000 |  |  |
-| Reaper scythe | `reaperscyth` | 5 | -3 |  |  | 1000 | 8 |  |
-| Soul eater | `souleater` | 12 | -2 |  |  | 100000 |  |  |
+| Pigman sword | `pigmansword` | 7.5 | -3 |  |  | 10000 |  | 50% more damage to piglins and hoglins |
+| Reaper scythe | `reaperscyth` | 5 | -3 |  |  | 1000 | 8 | Harvests crops 5 x 5; kills may drop heads |
+| Soul eater | `souleater` | 12 | -2 |  |  | 100000 |  | Heals a heart on each kill |
 | Souled netherstar | `soulednetherstar` |  |  |  |  |  |  | the diamonds around it must of made the soul come out |
 | Sword handle | `swordpart1` |  |  |  |  |  |  | it may just be a handle but what kind of a handle is this expensive to make |
 | Sword middle | `swordpart2` |  |  |  |  |  |  | it may just be a part of a sword but why is it so expesive of a sword to make |
 | obsidainblade | `swordpart3` |  |  |  |  |  |  | is it jsut a obsidain blade? |
 | Tarnished ring | `tarnished_ring` |  |  |  |  |  |  | It was worth something once |
-| The nether's legacy | `thenetherlegacy` | 10 | -2.5 |  |  | 10000 |  |  |
+| The nether's legacy | `thenetherlegacy` | 10 | -2.5 |  |  | 10000 |  | 50% more damage in the Nether |
 
 ## Blocks
 

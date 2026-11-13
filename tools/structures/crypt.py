@@ -1,8 +1,11 @@
-"""Crypt dungeon (underground, Y -10 to 30): built from jigsaw pieces, different every time.
+"""Crypt dungeon: a mausoleum on the surface, a stair 26 blocks down to the dungeon level, and
+below it a crypt built from jigsaw pieces, different every time.
 Brief: docs/design/places.md section 12.
 
-Pieces (outer size w x h x d; every one is a solid closed shell that carves its own air):
-  crypt/start        11 x 13 x 19  vestibule (3 doors) + a stair up to the caved-in entry
+Pieces (outer size w x h x d; every one but the start's surface part is a solid closed shell
+that carves its own air):
+  crypt/start        11 x 38 x 19  vestibule (3 doors) at the bottom, a switchback stair in a
+                                   closed shaft above it, the mausoleum and its yard on top
   crypt/corridor      7 x  6 x 11  straight; arched, ribbed, burial shelves and niches
   crypt/corner        9 x  7 x  9  domed junction, doors S and E, two wall shrines
   crypt/t_junction    9 x  7 x  9  domed junction, doors W, E and S, one wall shrine
@@ -54,8 +57,11 @@ crates/horizon-world/src/worldgen/structure/jigsaw.rs and template.rs):
   For rigid pieces the child's height is set so that C is level with P
   (delta_y = P.local_y - C.local_y), so floors line up whenever every connector sits the
   same height above its own piece's walking floor (one block here).
-* The child's bounding box must not overlap any placed piece and must stay inside the
-  start's max_distance_from_center (80 here); otherwise the next candidate is tried.
+* The child's bounding box must not overlap any placed piece (the start's whole box counts,
+  so nothing can be placed in the shaft or the mausoleum) and must stay inside the reach box:
+  max_distance_from_center (80 here) round the centre of the start's box horizontally and
+  round the start's bottom + 1 vertically (lay_out_children); otherwise the next candidate is
+  tried.
 * Depth: the start is depth 0 and `size` (5 here) is the deepest level. At the last level
   only the pool's `fallback` is drawn from, so every pool a connector can reach has the
   dead-end pool `crypt/caps` as fallback; it seals openings that nothing else filled.
@@ -72,7 +78,7 @@ crates/horizon-world/src/worldgen/structure/jigsaw.rs and template.rs):
 Every doorway connector has name = target = "useful_armory:crypt/door", so any door fits
 any door; the pools decide what grows where.
 """
-from structkit import AIR, HORIZONTAL, NS, OPPOSITE, VECTOR, Piece, ccw, cw, state
+from structkit import AIR, HORIZONTAL, NS, OPPOSITE, VECTOR, Piece, ccw, cw, is_full_solid, state
 
 DOOR = f"{NS}:crypt/door"
 CORRIDORS = f"{NS}:crypt/corridors"
@@ -226,11 +232,12 @@ def _lichen(p, x, y, z, side):
                              **{d: d == side for d in HORIZONTAL}))
 
 
-def _room_shell(p, pal, x0, z0, x1, z1, top, floor_y=0):
-    """Solid box, interior x0..x1 / z0..z1 carved from floor_y + 1 to top, a perimeter
-    cornice at `top`, the interior floor patterned (polished border, mixed field)."""
+def _room_shell(p, pal, x0, z0, x1, z1, top, floor_y=0, box=None):
+    """Solid box (the whole piece, or `box`), interior x0..x1 / z0..z1 carved from
+    floor_y + 1 to top, a perimeter cornice at `top`, the interior floor patterned
+    (polished border, mixed field)."""
     w, h, d = p.size
-    p.fill(0, 0, 0, w - 1, h - 1, d - 1, pal["wall"])
+    p.fill(*(box or (0, 0, 0, w - 1, h - 1, d - 1)), pal["wall"])
     p.clear((x0, floor_y + 1, z0, x1, top, z1))
     _vault(p, _rect(x0, z0, x1, z1), top, pal["stair"])
     for x, z in _rect(x0, z0, x1, z1):
@@ -243,12 +250,95 @@ def _room_shell(p, pal, x0, z0, x1, z1, top, floor_y=0):
 
 
 # ------------------------------------------------------------------ the entrance
-def start():
-    """Vestibule (interior x 2..8, z 10..16) with doors west, east and south; a 3-wide stair
-    climbs north from it to a small vaulted entry hall whose outer doorway has caved in."""
-    p = Piece("crypt/start", 11, 13, 19, "crypt/start")
-    pal = _pal(p, "deepslate")
-    _room_shell(p, pal, 2, 10, 8, 16, 5)
+# The start piece is 11 x 38 x 19, the old start's footprint, so its bounding box blocks the
+# same ground at the dungeon level as before and Horizon centres the reach box on the same
+# point (see PLACE). Three parts are stacked in it:
+#   * the vestibule at the bottom, as before: floor y 0, interior x 2..8, z 10..16, doors on
+#     the piece's west (x 0), east (x 10) and south (z 18) faces;
+#   * a switchback stair in a closed shaft (the whole box below the ground layer is masonry,
+#     walls two thick): from the vestibule's north-west corner a short flight climbs north to a
+#     landing (z 2..4), then long flights run back and forth over the vestibule on two 3-wide
+#     lanes (west x 2..4, east x 6..8) either side of a one-block spine at x 5, turning on
+#     3-deep landings (x 2..8) at the north (z 2..4) and south (z 14..16) ends;
+#   * the mausoleum on top, its floor in the ground layer GROUND (y 26), which replaces the top
+#     block of terrain (PLACE start_height = -GROUND). The stair comes up into an open, railed
+#     stairwell in the north half of its floor.
+# Climbing from the vestibule floor (y 0): 5 + 9 + 9 + 3 steps to the mausoleum floor (y 26).
+GROUND = 26
+LANES = {"west": (2, 3, 4), "east": (6, 7, 8)}
+# (lane, the direction it climbs, z of its bottom step, floor it starts from, steps)
+FLIGHTS = (("west", "north", 9, 0, 5), ("east", "south", 5, 5, 9),
+           ("west", "north", 13, 14, 9), ("east", "south", 5, 23, 3))
+LANDINGS = ((2, 4, 5), (14, 16, 14), (2, 4, 23))                  # (z0, z1, floor y), x 2..8
+MX0, MX1, MZ0, MZ1 = 1, 9, 1, 11                # the mausoleum's outer wall line
+WALL_TOP = GROUND + 5                           # top wall course; the roof's eaves are one higher
+# the stairwell in its floor: the top landing, both lanes' last two rows, the top step
+HOLE = ({(x, z) for x in range(2, 9) for z in (2, 3, 4)}
+        | {(x, z) for x in (2, 3, 4, 6, 7, 8) for z in (5, 6)}
+        | {(x, 7) for x in (6, 7, 8)})
+GRASS = "minecraft:grass_block[snowy=false]"
+
+
+def _flight_cells(lane, climb, z0, floor, n):
+    """[(z, step height)] of a flight, bottom step first."""
+    dz = -1 if climb == "north" else 1
+    return [(z0 + dz * i, floor + 1 + i) for i in range(n)]
+
+
+def _weathered(p, dy):
+    """Mausoleum wall stone, dy above the ground layer: worn and mossy low down."""
+    if dy <= 1:
+        return p.rnd.choices(("minecraft:mossy_stone_bricks", "minecraft:cracked_stone_bricks",
+                              "minecraft:stone_bricks", "minecraft:mossy_cobblestone",
+                              "minecraft:cobblestone"), (4, 3, 3, 2, 1))[0]
+    return p.rnd.choices(("minecraft:stone_bricks", "minecraft:cracked_stone_bricks",
+                          "minecraft:mossy_stone_bricks", "minecraft:andesite"), (7, 2, 2, 1))[0]
+
+
+def _vine(p, x, y, z, wall_side):
+    """A vine on the face of the block at `wall_side` of the cell (only into air)."""
+    if p.get(x, y, z) in (None, AIR):
+        p.set(x, y, z, state("minecraft:vine", up=False, **{d: d == wall_side for d in HORIZONTAL}))
+
+
+def _entrance_site(p):
+    """The ground layer: turf over the whole footprint but a few ragged cells at the yard's
+    far corners (left to the world), with air over it to the top of the box."""
+    w, h, d = p.size
+    cx, cz = (w - 1) / 2, (d - 1) / 2
+    ground = p.mix((GRASS, 12), ("minecraft:coarse_dirt", 3), ("minecraft:podzol[snowy=false]", 2),
+                   ("minecraft:moss_block", 1), ("minecraft:dirt", 1))
+    for x in range(w):
+        for z in range(d):
+            r = abs((x - cx) / (w / 2 + 0.5)) ** 4 + abs((z - cz) / (d / 2 + 0.5)) ** 4
+            building = MZ0 - 1 <= z <= MZ1 + 1
+            if not building and r > 0.62 + p.rnd.uniform(-0.15, 0.15):
+                continue
+            p.set(x, GROUND, z, ground)
+            for y in range(GROUND + 1, h):
+                p.set(x, y, z, AIR)
+
+
+def _shaft(p, pal):
+    """Everything under the ground layer is masonry: deepslate low down, stone higher up,
+    stone and cobble footings under the mausoleum and packed earth under the yard."""
+    stone = p.mix(("minecraft:stone", 4), ("minecraft:stone_bricks", 3), ("minecraft:cobblestone", 2),
+                  ("minecraft:andesite", 2))
+    footing = p.mix(("minecraft:cobblestone", 4), ("minecraft:stone_bricks", 3),
+                    ("minecraft:mossy_cobblestone", 2), ("minecraft:andesite", 1))
+    earth = p.mix(("minecraft:dirt", 5), ("minecraft:coarse_dirt", 2), ("minecraft:stone", 1))
+    for x, y, z in Piece.box_cells((0, 0, 0, 10, GROUND - 1, 18)):
+        if y >= GROUND - 3:
+            block = footing if z <= MZ1 + 1 else earth
+        else:
+            block = stone if y >= GROUND - 9 else pal["wall"]
+        p.set(x, y, z, block)
+
+
+def _vestibule(p, pal):
+    """The old start's vestibule, unchanged but for its north wall, which now opens in the
+    north-west corner on the first flight up."""
+    _room_shell(p, pal, 2, 10, 8, 16, 5, box=(0, 0, 8, 10, 7, 18))
     p.clear((3, 5, 11, 7, 5, 15))                     # a flat crown inside the cornice
     _vault(p, _rect(2, 10, 8, 16), 5, pal["stair"])
     p.set(5, 6, 13, pal["accent"])
@@ -257,74 +347,24 @@ def start():
     for x, z in _rect(3, 11, 7, 15):
         r = max(abs(x - 5), abs(z - 13))
         p.set(x, 0, z, {0: pal["accent"], 1: pal["trim"], 2: "minecraft:deepslate_tiles"}[r])
-    for z in (10, 16):
-        p.set(5, 0, z, pal["trim"])
+    for x in (2, 3, 4):
+        p.set(x, 0, 10, pal["trim"])
+    p.set(5, 0, 16, pal["trim"])
     _door(p, 0, 13, "west", CORRIDORS, pal, arch=True)
     _door(p, 10, 13, "east", CORRIDORS, pal, arch=True)
     _door(p, 5, 18, "south", CORRIDORS, pal, arch=True)
-    # the stair: steps at y = 10 - z for z 9..3, four of headroom, a sloped ceiling
-    for z in range(3, 10):
-        s = 10 - z
-        for x in (4, 5, 6):
-            p.stairs(x, s, z, "polished_deepslate" if x == 5 else "deepslate_tiles", "north")
-            for yy in range(s + 1, s + 5):
-                p.set(x, yy, z, AIR)
-            if z < 9:
-                p.stairs(x, s + 4, z, pal["stair"], "south", half="top")
-        p.set(3, s + 1, z, pal["trim"])              # polished dado up both sides
-        p.set(7, s + 1, z, pal["trim"])
-    p.stairs(5, 1, 9, "polished_deepslate", "north")
-    for x in (4, 5, 6):                               # the opening from the vestibule
-        p.set(x, 5, 9, AIR)
+    # the way up (x 2..4): a lintel over it, a polished jamb on the spine side
+    for x in (2, 3, 4):
         p.stairs(x, 5, 10, pal["trim_stair"], "north", half="top")
-    # niches with candles up the stair walls, soul torches
-    for z, side, wx in ((7, "east", 3), (5, "west", 7)):
-        s = 10 - z
-        _niche(p, wx, s + 2, z, side, "candles", "white")
-    p.wall_torch(4, 6, 6, "east", soul=True)
-    p.wall_torch(6, 4, 8, "west", soul=True)
-    # entry hall at the top: floor y 7, interior x 2..8, z 1..3, y 8..10, pitched ceiling
-    p.clear((2, 8, 1, 8, 11, 3))
-    for x, z in _rect(2, 1, 8, 3):
-        p.set(x, 7, z, pal["trim"] if z == 2 else pal["floor"])
-    for x in (4, 5, 6):
-        p.set(x, 7, 3, "minecraft:polished_deepslate")
-    for x in range(2, 9):                            # pitched ceiling, ridge along x
-        p.stairs(x, 11, 1, pal["stair"], "north", half="top")
-        p.stairs(x, 11, 3, pal["stair"], "south", half="top")
-    for x in (2, 8):
-        p.set(x, 11, 1, pal["wall"])
-        p.set(x, 11, 3, pal["wall"])
-        p.set(x, 11, 2, pal["wall"])
-    p.set(5, 12, 2, pal["accent"])
-    p.hanging_lantern(5, 10, 2, chain=1, soul=True)
-    # the old way in (north wall): a framed doorway choked with fallen stone
-    for y in (8, 9, 10):
-        p.set(3, y, 0, pal["trim"])
-        p.set(7, y, 0, pal["trim"])
-    for x in (3, 4, 5, 6, 7):
-        p.set(x, 11, 0, pal["accent"] if x == 5 else pal["trim"])
-    rub = _rubble(p)
-    for x in (4, 5, 6):
-        for y in (8, 9, 10):
-            p.set(x, y, 0, rub)
-    p.stairs(4, 8, 1, "cobbled_deepslate", "east")
-    p.set(5, 8, 1, "minecraft:gravel")
-    p.slab(5, 9, 1, "cobbled_deepslate")
-    p.slab(6, 8, 1, "tuff")
-    p.set(5, 8, 2, "minecraft:dark_oak_trapdoor[facing=north,half=bottom,open=false,powered=false,waterlogged=false]")
-    # stone benches and a skull shelf in the entry hall
-    p.stairs(2, 8, 2, pal["trim_stair"], "west")
-    p.stairs(8, 8, 2, pal["trim_stair"], "east")
-    p.skull(8, 8, 1, rotation=4)
-    p.candle(2, 8, 1, "white", candles=2)
-    p.candle(8, 8, 3, "white", candles=1, lit=False)
-    p.candle(2, 8, 3, "white", candles=3)
-    # vestibule fittings: guardian statues flanking the stair, wall niches, candles
-    for x in (3, 7):
-        p.wall(x, 1, 10, pal["wall_post"])
-        p.wall(x, 2, 10, pal["wall_post"])
-        p.skull(x, 3, 10, rotation=0)
+    for y in range(1, 6):
+        p.set(5, y, 9, pal["trim"])
+    p.set(5, 6, 9, pal["accent"])
+    # fittings: a guardian statue beside the way up, a candle stand, niches, candles
+    p.wall(5, 1, 10, pal["wall_post"])
+    p.wall(5, 2, 10, pal["wall_post"])
+    p.skull(5, 3, 10, rotation=0)
+    p.wall(8, 1, 10, pal["wall_post"])
+    p.candle(8, 2, 10, "white", candles=3)
     for x, z, into in ((1, 10, "east"), (1, 16, "east"), (9, 10, "west"), (9, 16, "west")):
         _niche(p, x, 2, z, into, "skull" if z == 10 else "candles", "white")
     for x, z in ((2, 16), (8, 16), (2, 11), (8, 11)):
@@ -332,7 +372,235 @@ def start():
     p.set(2, 1, 15, "minecraft:bone_block[axis=y]")
     p.skull(2, 2, 15, rotation=13)
     _cobwebs(p, (2, 4, 10, 8, 5, 16), 0.12)
-    _cobwebs(p, (2, 9, 1, 8, 10, 3), 0.15)
+
+
+def _stair(p, pal):
+    """Landings and flights: four of headroom, a stepped ceiling of upside-down stairs over
+    the flights, a polished dado, niches with skulls and candles, soul lights, cobwebs."""
+    for z0, z1, f in LANDINGS:
+        top = f + 5 >= GROUND                           # the top landing opens into the mausoleum
+        p.clear((2, f + 1, z0, 8, min(f + 4, GROUND), z1))
+        for x, z in _rect(2, z0, 8, z1):
+            edge = x in (2, 8) or z in (z0, z1)
+            p.set(x, f, z, pal["trim"] if edge else pal["floor"])
+        mid = (z0 + z1) // 2
+        p.set(5, f, mid, pal["accent"])
+        if not top:
+            p.set(5, f + 5, mid, pal["accent"])
+            p.hanging_lantern(5, f + 4, mid, chain=0, soul=True)
+            _cobwebs(p, (2, f + 4, z0, 8, f + 4, z1), 0.14)
+        # niches in the end wall (skull between candles) and both side walls
+        end, into = (z0 - 1, "south") if z0 == 2 else (z1 + 1, "north")
+        for x, what in ((3, "candles"), (5, "skull"), (7, "candles")):
+            _niche(p, x, f + 2, end, into, what, "white")
+            p.set(x, f + 3, end, pal["trim"])
+        for x, side in ((1, "east"), (9, "west")):
+            _niche(p, x, f + 2, mid, side, "skull" if f == 14 else "candles", "white")
+            p.set(x, f + 1, mid, pal["trim"])
+    for lane, climb, z0, f, n in FLIGHTS:
+        back = OPPOSITE[climb]
+        outer, into = (1, "east") if lane == "west" else (9, "west")
+        cells = _flight_cells(lane, climb, z0, f, n)
+        for z, s in cells:
+            for x in LANES[lane]:
+                p.stairs(x, s, z, "polished_deepslate" if x in (3, 7) else "deepslate_tiles", climb)
+                for y in range(s + 1, min(s + 5, GROUND + 1)):
+                    p.set(x, y, z, AIR)
+                if s + 5 < GROUND:
+                    p.stairs(x, s + 5, z, pal["stair"], back, half="top")
+            if s + 1 < GROUND:
+                p.set(outer, s + 1, z, pal["trim"])
+                p.set(5, s + 1, z, pal["trim"])
+        # niches in the outer wall, a soul torch on the spine, a few webs up in the ceiling
+        for i, what in ((2, "skull"), (n - 3, "candles")):
+            z, s = cells[i]
+            if n >= 5 and s + 3 < GROUND and (i == 2 or n - 3 != 2):
+                _niche(p, outer, s + 2, z, into, what, "white")
+        zt, st = cells[n // 2]
+        if n >= 5 and st + 5 < GROUND:
+            side, face = (4, "west") if lane == "west" else (6, "east")
+            p.wall_torch(side, st + 3, zt, face, soul=True)
+        for z, s in cells:
+            if s + 4 < GROUND:
+                for x in (LANES[lane][0], LANES[lane][2]):
+                    if p.get(x, s + 4, z) == AIR and p.rnd.random() < 0.18:
+                        p.set(x, s + 4, z, "minecraft:cobweb")
+
+
+def _mausoleum(p):
+    """The way in: a small stone mausoleum (9 x 11 inside its buttresses) with a gabled roof,
+    a doorway with one door leaf left (the other lies in the grass), the stairwell railed off
+    in the north half, a sarcophagus, an altar and a skull shelf in the south half."""
+    g = GROUND
+    plinth = p.mix(("minecraft:mossy_cobblestone", 3), ("minecraft:cobblestone", 3),
+                   ("minecraft:mossy_stone_bricks", 2), ("minecraft:stone", 1))
+    for x, z in _rect(MX0, MZ0, MX1, MZ1):
+        if x in (MX0, MX1) or z in (MZ0, MZ1):
+            p.set(x, g, z, plinth)
+            for y in range(g + 1, WALL_TOP):
+                p.set(x, y, z, _weathered(p, y - g))
+            p.set(x, WALL_TOP, z, "minecraft:polished_andesite" if p.rnd.random() < 0.8
+                  else _weathered(p, 5))                # trim course under the eaves
+    p.clear((MX0 + 1, g + 1, MZ0 + 1, MX1 - 1, g + 10, MZ1 - 1))
+    # floor: polished border, worn field, an aisle from the door; the stairwell left open
+    field = p.mix(("minecraft:stone_bricks", 5), ("minecraft:cracked_stone_bricks", 3),
+                  ("minecraft:mossy_stone_bricks", 2), ("minecraft:cobblestone", 1))
+    for x, z in _rect(MX0 + 1, MZ0 + 1, MX1 - 1, MZ1 - 1):
+        if (x, z) in HOLE:
+            continue
+        edge = x in (MX0 + 1, MX1 - 1) or z in (MZ0 + 1, MZ1 - 1) or (x, z + 1) in HOLE
+        p.set(x, g, z, "minecraft:polished_andesite" if edge else field)
+    for z in range(8, MZ1):
+        p.set(5, g, z, "minecraft:polished_andesite")
+    p.set(5, g, 9, "minecraft:chiseled_stone_bricks")
+    # corner buttresses (L-shaped, sloped caps) and two pilasters with soul lanterns at the door
+    for cx, cz, sx, sz in ((MX0, MZ0, -1, -1), (MX1, MZ0, 1, -1), (MX0, MZ1, -1, 1), (MX1, MZ1, 1, 1)):
+        for bx, bz, face in ((cx + sx, cz, "east" if sx < 0 else "west"),
+                             (cx, cz + sz, "south" if sz < 0 else "north")):
+            for y in range(g, g + 4):
+                p.set(bx, y, bz, plinth if y == g else _weathered(p, y - g))
+            p.stairs(bx, g + 4, bz, "stone_bricks", face)
+    for x in (3, 7):
+        p.set(x, g + 1, MZ1 + 1, "minecraft:polished_andesite")
+        p.set(x, g + 2, MZ1 + 1, "minecraft:chiseled_stone_bricks")
+        p.lantern(x, g + 3, MZ1 + 1, soul=True)
+    # the doorway: 3 wide, a corbelled head and keystone, one door leaf standing open
+    for x in (4, 5, 6):
+        p.set(x, g, MZ1, "minecraft:polished_andesite")
+        p.set(x, g + 1, MZ1, AIR)
+        p.set(x, g + 2, MZ1, AIR)
+    p.set(5, g + 3, MZ1, AIR)
+    p.stairs(4, g + 3, MZ1, "stone_bricks", "west", half="top")
+    p.stairs(6, g + 3, MZ1, "stone_bricks", "east", half="top")
+    p.set(5, g + 4, MZ1, "minecraft:chiseled_stone_bricks")
+    p.door(4, g + 1, MZ1, "dark_oak", "north", hinge="left", open=True)
+    p.trapdoor(6, g + 1, MZ1 + 3, "dark_oak", "south")          # the fallen leaf, in the grass
+    # windows: barred slits in the side walls, one over the stairwell
+    for z in (3, 8):
+        for x in (MX0, MX1):
+            p.bars(x, g + 2, z)
+            p.bars(x, g + 3, z)
+    # roof: gabled, ridge north-south, two thick, mossy in places; roundels in the gables
+    p.gable_roof(MX0, MX1, MZ0, MZ1, WALL_TOP + 1, "stone_bricks", "z", overhang=1,
+                 gable_fill=lambda: _weathered(p, 9), under=lambda: _weathered(p, 9))
+    for (x, y, z), (b, nbt) in list(p.cells.items()):
+        if y > WALL_TOP and b.startswith("minecraft:stone_brick_") and p.rnd.random() < 0.3:
+            p.set(x, y, z, b.replace("minecraft:stone_brick_", "minecraft:mossy_stone_brick_"))
+    for z in (MZ0, MZ1):
+        p.set(5, WALL_TOP + 3, z, "minecraft:chiseled_stone_bricks")
+        p.bars(5, WALL_TOP + 4, z)
+    # the stairwell: railed along its south edge and along the spine between the lanes
+    for x in (2, 3, 4):
+        p.wall(x, g + 1, 7, "stone_brick")
+    for z in (5, 6, 7):
+        p.wall(5, g + 1, z, "stone_brick")
+    p.lantern(5, g + 2, 7, soul=True)
+    p.candle(2, g + 2, 7, "white", candles=2)
+    p.hanging_lantern(5, WALL_TOP + 1, 3, chain=4, soul=True)
+    # a sarcophagus against the west wall (lid slid half off), an altar against the east wall,
+    # a skull shelf by the door
+    for z in (8, 9):
+        p.set(2, g + 1, z, "minecraft:polished_andesite")
+    p.slab(2, g + 2, 8, "smooth_stone")
+    p.skull(2, g + 2, 9, rotation=12)
+    p.slab(3, g + 1, 9, "smooth_stone")
+    p.candle(3, g + 1, 8, "white", candles=1, lit=False)
+    p.set(8, g + 1, 9, "minecraft:chiseled_stone_bricks")
+    p.skull(8, g + 2, 9, rotation=4)
+    p.candle(8, g + 1, 8, "white", candles=3)
+    p.candle(8, g + 1, 10, "white", candles=2)
+    for x in (2, 3):
+        p.slab(x, g + 3, 10, "stone_brick", type="top")
+    p.skull(2, g + 4, 10, rotation=p.rnd.choice((0, 15, 1)))
+    p.candle(3, g + 4, 10, "white", candles=4)
+    p.slab(7, g + 1, 10, "mossy_cobblestone")                     # a little fallen masonry
+    p.scatter((MX0 + 1, g + 1, MZ0 + 1, MX1 - 1, g + 1, MZ1 - 1), "minecraft:moss_carpet", 0.07,
+              only_on=lambda b: b is not None and "stone" in b and is_full_solid(b))
+    _cobwebs(p, (MX0 + 1, WALL_TOP - 1, MZ0 + 1, MX1 - 1, WALL_TOP + 4, MZ1 - 1), 0.07)
+
+
+def _churchyard(p):
+    """Outside: a worn path to the door, four graves, a broken low wall with gate posts,
+    vines from the eaves, grass and a few flowers."""
+    g = GROUND
+    w, _, d = p.size
+
+    def ground(x, z):
+        return p.get(x, g, z) not in (None, AIR) and p.get(x, g + 1, z) == AIR
+
+    path = p.mix(("minecraft:dirt_path", 5), ("minecraft:gravel", 2), ("minecraft:cobblestone", 1),
+                 ("minecraft:coarse_dirt", 1))
+    for z in range(MZ1 + 1, d):
+        xs = (4, 5, 6) if z <= MZ1 + 2 else ((5, 6) if (z - MZ1) % 4 == 3 else (4, 5))
+        for x in xs:
+            if p.is_set(x, g, z):
+                p.set(x, g, z, path)
+    # graves: (headstone x, z, the side it stands on); plots run in toward the path
+    graves = ((1, 14, "west"), (1, 16, "west"), (9, 13, "east"), (9, 15, "east"))
+    kinds = ["stair", "post", "block", "fallen"]
+    p.rnd.shuffle(kinds)
+    for (hx, z, side), kind in zip(graves, kinds):
+        plot = (2, 3) if side == "west" else (8, 7)
+        if not all(ground(x, z) for x in (hx,) + plot):
+            continue
+        for x in plot:
+            p.set(x, g, z, p.rnd.choice(("minecraft:podzol[snowy=false]", "minecraft:coarse_dirt",
+                                         "minecraft:rooted_dirt")))
+        if kind == "stair":
+            p.stairs(hx, g + 1, z, "mossy_cobblestone", side)
+        elif kind == "post":
+            p.wall(hx, g + 1, z, "mossy_stone_brick")
+            p.slab(hx, g + 2, z, "stone_brick")
+        elif kind == "block":
+            p.set(hx, g + 1, z, "minecraft:chiseled_stone_bricks")
+            p.candle(hx, g + 2, z, "white", candles=p.rnd.randint(1, 3))
+        else:
+            p.slab(hx, g + 1, z, "cobblestone")
+            p.slab(plot[0], g + 1, z, "mossy_stone_brick")
+        if kind != "fallen":
+            p.set(plot[0], g + 1, z, "minecraft:moss_carpet")
+        if p.rnd.random() < 0.6:
+            p.candle(plot[1], g + 1, z, "white", candles=p.rnd.randint(1, 2), lit=p.rnd.random() < 0.5)
+    # a broken low wall along the south edge, gate posts with soul lanterns
+    for x in (0, 1, 2, 8, 9, 10):
+        if ground(x, d - 1) and p.rnd.random() < 0.7:
+            p.wall(x, g + 1, d - 1, "mossy_cobblestone")
+    for x in (3, 7):
+        if ground(x, d - 1):
+            p.wall(x, g + 1, d - 1, "mossy_cobblestone")
+            p.wall(x, g + 2, d - 1, "mossy_cobblestone")
+            p.lantern(x, g + 3, d - 1, soul=True)
+    # vines down the walls from under the eaves, moss low on the walls
+    for z in range(MZ0, MZ1 + 1):
+        for x, side in ((MX0 - 1, "east"), (MX1 + 1, "west")):
+            if p.rnd.random() < 0.4:
+                for y in range(WALL_TOP, WALL_TOP - p.rnd.randint(2, 5), -1):
+                    _vine(p, x, y, z, side)
+    for x in range(MX0, MX1 + 1):
+        if p.rnd.random() < 0.5:
+            for y in range(WALL_TOP, WALL_TOP - p.rnd.randint(1, 4), -1):
+                _vine(p, x, y, MZ0 - 1, "south")
+    for x in (2, 8):
+        for y in range(WALL_TOP, WALL_TOP - p.rnd.randint(2, 4), -1):
+            _vine(p, x, y, MZ1 + 1, "north")
+    p.replace((MX0, g + 1, MZ0, MX1, g + 2, MZ1), "minecraft:stone_bricks",
+              "minecraft:mossy_stone_bricks", 0.3)
+    plants = p.mix(("minecraft:short_grass", 10), ("minecraft:fern", 4), ("minecraft:poppy", 1),
+                   ("minecraft:azure_bluet", 1))
+    p.scatter((0, g + 1, 0, w - 1, g + 1, d - 1), plants, 0.2, only_on=GRASS)
+
+
+def start():
+    """The crypt's way in: a mausoleum on the surface, a switchback stair down a closed shaft
+    and the vestibule with its three doors (see the notes above)."""
+    p = Piece("crypt/start", 11, GROUND + 12, 19, "crypt/start")
+    pal = _pal(p, "deepslate")
+    _entrance_site(p)
+    _shaft(p, pal)
+    _vestibule(p, pal)
+    _stair(p, pal)
+    _mausoleum(p)
+    _churchyard(p)
     return p
 
 
@@ -948,11 +1216,24 @@ PLACE = {
                "crypt/tomb_hall": tomb_hall, "crypt/ossuary": ossuary, "crypt/chapel": chapel,
                "crypt/flooded": flooded, "crypt/collapsed": collapsed,
                "crypt/guard_room": guard_room, "crypt/treasure": treasure, "crypt/cap": cap},
-    "step": "underground_structures",
-    "start_height": (-10, 30),
-    "surface": False,
+    # Surface-anchored through the start piece. Horizon's place_start (jigsaw.rs) samples
+    # start_height, adds base_height(WORLD_SURFACE_WG) at the centre of the start's (rotated) box,
+    # which is the first free cell above the terrain (generator.rs base_height: top block + 1),
+    # and moves the piece so its bottom + ground_level_delta (1 for a single_pool_element)
+    # lands there. So the bottom layer goes to top block + start_height, and layer GROUND (26,
+    # the mausoleum floor and turf) replaces the top block of terrain when start_height is
+    # -GROUND. Rotation turns the box about y only, so it changes nothing here. The vestibule
+    # floor ends up 26 below the surface.
+    # max_distance stays the default 80: lay_out_children centres the reach box on the centre of
+    # the start's box horizontally and on its bottom + 1 vertically. The start keeps the old
+    # 11 x 19 footprint and its vestibule at the bottom, so both centres sit where they did
+    # relative to the vestibule's doors, and every piece at the dungeon level has the same
+    # reach as before. (The extra height above y 12 meets no other piece.)
+    "step": "surface_structures",
+    "start_height": -GROUND,        # -26
+    "surface": True,
     "terrain": "none",
-    "biomes": ["#minecraft:is_overworld"],
+    "biomes": ["#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_savanna", "#minecraft:is_badlands", "#minecraft:is_hill", "#minecraft:is_mountain", "#minecraft:is_jungle", "minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:desert", "minecraft:snowy_plains", "minecraft:cherry_grove"],
     "spacing": 18,
     "separation": 7,
     "salt": 418200111,

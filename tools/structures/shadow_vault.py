@@ -1,22 +1,34 @@
-"""Shadow vault: a sealed deepslate vault (underground, Y -52 to -12). Brief: docs/design/places.md
-section 6.
+"""Shadow vault: a deepslate vault about 38 blocks under a small blackstone mausoleum, joined
+by a square spiral stair in a closed shaft. Brief: docs/design/places.md section 6.
 
-Plan (x east, z south; one piece, 41 x 14 x 36):
+One surface-anchored piece, 41 x 52 x 48 (x east, y up, z south):
+
+  y 37        ground layer (replaces the world's top block): a blighted patch of coarse dirt
+              and soul soil with a path to the north door; air is set over the patch.
+  y 38..51    the mausoleum over the shaft mouth (x 12..22, z 2..12): blackstone walls with
+              corner piers, a hipped roof with a glowing shadow ore finial, an altar on the
+              stair core, and the railed stair mouth in the floor's south-west.
+  y 0..37     the shaft (same footprint): an 11 x 11 closed shell round a 3 x 3 core; a stair
+              3 wide winds down three turns (corner landings, 3 steps per side, 12 a turn)
+              from the mausoleum floor to a landing at y 1 against the vault's north wall.
+  y 0..13     the vault, z 12..47 (pasted from its own 41 x 14 x 36 build, unchanged apart
+              from the new doorway at x 16..18 through its north wall):
 
     west alcove | ring corridor (3 wide, rib-vaulted) | hidden east alcove
                 |   sanctum (15 x 15, coffered)       |  (behind a false wall)
                 |   guard hall to the south with the walled-up old entrance
 
-The player digs in from anywhere. The sanctum is entered through an iron gate in its south
-wall (iron door between iron bars, opened by a lever on the lintel). Main chest on the
-dais under a ceiling of glowing shadow ore; one cache in each alcove. Vault guardian
-spawners: in the corridor in front of the gate, and on the sanctum floor.
+The sanctum is entered through an iron gate in its south wall (iron door between iron bars,
+opened by a lever on the lintel). Main chest on the dais under a ceiling of glowing shadow
+ore; one cache in each alcove; one small cache on a landing half way down the stair. Vault
+guardian spawners: in the corridor in front of the gate, and on the sanctum floor.
 """
-from structkit import AIR, NS, Piece, ccw
+from structkit import AIR, NS, OPPOSITE, Piece, ccw, state
 
-W, H, D = 41, 14, 36
+VW, VH, VD = 41, 14, 36            # the vault on its own (vault-local coordinates below)
 SHADOW = f"{NS}:shadowblock"
 SHADOW_ORE = f"{NS}:deepslate_shadow_ore"
+SURFACE_ORE = f"{NS}:shadowore"
 GUARDIAN = f"{NS}:vault_guardian"
 
 # masses as (x0, z0, x1, z1, top y): every room is carved out of one of these
@@ -33,9 +45,47 @@ CORRIDOR_IN = (11, 5, 29, 23)        # the sanctum mass the corridor runs round
 ROOM = (13, 7, 27, 21)               # the sanctum
 GATE_X = 20
 
+# ---- the whole piece (piece coordinates)
+VZ = 12                              # the vault's z offset: its north wall is the shaft's south wall
+GROUND = 37                          # the ground layer (vault floor at y 1, so ~38 blocks down)
+W, H, D = VW, 52, VZ + VD            # 41 x 52 x 48
+SX0, SZ0 = 12, 2                     # shaft / mausoleum outer box x 12..22, z 2..12
+SX1, SZ1 = SX0 + 10, SZ0 + 10
+IX, IZ = SX0 + 1, SZ0 + 1            # interior origin: (u, v) = (x - IX, z - IZ), 0..8
+CX, CZ = SX0 + 5, SZ0 + 5            # centre column (17, 7); the core is u, v 3..5
+DOOR_X = CX                          # the north door, the stair mouth and the vault doorway
+BOTTOM, TOP = 2, GROUND + 1          # standing heights of the bottom and top landings
+EAVE = GROUND + 6                    # wall top and lowest roof course (y 43)
+
+# the stair, walking UP (a turn: east side north, north side west, west side south, south
+# side east). Each side: f(step, lane) -> (u, v) and the stairs' facing (= the way up).
+# Lane 0 is the outer lane (against the shaft wall), lane 2 the inner (against the core).
+SIDE_CELLS = {
+    "E": (lambda i, j: (8 - j, 5 - i), "north"),
+    "N": (lambda i, j: (5 - i, j), "west"),
+    "W": (lambda i, j: (j, 3 + i), "south"),
+    "S": (lambda i, j: (3 + i, 8 - j), "east"),
+}
+CORNER_AFTER = {"E": "NE", "N": "NW", "W": "SW", "S": "SE"}
+CORNERS = {"NE": (6, 0), "NW": (0, 0), "SW": (0, 6), "SE": (6, 6)}
+CORE_STEP = {"E": (-1, 0), "N": (0, 1), "W": (1, 0), "S": (0, -1)}     # inner lane -> core face
+OUTWARD = {"E": "east", "N": "north", "W": "west", "S": "south"}
+FIND = ("NW", 20)                    # the landing with the small cache
+
 
 def build():
-    p = Piece("shadow_vault", W, H, D, "vault")
+    p = Piece("shadow_vault", W, H, D, "vault_entry")
+    p.paste(_vault(), 0, 0, VZ)
+    _vault_doorway(p)
+    _shaft(p)
+    _ground(p)
+    _mausoleum(p)
+    return p
+
+
+def _vault():
+    """The vault exactly as it was designed, on its own piece (and its own seed)."""
+    p = Piece("shadow_vault_vault", VW, VH, VD, "vault")
     masonry = p.mix(("minecraft:deepslate_bricks", 8), ("minecraft:cracked_deepslate_bricks", 3),
                     ("minecraft:deepslate_tiles", 3), ("minecraft:cracked_deepslate_tiles", 1),
                     ("minecraft:cobbled_deepslate", 2), (SHADOW_ORE, 0.3))
@@ -533,15 +583,465 @@ def _sculk_and_cobwebs(p):
             p.set(x, y, z, "minecraft:cobweb")
 
 
+# ================================================================== the way in
+def _flight():
+    """The stair's treads from the bottom up: (cells [(u, v)], stand, facing, label). `stand`
+    is the height a player stands at (the tread block is at stand - 1); facing is the stairs'
+    facing (None for a landing); label is the side or corner name."""
+    corner = lambda name: [(CORNERS[name][0] + a, CORNERS[name][1] + b)  # noqa: E731
+                           for a in range(3) for b in range(3)]
+    out = [([(u, v) for u in range(3, 6) for v in range(6, 9)], BOTTOM, None, "S"),
+           (corner("SE"), BOTTOM, None, "SE")]
+    s, k = BOTTOM, 0
+    while s < TOP:
+        side = "ENWS"[k % 4]
+        cells, facing = SIDE_CELLS[side]
+        for i in range(3):
+            out.append(([cells(i, j) for j in range(3)], s + i + 1, facing, side))
+        s += 3
+        out.append((corner(CORNER_AFTER[side]), s, None, CORNER_AFTER[side]))
+        k += 1
+    assert s == TOP, s
+    return out
+
+
+def _stands():
+    """{(u, v): sorted stands} over the walkway."""
+    cols = {}
+    for cells, stand, _, _ in _flight():
+        for c in cells:
+            cols.setdefault(c, []).append(stand)
+    return {c: sorted(v) for c, v in cols.items()}
+
+
+def _floor_over(stand_top):
+    """How the mausoleum floor (y GROUND) treats a column whose highest tread is stand_top:
+    2 = a two-thick floor, 1 = floor at GROUND only, 0 = open (stair mouth)."""
+    if stand_top >= TOP:
+        return 1                      # the top landing / top step is itself in the floor
+    if stand_top + 2 < GROUND - 1:
+        return 2
+    if stand_top + 2 < GROUND:
+        return 1
+    return 0
+
+
+def _vault_doorway(p):
+    """A doorway 3 wide and 3 high through the vault's north wall (vault z 0..1) from the
+    stair's bottom landing into the north run of the ring corridor, between two ribs (it
+    replaces one candle niche). Chiseled jambs and a polished lintel with a glowing keystone."""
+    z0, z1 = VZ, VZ + 1
+    for z in (z0, z1):
+        for x in (DOOR_X - 2, DOOR_X + 2):
+            p.set(x, 2, z, "minecraft:chiseled_deepslate")
+            p.fill(x, 3, z, x, 4, z, "minecraft:polished_deepslate")
+        p.clear((DOOR_X - 1, 2, z, DOOR_X + 1, 4, z))
+        for x in range(DOOR_X - 1, DOOR_X + 2):
+            p.set(x, 1, z, "minecraft:polished_deepslate")
+            p.set(x, 0, z, "minecraft:deepslate_bricks")
+            p.set(x, 5, z, "minecraft:polished_deepslate")
+        p.set(DOOR_X, 5, z, "minecraft:chiseled_deepslate")
+    p.set(DOOR_X, 5, z0, SHADOW_ORE)          # a glowing keystone over the shaft side
+    p.set(DOOR_X, 1, z0, "minecraft:chiseled_deepslate")
+
+
+# ------------------------------------------------------------------ the shaft
+def _shaft(p):
+    masonry = p.mix(("minecraft:deepslate_bricks", 7), ("minecraft:cracked_deepslate_bricks", 4),
+                    ("minecraft:deepslate_tiles", 2), ("minecraft:cracked_deepslate_tiles", 1),
+                    ("minecraft:cobbled_deepslate", 2), (SHADOW_ORE, 0.12))
+    # the shell: walls from y 0 to the ground layer (the vault's own wall is kept where it is)
+    for y in range(0, GROUND + 1):
+        for x in range(SX0, SX1 + 1):
+            for z in range(SZ0, SZ1 + 1):
+                if (x in (SX0, SX1) or z in (SZ0, SZ1)) and not p.is_set(x, y, z):
+                    p.set(x, y, z, masonry)
+    # a polished band on the inside of the wall once a turn, at the south landing heights
+    for y in (13, 25):
+        for x in range(SX0, SX1 + 1):
+            for z in range(SZ0, SZ1 + 1):
+                if x in (SX0, SX1) or z in (SZ0, SZ1):
+                    p.set(x, y, z, "minecraft:polished_deepslate")
+    # the core: polished corners, brick faces, a chiseled course at every turn
+    for y in range(0, GROUND + 1):
+        for u in range(3, 6):
+            for v in range(3, 6):
+                corner = u != 4 and v != 4
+                b = "minecraft:polished_deepslate" if corner else masonry()
+                if y % 12 == 1 and corner:
+                    b = "minecraft:chiseled_deepslate"
+                p.set(IX + u, y, IZ + v, b)
+    _treads(p)
+    _core_niches(p)
+    _landing_details(p)
+    _shaft_age(p)
+
+
+def _treads(p):
+    """Stairs and landings, the sloped soffit under each run, air between turns, solid fill
+    under the first turn."""
+    tread = p.mix(("deepslate_tiles", 5), ("deepslate_bricks", 3), ("cobbled_deepslate", 2),
+                  ("polished_deepslate", 2))
+    landing = p.mix(("minecraft:deepslate_tiles", 6), ("minecraft:cracked_deepslate_tiles", 3),
+                    ("minecraft:polished_deepslate", 2))
+    fill = p.mix(("minecraft:deepslate_bricks", 5), ("minecraft:cobbled_deepslate", 3),
+                 ("minecraft:deepslate[axis=y]", 2))
+    cols = _stands()
+    by_cell = {}
+    for cells, stand, facing, label in _flight():
+        for c in cells:
+            by_cell[(c, stand)] = (facing, label)
+    for (u, v), stands in sorted(cols.items()):
+        x, z = IX + u, IZ + v
+        below = 0
+        for n, s in enumerate(stands):
+            facing, label = by_cell[((u, v), s)]
+            if n == 0:
+                p.fill(x, 0, z, x, s - 2, z, fill)
+            else:
+                p.clear((x, below, z, x, s - 3, z))
+                if facing:
+                    p.stairs(x, s - 2, z, "deepslate_tiles", OPPOSITE[facing], half="top")
+                else:
+                    p.set(x, s - 2, z, fill)
+            if facing:
+                p.stairs(x, s - 1, z, tread(), facing)
+            else:
+                edge = u in (0, 8) or v in (0, 8) or label in ("S",) and v == 8
+                p.set(x, s - 1, z, "minecraft:polished_deepslate" if edge and (u + v) % 2 else landing())
+            below = s
+        mode = _floor_over(stands[-1])
+        if stands[-1] < TOP:
+            top_air = GROUND - (1 if mode else 0) - (1 if mode == 2 else 0)
+            p.clear((x, below, z, x, top_air, z))
+    # bottom landing: a chiseled square before the doorway
+    for u in range(3, 6):
+        p.set(IX + u, 1, IZ + 8, "minecraft:polished_deepslate")
+    p.set(DOOR_X, 1, IZ + 7, "minecraft:chiseled_deepslate")
+
+
+def _core_niches(p):
+    """A niche in the core face beside the middle step of every side, at eye height: soul
+    lanterns, candles and skulls in turn."""
+    k = 0
+    for cells, stand, facing, side in _flight():
+        if not facing or cells[0] != SIDE_CELLS[side][0](1, 0):
+            continue
+        u, v = SIDE_CELLS[side][0](1, 2)
+        du, dv = CORE_STEP[side]
+        x, z, y = IX + u + du, IZ + v + dv, stand + 1
+        if y + 1 >= GROUND:
+            continue
+        p.set(x, y - 1, z, "minecraft:polished_deepslate")
+        p.set(x, y + 1, z, "minecraft:chiseled_deepslate")
+        kind = k % 3
+        if kind == 0:
+            p.lantern(x, y, z, soul=True)
+        elif kind == 1:
+            p.candle(x, y, z, "purple" if k % 2 else "black", candles=3)
+        else:
+            p.skull(x, y, z, rotation={"S": 0, "W": 4, "N": 8, "E": 12}[side])
+        k += 1
+
+
+def _landing_details(p):
+    """On each corner landing's outer corner: candles or a soul lantern; the small cache on
+    one landing half way down; bones and a skull on the bottom landing."""
+    for cells, stand, facing, label in _flight():
+        if facing or label not in CORNERS or stand in (BOTTOM, TOP):
+            continue
+        cu, cv = CORNERS[label]
+        u, v = cu + (0 if cu == 0 else 2), cv + (0 if cv == 0 else 2)
+        x, y, z = IX + u, stand, IZ + v
+        if (label, stand) == FIND:
+            p.chest(x, y, z, "shadow_vault", "south" if cv == 0 else "north")
+            p.set(x + (1 if cu == 0 else -1), y, z, "minecraft:cobweb")
+            continue
+        if (stand // 3) % 2:
+            p.lantern(x, y, z, soul=True)
+        else:
+            p.candle(x, y, z, "purple", candles=1 + stand % 4)
+    # the bottom landing: bones in the corner, a lantern niche in the core facing the door
+    p.set(IX + 8, BOTTOM, IZ + 8, "minecraft:bone_block[axis=x]")
+    p.skull(IX + 8, BOTTOM + 1, IZ + 8, rotation=6)
+    x, z = CX, IZ + 5
+    p.set(x, BOTTOM + 2, z, "minecraft:chiseled_deepslate")
+    p.lantern(x, BOTTOM + 1, z, soul=True)
+    p.set(x, BOTTOM, z, "minecraft:polished_deepslate")
+
+
+def _shaft_age(p):
+    """Cobwebs high in the open space over the stair (never in its headroom), glow lichen
+    and sculk veins on the walls."""
+    rnd = p.rnd
+    cols = _stands()
+    for (u, v), stands in sorted(cols.items()):
+        x, z = IX + u, IZ + v
+        outer = [d for d, (du, dv) in (("west", (-1, 0)), ("east", (1, 0)), ("north", (0, -1)), ("south", (0, 1)))
+                 if not (0 <= u + du <= 8 and 0 <= v + dv <= 8)]
+        for y in range(2, GROUND):
+            if p.get(x, y, z) != AIR:
+                continue
+            under = max((s for s in stands if s <= y), default=None)
+            if under is None:
+                continue
+            high = y - under >= 3
+            if outer and high and rnd.random() < 0.05:
+                p.set(x, y, z, "minecraft:cobweb")
+            elif outer and rnd.random() < 0.025:
+                side = outer[0]
+                if y < 9:
+                    p.set(x, y, z, state("minecraft:sculk_vein", down=False, up=False, waterlogged=False,
+                                         **{d: d == side for d in ("north", "east", "south", "west")}))
+                else:
+                    p.set(x, y, z, state("minecraft:glow_lichen", down=False, up=False, waterlogged=False,
+                                         **{d: d == side for d in ("north", "east", "south", "west")}))
+    # webs in the bottom landing's corners and over the doorway
+    for x, y, z in ((IX + 3, 6, IZ + 8), (IX + 5, 7, IZ + 6), (IX + 8, 5, IZ + 8)):
+        if p.get(x, y, z) == AIR:
+            p.set(x, y, z, "minecraft:cobweb")
+
+
+# ------------------------------------------------------------------ the surface
+def _ground(p):
+    """An irregular patch of blighted ground (the layer that replaces the world's top block)
+    with air over it, a path to the north door and a little debris."""
+    rnd = p.rnd
+    cx, cz = CX, CZ + 1
+    for x in range(W):
+        for z in range(D):
+            if SX0 <= x <= SX1 and SZ0 <= z <= SZ1:
+                continue
+            r = ((x - cx) / 10.5) ** 2 + ((z - cz) / 9.5) ** 2
+            if r > 1 + rnd.uniform(-0.18, 0.08):
+                continue
+            near = max(abs(x - CX), abs(z - CZ)) <= 7
+            if near:
+                b = _pick(p, ("minecraft:coarse_dirt", 4), ("minecraft:soul_soil", 3), ("minecraft:gravel", 2),
+                          ("minecraft:cobbled_deepslate", 2), ("minecraft:blackstone", 1), ("minecraft:tuff", 1))
+            else:
+                b = _pick(p, ("minecraft:coarse_dirt", 6), ("minecraft:soul_soil", 2), ("minecraft:gravel", 1),
+                          ("minecraft:dirt", 2), ("minecraft:rooted_dirt", 1))
+            p.set(x, GROUND, z, b)
+            for y in range(GROUND + 1, H):
+                p.set(x, y, z, AIR)
+            if b == "minecraft:coarse_dirt" and not near and rnd.random() < 0.08:
+                p.set(x, GROUND + 1, z, "minecraft:dead_bush")
+    for x in range(SX0, SX1 + 1):
+        for z in range(SZ0, SZ1 + 1):
+            for y in range(GROUND + 1, H):
+                p.set(x, y, z, AIR)
+    # the path north from the door, edged with rubble
+    for z in range(0, SZ0):
+        for x in range(DOOR_X - 1, DOOR_X + 2):
+            p.set(x, GROUND, z, _pick(p, ("minecraft:polished_blackstone_bricks", 3),
+                                      ("minecraft:cracked_polished_blackstone_bricks", 3),
+                                      ("minecraft:cobbled_deepslate", 2), ("minecraft:gravel", 1)))
+    # lantern posts either side of the path
+    for x in (DOOR_X - 3, DOOR_X + 3):
+        p.set(x, GROUND, 0, "minecraft:polished_blackstone")
+        p.wall(x, GROUND + 1, 0, "polished_blackstone")
+        p.wall(x, GROUND + 2, 0, "polished_blackstone")
+        p.lantern(x, GROUND + 3, 0, soul=True)
+    # debris fallen from the roof and walls
+    for x, z, kind in ((9, 6, "slab"), (10, 10, "block"), (25, 9, "stairs"), (24, 13, "slab"),
+                       (14, 15, "block"), (21, 15, "stairs"), (26, 4, "block"), (8, 12, "slab")):
+        if p.get(x, GROUND, z) in (None, AIR):
+            continue
+        if kind == "slab":
+            p.slab(x, GROUND + 1, z, p.rnd.choice(("polished_blackstone_bricks", "cobbled_deepslate")))
+        elif kind == "stairs":
+            p.stairs(x, GROUND + 1, z, "polished_blackstone_bricks", p.rnd.choice(("north", "east", "south", "west")))
+        else:
+            p.set(x, GROUND + 1, z, p.rnd.choice(("minecraft:cracked_polished_blackstone_bricks",
+                                                 "minecraft:cobbled_deepslate", "minecraft:blackstone")))
+    p.skull(10, GROUND + 1, 3, rotation=10)
+    p.set(24, GROUND + 1, 6, "minecraft:bone_block[axis=z]")
+
+
+def _pick(p, *weighted):
+    names, weights = zip(*weighted)
+    return p.rnd.choices(names, weights)[0]
+
+
+def _mausoleum(p):
+    _mausoleum_floor(p)
+    _mausoleum_walls(p)
+    _mausoleum_roof(p)
+    _altar(p)
+    _mausoleum_details(p)
+
+
+def _mausoleum_floor(p):
+    """The floor over the shaft (y GROUND): blackstone over the covered turns of the stair,
+    the stair mouth open in the south-west, the top landing marked with glowing ore."""
+    cols = _stands()
+    for (u, v), stands in cols.items():
+        x, z = IX + u, IZ + v
+        mode = _floor_over(stands[-1])
+        if stands[-1] >= TOP:
+            if "_stairs" not in p.get(x, GROUND, z):
+                p.set(x, GROUND, z, "minecraft:polished_blackstone" if (u + v) % 2 else
+                      "minecraft:polished_blackstone_bricks")
+            continue
+        if mode == 0:
+            p.set(x, GROUND, z, AIR)
+            continue
+        outer = u in (0, 8) or v in (0, 8)
+        p.set(x, GROUND, z, _pick(p, ("minecraft:polished_blackstone_bricks", 4),
+                                  ("minecraft:cracked_polished_blackstone_bricks", 3))
+              if outer else "minecraft:polished_blackstone")
+        if mode == 2:
+            p.set(x, GROUND - 1, z, "minecraft:deepslate_tiles")
+    p.set(IX + 7, GROUND, IZ + 7, SURFACE_ORE)              # the top landing's mark
+    # the threshold
+    for x in range(DOOR_X - 1, DOOR_X + 2):
+        p.set(x, GROUND, SZ0, "minecraft:polished_blackstone")
+    # a railing along the stair mouth's north edge
+    for u in range(0, 3):
+        p.wall(IX + u, GROUND + 1, IZ + 4, "polished_blackstone")
+
+
+def _wall_block(p, y):
+    if y <= GROUND + 2:
+        return _pick(p, ("minecraft:polished_blackstone_bricks", 4), ("minecraft:cracked_polished_blackstone_bricks", 4),
+                     ("minecraft:blackstone", 2), ("minecraft:cobbled_deepslate", 1), (SURFACE_ORE, 0.25))
+    return _pick(p, ("minecraft:polished_blackstone_bricks", 7), ("minecraft:cracked_polished_blackstone_bricks", 2),
+                 ("minecraft:blackstone", 1), ("minecraft:deepslate_tiles", 1), (SURFACE_ORE, 0.25))
+
+
+def _mausoleum_walls(p):
+    """Walls y 38..43 with a plinth course, corner piers, pilasters, slit windows and the
+    pointed north door."""
+    g = GROUND
+    for y in range(g + 1, EAVE + 1):
+        for x in range(SX0, SX1 + 1):
+            for z in range(SZ0, SZ1 + 1):
+                if x in (SX0, SX1) or z in (SZ0, SZ1):
+                    p.set(x, y, z, _wall_block(p, y) if y < EAVE else "minecraft:polished_blackstone")
+    # corner columns and L-shaped piers outside them
+    for cx, dx in ((SX0, -1), (SX1, 1)):
+        for cz, dz in ((SZ0, -1), (SZ1, 1)):
+            for y in range(g + 1, EAVE + 1):
+                p.set(cx, y, cz, "minecraft:chiseled_polished_blackstone" if y in (g + 1, EAVE)
+                      else "minecraft:polished_blackstone")
+            for x, z in ((cx + dx, cz), (cx, cz + dz), (cx + dx, cz + dz)):
+                for y in range(g, EAVE - 1):
+                    p.set(x, y, z, "minecraft:polished_blackstone_bricks" if y > g else "minecraft:cobbled_deepslate")
+                p.set(x, EAVE - 1, z, "minecraft:chiseled_polished_blackstone")
+    # pilasters at mid-wall on the east, west and south sides, with a glowing ore inset
+    for x, z in ((SX0 - 1, CZ), (SX1 + 1, CZ), (CX, SZ1 + 1)):
+        for y in range(g, EAVE - 1):
+            p.set(x, y, z, "minecraft:polished_blackstone")
+        p.set(x, g + 3, z, SURFACE_ORE)
+        p.set(x, EAVE - 1, z, "minecraft:chiseled_polished_blackstone")
+    # plinth course: stairs against the wall foot all round, except at piers, pilasters, door
+    sides = (("north", [(x, SZ0 - 1) for x in range(SX0 + 1, SX1)], "south"),
+             ("south", [(x, SZ1 + 1) for x in range(SX0 + 1, SX1)], "north"),
+             ("west", [(SX0 - 1, z) for z in range(SZ0 + 1, SZ1)], "east"),
+             ("east", [(SX1 + 1, z) for z in range(SZ0 + 1, SZ1)], "west"))
+    for _, cells, facing in sides:
+        for x, z in cells:
+            if p.is_set(x, g + 1, z) and p.get(x, g + 1, z) != AIR:
+                continue
+            if facing == "south" and abs(x - DOOR_X) <= 1:
+                continue
+            p.stairs(x, g + 1, z, "polished_blackstone_bricks", facing)
+            p.set(x, g, z, "minecraft:cobbled_deepslate")
+    # slit windows with iron bars
+    for x, z in ((SX0, IZ + 2), (SX0, IZ + 6), (SX1, IZ + 2), (SX1, IZ + 6), (IX + 2, SZ1), (IX + 6, SZ1)):
+        for y in range(g + 2, g + 5):
+            p.bars(x, y, z)
+        p.set(x, g + 1, z, "minecraft:polished_blackstone")
+        p.set(x, g + 5, z, "minecraft:chiseled_polished_blackstone")
+    # the north door: a pointed opening 3 wide, chiseled jambs, a glowing keystone
+    z = SZ0
+    for x in (DOOR_X - 2, DOOR_X + 2):
+        for y in range(g + 1, g + 5):
+            p.set(x, y, z, "minecraft:chiseled_polished_blackstone" if y == g + 4 else "minecraft:polished_blackstone")
+    p.clear((DOOR_X - 1, g + 1, z, DOOR_X + 1, g + 3, z))
+    for x in (DOOR_X - 1, DOOR_X + 1):
+        p.set(x, g + 4, z, "minecraft:polished_blackstone_bricks")
+    p.set(DOOR_X, g + 4, z, SURFACE_ORE)
+    for x in range(DOOR_X - 1, DOOR_X + 2):
+        p.set(x, g + 5, z, "minecraft:chiseled_polished_blackstone")
+    # a hood over the door
+    for x in range(DOOR_X - 2, DOOR_X + 3):
+        p.stairs(x, g + 5, z - 1, "polished_blackstone_bricks", "south", half="top")
+    p.stairs(DOOR_X - 2, g + 5, z - 1, "polished_blackstone_bricks", "south", half="top", shape="outer_left")
+    p.stairs(DOOR_X + 2, g + 5, z - 1, "polished_blackstone_bricks", "south", half="top", shape="outer_right")
+
+
+def _mausoleum_roof(p):
+    """A hipped roof of blackstone and deepslate tiles, weathered, with a glowing finial."""
+    rnd = p.rnd
+    top = p.hip_roof(SX0, SX1, SZ0, SZ1, EAVE, "polished_blackstone_bricks", overhang=1, ridge_slab=False)
+    for (x, y, z), (b, _) in list(p.cells.items()):
+        if y < EAVE or "polished_blackstone_brick_stairs" not in b:
+            continue
+        roll = rnd.random()
+        if roll < 0.25:
+            p.set(x, y, z, b.replace("polished_blackstone_brick_stairs", "deepslate_tile_stairs"))
+        elif roll < 0.35:
+            p.set(x, y, z, b.replace("polished_blackstone_brick_stairs", "blackstone_stairs"))
+    # an under-course inside the eave line so the roof reads two thick from below
+    for x in range(SX0 + 1, SX1):
+        for z in range(SZ0 + 1, SZ1):
+            if x in (SX0 + 1, SX1 - 1) or z in (SZ0 + 1, SZ1 - 1):
+                p.set(x, EAVE, z, "minecraft:polished_blackstone_bricks")
+    # finial over the apex
+    p.set(CX, top - 1, CZ, SURFACE_ORE)
+    p.wall(CX, top, CZ, "polished_blackstone")
+    p.lantern(CX, top + 1, CZ, soul=True)
+
+
+def _altar(p):
+    """On the core, facing the door: a block altar with a shadow block, a wither skull and
+    candles."""
+    y = GROUND + 1
+    for u in range(3, 6):
+        for v in range(3, 6):
+            corner = u != 4 and v != 4
+            p.set(IX + u, y, IZ + v, "minecraft:chiseled_polished_blackstone" if corner
+                  else "minecraft:polished_blackstone_bricks")
+    p.set(CX, y + 1, CZ, SHADOW)
+    p.set(CX, y + 2, CZ, "minecraft:wither_skeleton_skull[powered=false,rotation=8]")
+    for u, v in ((3, 3), (5, 3), (3, 5), (5, 5)):
+        p.candle(IX + u, y + 1, IZ + v, "black" if u == v else "purple", candles=2 + (u + v) % 3)
+    for (u, v), f in (((4, 3), "south"), ((3, 4), "east"), ((5, 4), "west"), ((4, 5), "north")):
+        p.stairs(IX + u, y + 1, IZ + v, "polished_blackstone_bricks", f)
+
+
+def _mausoleum_details(p):
+    """Soul lanterns hanging over the altar and the stair mouth, lanterns in the corners,
+    cobwebs high up, a skull and candles by the walls."""
+    g = GROUND
+    p.hanging_lantern(CX, EAVE, CZ, chain=4, soul=True)          # from the finial
+    p.hanging_lantern(IX + 2, EAVE - 2, IZ + 8, chain=1, soul=True)  # from the inner cornice
+    for u, v in ((0, 0), (8, 0)):
+        p.lantern(IX + u, g + 1, IZ + v, soul=True)
+    p.candle(IX + 8, g + 1, IZ + 8, "purple", candles=3)
+    p.candle(IX + 0, g + 1, IZ + 3, "black", candles=2)
+    p.skull(IX + 8, g + 1, IZ + 3, rotation=4)
+    for x, y, z in ((IX, EAVE - 1, IZ), (IX + 8, EAVE - 1, IZ), (IX + 8, EAVE - 1, IZ + 8),
+                    (IX, EAVE - 1, IZ + 8), (IX + 1, EAVE + 1, IZ + 1), (IX + 7, EAVE + 1, IZ + 6),
+                    (DOOR_X - 1, g + 2, SZ0 - 0)):
+        if p.get(x, y, z) == AIR:
+            p.set(x, y, z, "minecraft:cobweb")
+
+
 PLACE = {
     "name": "shadow_vault",
     "pieces": {"shadow_vault": build},
-    "step": "underground_structures",
-    "start_height": (-52, -12),
-    "surface": False,
+    "step": "surface_structures",
+    # The ground layer is y = GROUND = 37, the 38th layer of the piece. The surface height
+    # (WORLD_SURFACE_WG) is the first air above the top block, so -(37 + 1) puts layer 37 on
+    # the top block, as start_height -1 does for a ground layer at y 0 (ruined_forge).
+    "start_height": -GROUND,  # -37: Horizon puts the piece bottom at (top block y + start_height); see jigsaw.rs place_start
+    "surface": True,
     "terrain": "none",
     "biomes": [
-        "#minecraft:is_overworld",
+        "#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_savanna", "#minecraft:is_badlands", "#minecraft:is_hill", "#minecraft:is_mountain", "#minecraft:is_jungle", "minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:desert", "minecraft:snowy_plains", "minecraft:cherry_grove",
     ],
     "spacing": 22,
     "separation": 8,

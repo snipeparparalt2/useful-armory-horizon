@@ -26,6 +26,11 @@
         "operation": "add_value",
         "slot": "mainhand"
       }
+    ],
+    "minecraft:lore": [
+      {
+        "text": "Heals a heart on each kill"
+      }
     ]
   }
 }

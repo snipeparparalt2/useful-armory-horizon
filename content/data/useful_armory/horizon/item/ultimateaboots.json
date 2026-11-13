@@ -31,6 +31,11 @@
       "slot": "feet",
       "equip_sound": "minecraft:item.armor.equip_iron",
       "asset_id": "useful_armory:ultimate"
-    }
+    },
+    "minecraft:lore": [
+      {
+        "text": "Full set: regeneration, no fall damage"
+      }
+    ]
   }
 }

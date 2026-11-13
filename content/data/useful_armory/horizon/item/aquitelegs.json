@@ -31,6 +31,11 @@
       "slot": "legs",
       "equip_sound": "minecraft:item.armor.equip_iron",
       "asset_id": "useful_armory:aquite"
-    }
+    },
+    "minecraft:lore": [
+      {
+        "text": "Full set: water breathing and faster swimming"
+      }
+    ]
   }
 }

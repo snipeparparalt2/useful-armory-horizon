@@ -39,6 +39,11 @@
           "speed": 5
         }
       ]
-    }
+    },
+    "minecraft:lore": [
+      {
+        "text": "Sneak: digs 3 x 3"
+      }
+    ]
   }
 }

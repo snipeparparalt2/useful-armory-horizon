@@ -721,7 +721,7 @@ PLACE = {
     "name": "colosifite_watchtower",
     "pieces": {"colosifite_watchtower": build},
     "step": "surface_structures",
-    "start_height": -1,
+    "start_height": 0,  # piece bottom lands at surface top block + start_height, so layer 0 replaces the top block
     "surface": True,
     "terrain": "beard_thin",
     "biomes": [

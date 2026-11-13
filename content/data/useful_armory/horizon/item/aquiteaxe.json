@@ -39,6 +39,11 @@
           "speed": 6
         }
       ]
-    }
+    },
+    "minecraft:lore": [
+      {
+        "text": "Sneak: fells the whole tree"
+      }
+    ]
   }
 }

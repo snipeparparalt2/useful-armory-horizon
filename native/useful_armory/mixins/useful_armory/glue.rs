@@ -1,5 +1,6 @@
-// Reads the game for Useful Armory's glow: who holds or wears glowing gear this frame, and the
-// coloured lights that makes. Added to the game as `game::useful_armory_glue`.
+// Reads the game for Useful Armory's glow (who holds or wears glowing gear this frame, and the
+// coloured lights that makes) and keeps the mod's row and settings page in Options > Mods.
+// Added to the game as `game::useful_armory_glue`.
 use crate::game::useful_armory as m;
 use crate::game::{Game, shield};
 use horizon_client::mod_api::{NativeColoredLight, NativeMod};
@@ -7,7 +8,7 @@ use horizon_client::mod_api::{NativeColoredLight, NativeMod};
 /// `native_visuals`: once a world frame. Lights are frame-local, so taking the gear off,
 /// turning the mod off in Options > Mods or leaving the world puts them out at once.
 pub(super) fn on_visuals(game: &Game<'_>, lights: &mut Vec<NativeColoredLight>) {
-    if !game.native_on(m::ID) {
+    if !game.native_on(m::ID) || !m::enabled(m::Feature::Glow, |k| game.native_setting(m::ID, k)) {
         return;
     }
     let Some(p) = game.player.as_ref() else {
@@ -77,4 +78,28 @@ pub(super) fn on_list(mods: &mut Vec<NativeMod>) {
         description: m::DESCRIPTION.into(),
         keys: Vec::new(),
     });
+}
+
+/// `native_settings`: the mod's page, one switch per part.
+pub(super) fn on_settings(game: &Game<'_>, mod_id: &str, buttons: &mut Vec<String>) {
+    if mod_id != m::ID {
+        return;
+    }
+    for f in m::Feature::ALL {
+        let on = m::enabled(f, |k| game.native_setting(m::ID, k));
+        buttons.push(m::setting_label(f, on));
+    }
+}
+
+/// `native_settings_click`: button `button` of the mod's page flips its part, and keeps it.
+pub(super) fn on_settings_click(game: &Game<'_>, mod_id: &str, button: usize) {
+    if mod_id != m::ID {
+        return;
+    }
+    let Some(&f) = m::Feature::ALL.get(button) else {
+        return;
+    };
+    let on = !m::enabled(f, |k| game.native_setting(m::ID, k));
+    m::set_enabled(f, on, |k| game.native_setting(m::ID, k));
+    game.native_set_setting(m::ID, f.key(), if on { "true" } else { "false" });
 }

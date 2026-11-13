@@ -26,6 +26,11 @@
         "operation": "add_value",
         "slot": "mainhand"
       }
+    ],
+    "minecraft:lore": [
+      {
+        "text": "50% more damage to piglins and hoglins"
+      }
     ]
   }
 }
