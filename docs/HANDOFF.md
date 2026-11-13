@@ -26,6 +26,10 @@ Useful Armory is a mod for **Horizon**, a Rust rewrite of Minecraft: Java Editio
 
 - Everything below ships as **one update, 0.1.7**, in **one drop at the end**. Only the finished
   build becomes a GitHub release and goes to the Horizon mod browser. Day-to-day work goes on `main`.
+- **A native library mod ships with 0.1.7** (owner's decision, 2026-11-12): `armory_lib`, its own
+  `.hnmod`, holding the reusable native machinery. Useful Armory's native half depends on it.
+  The working name is `armory_lib`; the owner may rename it before release. This replaces the
+  old "no library mod" stance in older docs.
 - **Licence: MPL-2.0 for everything, code and art** (owner's choice, replacing MIT code + reserved
   artwork). `LICENSE` and `content/LICENSE` hold the official text.
 - It must be a real, working, publishable mod. High-end: emissive textures where they fit,
@@ -96,6 +100,60 @@ crypt was simulated against Horizon's jigsaw rules (400 layouts, each with one t
   the social preview and sets the repo description and topics.
 
 ## Still to do for 0.1.7
+
+### First: the native library `armory_lib`
+Build this before the rest of the native work, because phases 3 to 5 sit on it.
+
+**How Horizon does libraries** (`docs/native-mods.md`, "Dependencies between trait mods", at
+`fdc87ae`):
+- The library is a trait mod whose bundle has an `[api]` package. Its public functions and
+  statics are what other mods call.
+- Useful Armory's native bundle needs an `[api]` package too, and declares the library in its
+  `horizon-mixin.toml`:
+  ```toml
+  [dependencies]
+  armory_lib = "^0.1"
+  ```
+  The requirement is checked against the library bundle's `[mod] version`, not its Cargo
+  version.
+- The launcher adds the path dependency itself, using the mod id as the Cargo alias. Don't
+  write it in `Cargo.toml`. An optional dependency gets a Cargo feature named after the mod id.
+- Hooks run in dependency order, so the library runs before Useful Armory. A missing
+  dependency, a version mismatch or a cycle stops the build and names the mods.
+- Crates only from Horizon's `Cargo.lock`. Public statics need proper synchronisation, because
+  hooks can be shared and re-entered.
+
+**Layout:** `native/armory_lib/` in this repo, packed by `tools/package.py` into
+`dist/armory_lib-<version>.hnmod` beside Useful Armory's two files. Check with the registry
+(`horizon-rust/horizon-mods`) whether one repository can list two projects. If it can't, move the
+library to its own repository before release.
+
+**Keep it generic:** no Useful Armory ids inside. Mods register what they need at start. What it
+should offer, in the order Useful Armory needs it:
+1. **Mob rigs** (phase 3): register a mod entity type with a rig (humanoid 64x64, wolf, chicken),
+   its texture and part models. The library draws it in `native_mob_submit` with the frame's
+   walk cycle and head turn (`native_standalone_models` and `native_draw_model`), and an
+   optional emissive layer. This one piece gives every new mob its look.
+2. **Mob rule overrides** (phase 3): per entity type, no sunburn, no drowned conversion, and
+   on-hit effects (slowness, fire).
+3. **Carried-item effects** (phase 4): attribute modifiers or effects applied while an item is
+   in the hotbar, off hand or worn. This covers trinkets in the hotbar and full-set bonuses.
+4. **Coloured gear light** (already in Useful Armory's native half): move the glow code here
+   and let mods register `item -> colour, level`.
+5. **Item inventories** (phase 4): contents kept on the item (backpacks), with a menu and screen.
+6. **Waypoints** (phase 4): per-player discovered and named places, safe teleport, an
+   experience cost by distance.
+7. **Block menus and screens** (phase 5): a small layer over `native_block_entity_container`
+   and `native_screen` for the soul forge and later blocks.
+8. **Settings** (already in Useful Armory): a helper for an Options > Mods page with one
+   switch per feature.
+
+Each piece ships with unit tests in pure Rust (like `runtime.rs`), a short section in
+`native/armory_lib/README.md`, and a semver bump when its API changes.
+
+**Release:** the README install section becomes three files: the library's `.hnmod` goes in
+`horizon-native-mods/` too. Sign the library's file as well.
+
 
 ### Phase 3: creatures
 **Data side done (2026-11-12, `tools/gen_phase1.py` MOBS and SPAWNS):** entity types, loot tables,
@@ -310,7 +368,8 @@ has picked them.**
 >    left, the owner's decisions, and the repo's tools and traps.
 > 2. Phases 1 and 2, the phase 3 mob data and the 0.1.7 art are done, but none of it has been
 >    tested in game.
-> 3. Next, in order: the phase 3 native work (mob looks with `native_mob_submit`, no sunburn or
+> 3. Next, in order: build the native library `armory_lib` (see "First: the native library" in
+>    HANDOFF), then the phase 3 native work on top of it (mob looks with `native_mob_submit`, no sunburn or
 >    drowned conversion for our mobs, tide lurker slow, ember brute fire, the gold chicken,
 >    shadow hound and armory golem). Then phases 4 and 5 and the extras, then "Before release".
 >    The textures for the new mobs and items are already in `content/assets/useful_armory/textures/`.
