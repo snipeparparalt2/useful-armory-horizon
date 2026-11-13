@@ -49,9 +49,10 @@ def native_mod():
     manifest = {"schema": 1, "id": mod_id, "version": version, "game": compat["game"],
                 "horizon": compat["horizon_revision"], "mixins": compat["horizon_mixins_revision"]}
     files = {"horizon-native.json": (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode()}
-    for path in sorted(bundle.iterdir()):
-        if path.suffix in (".rs", ".toml"):
-            files[f"mixins/{mod_id}/{path.name}"] = path.read_bytes()
+    # The bundle's sources and, under api/, the package that registers with Armory Lib.
+    for path in sorted(bundle.rglob("*")):
+        if path.is_file() and path.suffix in (".rs", ".toml") and "target" not in path.parts:
+            files[f"mixins/{mod_id}/{path.relative_to(bundle).as_posix()}"] = path.read_bytes()
     write_zip(DIST / f"{mod_id}-{version}.hnmod", files)
 
 

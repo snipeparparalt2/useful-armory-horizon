@@ -13,6 +13,14 @@ priority = 100
 [compatibility]
 horizon_revision = "fdc87aecdbd116bf1e08adcd062fcbaea8c2e2ca"
 
+# The glow, the mob looks and rules and the settings page come from Armory Lib: the
+# package in api/ registers them with it when the game starts.
+[api]
+path = "api"
+
+[dependencies]
+armory_lib = "^0.1"
+
 [[module]]
 id = "runtime"
 file = "crates/horizon-client/src/game.rs"
@@ -20,57 +28,10 @@ name = "useful_armory"
 source = "runtime.rs"
 
 [[module]]
-id = "glue"
-file = "crates/horizon-client/src/game.rs"
-name = "useful_armory_glue"
-source = "glue.rs"
-
-[[module]]
 id = "gear"
 file = "crates/horizon-client/src/game.rs"
 name = "useful_armory_gear"
 source = "gear.rs"
-
-[[injection]]
-id = "visuals"
-kind = "HEAD"
-target = "horizon_client::game::native_hooks::Game<'_>::native_visuals"
-helper = "visuals.rs"
-bindings = [
-  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
-  { name = "lights", ty = "&mut Vec<horizon_client::mod_api::NativeColoredLight>", value = "&mut *lights" },
-]
-
-[[injection]]
-id = "list"
-kind = "HEAD"
-target = "horizon_client::game::native_hooks::Game<'_>::native_mods"
-helper = "list.rs"
-bindings = [
-  { name = "mods", ty = "&mut Vec<horizon_client::mod_api::NativeMod>", value = "&mut *mods" },
-]
-
-[[injection]]
-id = "settings"
-kind = "HEAD"
-target = "horizon_client::game::native_hooks::Game<'_>::native_settings"
-helper = "settings.rs"
-bindings = [
-  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
-  { name = "mod_id", ty = "&str", value = "mod_id" },
-  { name = "buttons", ty = "&mut Vec<String>", value = "&mut *buttons" },
-]
-
-[[injection]]
-id = "click"
-kind = "HEAD"
-target = "horizon_client::game::native_hooks::Game<'_>::native_settings_click"
-helper = "click.rs"
-bindings = [
-  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
-  { name = "mod_id", ty = "&str", value = "mod_id" },
-  { name = "button", ty = "usize", value = "button" },
-]
 
 # Set bonuses: effects and the ultimate set's healing each player tick (with that player
 # swapped in), falls and explosions in the incoming damage, the obsidian set's knockback,

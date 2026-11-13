@@ -1,0 +1,12 @@
+[package]
+name = "useful_armory_native"
+version = "0.1.7"
+edition = "2024"
+publish = false
+license = "MPL-2.0"
+description = "Useful Armory's registrations with Armory Lib: glowing gear, mob looks and rules, the settings page."
+
+[dependencies]
+# The launcher points this at the Horizon source it builds the game from, and adds
+# `armory_lib` itself from this bundle's [dependencies] in horizon-mixin.toml.
+horizon-client = { git = "https://github.com/horizon-rust/horizon", rev = "fdc87aecdbd116bf1e08adcd062fcbaea8c2e2ca" }

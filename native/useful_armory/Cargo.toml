@@ -9,3 +9,8 @@ description = "Useful Armory's native half for Horizon: the glow, armour set bon
 # The mod's logic and its tests: the same file the bundle adds to the game.
 [lib]
 path = "mixins/useful_armory/runtime.rs"
+
+# The tables the mod registers with Armory Lib (api/), and their tests.
+[[test]]
+name = "content"
+path = "mixins/useful_armory/api/src/content.rs"

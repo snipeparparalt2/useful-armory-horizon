@@ -59,7 +59,8 @@ Useful Armory is a mod for **Horizon**, a Rust rewrite of Minecraft: Java Editio
   (`vault_guardian`, `tower_sentry`) used in spawners, deepslate versions of the three ores.
 
 **Phase 2, gear that does things (native).** In `native/useful_armory/mixins/useful_armory/`
-(`runtime.rs` pure logic with unit tests, `gear.rs`, `glue.rs`, one small file per hook).
+(`runtime.rs` pure logic with unit tests, `gear.rs`, one small file per hook; the glow and the
+settings page are registered with Armory Lib from `api/`).
 Tooltips are added to item JSON by `tools/gen_phase2.py`.
 - Coloured glow light from glowing gear (held, worn, dropped).
 - Full-set armour bonuses: Aquite water breathing and dolphin's grace; Colosifite fire
@@ -101,59 +102,71 @@ crypt was simulated against Horizon's jigsaw rules (400 layouts, each with one t
 
 ## Still to do for 0.1.7
 
-### First: the native library `armory_lib`
-Build this before the rest of the native work, because phases 3 to 5 sit on it.
+### The native library `armory_lib` (0.1.0 built 2026-11-12, not play-tested)
+It lives in **its own repository**, https://github.com/snipeparparalt2/armory_lib (work on its
+`main`), not in `native/armory_lib/`. Its README documents the API.
 
-**How Horizon does libraries** (`docs/native-mods.md`, "Dependencies between trait mods", at
-`fdc87ae`):
-- The library is a trait mod whose bundle has an `[api]` package. Its public functions and
-  statics are what other mods call.
-- Useful Armory's native bundle needs an `[api]` package too, and declares the library in its
-  `horizon-mixin.toml`:
-  ```toml
-  [dependencies]
-  armory_lib = "^0.1"
-  ```
-  The requirement is checked against the library bundle's `[mod] version`, not its Cargo
-  version.
-- The launcher adds the path dependency itself, using the mod id as the Cargo alias. Don't
-  write it in `Cargo.toml`. An optional dependency gets a Cargo feature named after the mod id.
-- Hooks run in dependency order, so the library runs before Useful Armory. A missing
-  dependency, a version mismatch or a cycle stops the build and names the mods.
-- Crates only from Horizon's `Cargo.lock`. Public statics need proper synchronisation, because
-  hooks can be shared and re-entered.
+**How it is built** (checked against Horizon's launcher source, `launcher/src/native_mods/api.rs`
+and `dependencies.rs`, at `fdc87ae`):
+- It is a pure trait mod: a bundle with only an `[api]` package (`mixins/armory_lib/api/`, Cargo
+  package `armory_lib`) and no mixin injections. It uses catalog hooks and `Host` only.
+- Useful Armory's bundle now has an `[api]` package too (`native/useful_armory/mixins/useful_armory/api/`)
+  and `[dependencies] armory_lib = "^0.1"` in `horizon-mixin.toml`. Its `hooks()` registers the
+  mod's tables (`api/src/content.rs`) with the library. The launcher adds the Cargo dependency
+  itself; don't write it in `Cargo.toml`.
+- The launcher copies each `[api]` folder to `native-api/<mod id>/` in the game's workspace,
+  points `horizon-client` at `crates/horizon-client`, generates `crates/native-game` whose `main`
+  calls each mod's `hooks()` in dependency order, and strips `[api]` and `[dependencies]` from the
+  manifest before horizon-mixins reads it.
+- Mixin modules are `pub(crate)` inside the game crate, so an `[api]` package can't call them and
+  they can't call it. Data both sides need is kept in one place and reached through the game's
+  own state (settings files) or duplicated deliberately (the switch keys).
 
-**Layout:** `native/armory_lib/` in this repo, packed by `tools/package.py` into
-`dist/armory_lib-<version>.hnmod` beside Useful Armory's two files. Check with the registry
-(`horizon-rust/horizon-mods`) whether one repository can list two projects. If it can't, move the
-library to its own repository before release.
+**What 0.1.0 has, and what Useful Armory uses:**
+1. Mob looks (`register_mob_look`): a vanilla model layer baked with `Host::bake_layer`
+   (`minecraft:zombie#main`), posed each frame and drawn with `Host::draw_model_part` in
+   `mob_submit`, plus an emissive pass. Used for all six mobs. This replaced the block-model-parts
+   idea: Horizon has real entity model layers at this commit.
+2. Mob rules (`register_mob_rules`): no conversion (`living_conversion_pre`), burning harmless
+   (`living_incoming_damage_v3`), hit effects on players. Used for all six; the tide lurker slows.
+3. Carried-item effects (`register_carried_effect`): effects only. Not used yet (phase 4 trinkets
+   use attribute modifiers; see below).
+4. Coloured gear light (`register_gear_light`): moved out of Useful Armory (`glue.rs` is gone).
+5. Settings pages (`register_page`, `switch`): Useful Armory's page moved here. `runtime.rs` reads
+   the switch files again once a second, because the library writes them now.
 
-**Keep it generic:** no Useful Armory ids inside. Mods register what they need at start. What it
-should offer, in the order Useful Armory needs it:
-1. **Mob rigs** (phase 3): register a mod entity type with a rig (humanoid 64x64, wolf, chicken),
-   its texture and part models. The library draws it in `native_mob_submit` with the frame's
-   walk cycle and head turn (`native_standalone_models` and `native_draw_model`), and an
-   optional emissive layer. This one piece gives every new mob its look.
-2. **Mob rule overrides** (phase 3): per entity type, no sunburn, no drowned conversion, and
-   on-hit effects (slowness, fire).
-3. **Carried-item effects** (phase 4): attribute modifiers or effects applied while an item is
-   in the hotbar, off hand or worn. This covers trinkets in the hotbar and full-set bonuses.
-4. **Coloured gear light** (already in Useful Armory's native half): move the glow code here
-   and let mods register `item -> colour, level`.
-5. **Item inventories** (phase 4): contents kept on the item (backpacks), with a menu and screen.
-6. **Waypoints** (phase 4): per-player discovered and named places, safe teleport, an
-   experience cost by distance.
-7. **Block menus and screens** (phase 5): a small layer over `native_block_entity_container`
-   and `native_screen` for the soul forge and later blocks.
-8. **Settings** (already in Useful Armory): a helper for an Options > Mods page with one
-   switch per feature.
+**Not in the library yet:** item inventories, waypoints, block menus and screens, attribute
+modifiers as carried effects, bodies built in code (`layer_definitions`) for the armory golem and
+bosses.
 
-Each piece ships with unit tests in pure Rust (like `runtime.rs`), a short section in
-`native/armory_lib/README.md`, and a semver bump when its API changes.
+**Limits found:**
+- No hook stops the sun lighting an undead copy (`burn_undead` in `mobs/ai.rs` only checks the
+  head slot). `fire_proof` cancels the damage; the flames still draw. A true fix needs a mixin
+  injection at `burn_undead` or a Horizon hook.
+- `Host` has no way to set a player on fire, so the ember brute's burning hit is not done.
+- `living_incoming_damage_v2` fires only for a player's weapon hit; mob-on-player damage is v3,
+  which has no host, so hit effects are applied in the hurt player's next `player_tick`.
 
-**Release:** the README install section becomes three files: the library's `.hnmod` goes in
-`horizon-native-mods/` too. Sign the library's file as well.
+**Checking both mods together** (what the last session ran; all passed):
+```sh
+(cd armory_lib && cargo test)                       # 14 logic tests
+(cd native/useful_armory && cargo test)             # 16 + 2 tests
+HORIZON_SRC=<checkout> armory_lib/tools/check.sh    # the library alone
+```
+For the whole game, reproduce the launcher by hand: strip `[api]`/`[dependencies]` from a copy of
+Useful Armory's manifest, `horizon-mixins apply`, copy both `api/` folders to `native-api/<id>/`
+(rewrite `horizon-client` to the path dependency; add `armory_lib = { path = "../armory_lib",
+package = "armory_lib" }` to Useful Armory's), write `crates/native-game` as `api.rs` generates it,
+add the three to the workspace members, then
+`RUSTFLAGS="-D warnings" cargo check -p horizon-native-game`. The real launcher build has not
+been run.
 
+**Release:** three files for players: the library's `.hnmod` goes in `horizon-native-mods/` too,
+from the library's own GitHub release (`v0.1.0`), signed, with its own registry listing
+(`horizon-registry.toml` and `docs/images/icon.png` are in its repo). Registry entries have one
+id each, and existing two-part mods there list their halves under two ids (for example
+`wayfarer_stones` and `wayfarer_stones_native`), so ask the registry how to list Useful Armory's
+two files, which share one id.
 
 ### Phase 3: creatures
 **Data side done (2026-11-12, `tools/gen_phase1.py` MOBS and SPAWNS):** entity types, loot tables,
@@ -165,7 +178,10 @@ Shades spawn in dripstone caves, lush caves and the deep dark; tide lurkers on b
 swamps; ember brutes in badlands and savanna; lost pigmen in nether wastes. Themed spawners swapped
 in: a shade in the crypt's collapsed room and the vault corridor, an ember brute in the
 watchtower lookout, a lost pigman in the pigman outpost.
-**Native side still to do (could not be compiled in that session; crates.io was unreachable):**
+**Native side, done through Armory Lib (2026-11-12, type-checked, not play-tested):** looks for
+the four mobs and the two guardians, no drowned conversion, no death from burning, the tide
+lurker's slowing hit. **Still to do:** the ember brute's burning hit (see the library's limits),
+sounds, gold chicken, shadow hound, armory golem. The notes below are the earlier plan:
 - Looks: a mod living type uses its template's model and texture (`mobs.rs`), so they look like
   zombies until `native_mob_submit` draws them. That hook draws block-model parts
   (`native_standalone_models` + `native_draw_model`), not a skinned mob. Make head, body, arm and
@@ -368,8 +384,8 @@ has picked them.**
 >    left, the owner's decisions, and the repo's tools and traps.
 > 2. Phases 1 and 2, the phase 3 mob data and the 0.1.7 art are done, but none of it has been
 >    tested in game.
-> 3. Next, in order: build the native library `armory_lib` (see "First: the native library" in
->    HANDOFF), then the phase 3 native work on top of it (mob looks with `native_mob_submit`, no sunburn or
+> 3. Next, in order: the rest of the phase 3 native work on top of `armory_lib` (its own repo; see
+>    "The native library" in HANDOFF) (mob looks with `native_mob_submit`, no sunburn or
 >    drowned conversion for our mobs, tide lurker slow, ember brute fire, the gold chicken,
 >    shadow hound and armory golem). Then phases 4 and 5 and the extras, then "Before release".
 >    The textures for the new mobs and items are already in `content/assets/useful_armory/textures/`.

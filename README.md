@@ -147,13 +147,14 @@ pack.
 
 You need **Horizon nightly `fdc87ae`** (2026-11-08), which runs game data 26.3.
 
-From 0.1.7 on, Useful Armory comes as **two files** with the same id. Both are attached to each
-[release](../../releases):
+From 0.1.7 on, Useful Armory comes as **two files** with the same id, attached to each
+[release](../../releases), and needs the library mod [Armory Lib](https://github.com/snipeparparalt2/armory_lib):
 
 | File | Put it in | What it is |
 |---|---|---|
 | `useful_armory-<version>.hmod` | `horizon-mods/` | Items, blocks, recipes, loot, places and world generation |
 | `useful_armory-<version>.hnmod` | `horizon-native-mods/` | The Rust code for glowing gear, set bonuses, tool abilities and weapon effects. The launcher compiles it into the game. |
+| `armory_lib-<version>.hnmod` ([Armory Lib releases](https://github.com/snipeparparalt2/armory_lib/releases)) | `horizon-native-mods/` | The library the native half is built on: it draws the glow and the new mobs and keeps the settings page. |
 
 1. Open your Horizon game folder. On a default Windows install it is `%APPDATA%\horizon`.
 2. Put each file in its folder, and remove older copies of Useful Armory.
@@ -206,7 +207,7 @@ overwrite their files, so review the changes before committing. Releases are sig
 ## Repository map
 
 - `content/`: everything the content mod loads (textures, models, recipes, loot, places)
-- `native/useful_armory/`: the native half (Rust)
+- `native/useful_armory/`: the native half (Rust). It depends on [Armory Lib](https://github.com/snipeparparalt2/armory_lib), which has its own repository
 - `tools/`: generators, packaging and the item list
 - `docs/`: [items](docs/items.md), [roadmap](docs/ROADMAP.md), [validation](docs/VALIDATION.md), [screenshots](docs/SCREENSHOTS.md), [signing](docs/SIGNING.md)
 - `dist/`: the latest built packages and their checksums

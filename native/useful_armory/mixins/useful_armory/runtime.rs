@@ -1,6 +1,7 @@
 // Useful Armory, native half: what the content mod's items do beyond data.
 //
-// - The glow: glowing gear casts real coloured light while held, worn or dropped.
+// - The glow (glowing gear casts real coloured light) is Armory Lib's now: `api/` registers
+//   the items with it, and the mod's page in Options > Mods too.
 // - Gear that does things (phase 2): full armour sets give bonuses, some tools dig more
 //   than one block while sneaking (vein mining, a 3 x 3 wide dig, tree felling), hoes and
 //   the reaper scythe harvest and replant an area of grown crops, and weapons have effects
@@ -11,125 +12,11 @@
 // bundle adds to the game (`game::useful_armory`) and this folder's Cargo library, so
 // `cargo test` runs it without the game. `glue.rs` and `gear.rs` read and change the game.
 
-/// The mod's id (Options > Mods; the content mod's id too), name and version.
+/// The mod's id (Options > Mods; the content mod's id too).
 pub const ID: &str = "useful_armory";
-pub const NAME: &str = "Useful Armory";
-pub const VERSION: &str = "0.1.7";
-pub const DESCRIPTION: &str = "Glowing gear lights up the world; full armour sets give bonuses; sneak to vein mine, dig 3 x 3 or fell trees; hoes harvest an area; weapons have effects. Each part can be switched off here.";
 
 /// The content mod's namespace: only its items are looked up.
 const NAMESPACE: &str = "useful_armory:";
-
-/// Item id (without the namespace) -> glow colour, 0xRRGGBB. Sorted by id: `glow_of` does a
-/// binary search. These are the sprites gen_textures.py marks as glowing (its GLOW table).
-const GLOW: &[(&str, u32)] = &[
-    ("aquiteaxe", 0x8cffe2),
-    ("aquitebody", 0x8cffe2),
-    ("aquiteboots", 0x8cffe2),
-    ("aquitedagger", 0x8cffe2),
-    ("aquitegreatsword", 0x8cffe2),
-    ("aquitehalbert", 0x8cffe2),
-    ("aquitehelmet", 0x8cffe2),
-    ("aquitehoe", 0x8cffe2),
-    ("aquitelegs", 0x8cffe2),
-    ("aquitepickaxe", 0x8cffe2),
-    ("aquiteshovel", 0x8cffe2),
-    ("aquitesword", 0x8cffe2),
-    ("erottenflesh", 0xb4ff46),
-    ("lavasword", 0xff8c1e),
-    ("shadowaxe", 0x9e60ff),
-    ("shadowbody", 0x9e60ff),
-    ("shadowboots", 0x9e60ff),
-    ("shadowdagger", 0x9e60ff),
-    ("shadowgreatsword", 0x9e60ff),
-    ("shadowhelmet", 0x9e60ff),
-    ("shadowhoe", 0x9e60ff),
-    ("shadowlegs", 0x9e60ff),
-    ("shadowotehrweapon", 0x9e60ff),
-    ("shadowpickaxe", 0x9e60ff),
-    ("shadowshovel", 0x9e60ff),
-    ("shadowsword", 0x9e60ff),
-    ("souleater", 0xe8aaec),
-    ("soulednetherstar", 0x96f0ff),
-    ("thenetherlegacy", 0x50e6f0),
-];
-
-/// Horizon draws at most 8 coloured lights per mod (16 in all); the nearest ones are kept.
-pub const MAX_LIGHTS: usize = 6;
-/// Horizon refuses lights more than 32 blocks from the player; stay well inside.
-pub const REACH: f64 = 24.0;
-
-/// A held item counts fully, a worn armour piece half.
-const HELD: f32 = 1.0;
-const WORN: f32 = 0.5;
-
-/// One coloured light: what Horizon's `NativeColoredLight` takes besides the position.
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Glow {
-    pub rgb: u32,
-    /// Blocks, 0.25 to 16.
-    pub radius: f32,
-    /// 0 to 1.
-    pub intensity: f32,
-}
-
-/// The colour an item glows in, if it does.
-pub fn glow_of(item: &str) -> Option<u32> {
-    let name = item.strip_prefix(NAMESPACE)?;
-    GLOW.binary_search_by(|(id, _)| (*id).cmp(name))
-        .ok()
-        .map(|i| GLOW[i].1)
-}
-
-/// The light of what someone holds (main hand, off hand) and wears (head, chest, legs, feet).
-/// More glowing gear reaches further and shines brighter; mixed sets blend their colours.
-pub fn glow(held: [Option<&str>; 2], worn: [Option<&str>; 4]) -> Option<Glow> {
-    let mut sum = [0.0f32; 3];
-    let mut weight = 0.0f32;
-    let pieces = held
-        .into_iter()
-        .map(|i| (i, HELD))
-        .chain(worn.into_iter().map(|i| (i, WORN)));
-    for (item, w) in pieces {
-        let Some(rgb) = item.and_then(glow_of) else {
-            continue;
-        };
-        let [_, r, g, b] = rgb.to_be_bytes();
-        sum[0] += f32::from(r) * w;
-        sum[1] += f32::from(g) * w;
-        sum[2] += f32::from(b) * w;
-        weight += w;
-    }
-    if weight <= 0.0 {
-        return None;
-    }
-    let channel = |v: f32| (v / weight).round().clamp(0.0, 255.0) as u32;
-    Some(Glow {
-        rgb: channel(sum[0]) << 16 | channel(sum[1]) << 8 | channel(sum[2]),
-        // One held item: 6.5 blocks at 0.45. A full set and a weapon: 9.5 blocks at 0.75.
-        radius: (5.0 + 1.5 * weight).min(11.0),
-        intensity: (0.30 + 0.15 * weight).min(0.9),
-    })
-}
-
-/// The fainter light of a glowing item lying on the ground.
-pub fn dropped(item: &str) -> Option<Glow> {
-    glow_of(item).map(|rgb| Glow {
-        rgb,
-        radius: 3.5,
-        intensity: 0.3,
-    })
-}
-
-/// Keeps the `max` lights nearest `player` within `REACH`, nearest first.
-pub fn nearest(player: [f64; 3], lights: &mut Vec<([f64; 3], Glow)>, max: usize) {
-    let far = |at: &[f64; 3]| {
-        (at[0] - player[0]).powi(2) + (at[1] - player[1]).powi(2) + (at[2] - player[2]).powi(2)
-    };
-    lights.retain(|(at, _)| at.iter().all(|v| v.is_finite()) && far(at) <= REACH * REACH);
-    lights.sort_by(|a, b| far(&a.0).total_cmp(&far(&b.0)));
-    lights.truncate(max);
-}
 
 // ---------------------------------------------------------------------------------------
 // Settings: one switch per part, on Options > Mods > Useful Armory.
@@ -138,7 +25,6 @@ pub fn nearest(player: [f64; 3], lights: &mut Vec<([f64; 3], Glow)>, max: usize)
 /// The parts of the mod a player can switch off on its settings page, in the page's order.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Feature {
-    Glow,
     SetBonuses,
     VeinMining,
     WideDig,
@@ -148,8 +34,7 @@ pub enum Feature {
 }
 
 impl Feature {
-    pub const ALL: [Feature; 7] = [
-        Feature::Glow,
+    pub const ALL: [Feature; 6] = [
         Feature::SetBonuses,
         Feature::VeinMining,
         Feature::WideDig,
@@ -161,25 +46,12 @@ impl Feature {
     /// The setting's file name in the mod's data folder.
     pub fn key(self) -> &'static str {
         match self {
-            Feature::Glow => "glow",
             Feature::SetBonuses => "set_bonuses",
             Feature::VeinMining => "vein_mining",
             Feature::WideDig => "wide_dig",
             Feature::TreeFelling => "tree_felling",
             Feature::HarvestSweep => "harvest_sweep",
             Feature::WeaponEffects => "weapon_effects",
-        }
-    }
-
-    pub fn label(self) -> &'static str {
-        match self {
-            Feature::Glow => "Glow",
-            Feature::SetBonuses => "Set bonuses",
-            Feature::VeinMining => "Vein mining",
-            Feature::WideDig => "Wide dig",
-            Feature::TreeFelling => "Tree felling",
-            Feature::HarvestSweep => "Harvest sweep",
-            Feature::WeaponEffects => "Weapon effects",
         }
     }
 
@@ -193,23 +65,31 @@ pub fn read_flag(stored: Option<String>) -> bool {
     stored.is_none_or(|v| v.trim() != "false")
 }
 
-/// A settings button's label: `Vein mining: ON`.
-pub fn setting_label(feature: Feature, on: bool) -> String {
-    format!("{}: {}", feature.label(), if on { "ON" } else { "OFF" })
-}
-
 /// The switches, one bit per `Feature`, and `LOADED` once read from their files. Shared by
-/// every thread: the window's settings page writes them, the server thread's hooks read them.
+/// every thread: the server thread's hooks read them. The settings page is Armory Lib's, so
+/// the files are read again once they are a second old.
 static FLAGS: std::sync::atomic::AtomicU32 = std::sync::atomic::AtomicU32::new(0);
 const LOADED: u32 = 1 << 31;
+/// When the switches were last read, in milliseconds since the first read.
+static READ_AT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+const FRESH_MS: u64 = 1000;
 
-/// Whether `feature` is on. The first call reads every switch through `read` (the setting
-/// files); later calls read the kept bits.
+fn now_ms() -> u64 {
+    static START: std::sync::OnceLock<std::time::Instant> = std::sync::OnceLock::new();
+    START.get_or_init(std::time::Instant::now).elapsed().as_millis() as u64
+}
+
+/// Whether `feature` is on. Reads every switch through `read` (the setting files) the
+/// first time and again once the kept bits are a second old.
 pub fn enabled(feature: Feature, read: impl FnMut(&str) -> Option<String>) -> bool {
+    enabled_at(feature, now_ms(), read)
+}
+
+fn enabled_at(feature: Feature, now: u64, read: impl FnMut(&str) -> Option<String>) -> bool {
     use std::sync::atomic::Ordering;
     let mut read = read;
     let mut flags = FLAGS.load(Ordering::Acquire);
-    if flags & LOADED == 0 {
+    if flags & LOADED == 0 || now.saturating_sub(READ_AT.load(Ordering::Acquire)) >= FRESH_MS {
         flags = LOADED;
         for f in Feature::ALL {
             if read_flag(read(f.key())) {
@@ -217,6 +97,7 @@ pub fn enabled(feature: Feature, read: impl FnMut(&str) -> Option<String>) -> bo
             }
         }
         FLAGS.store(flags, Ordering::Release);
+        READ_AT.store(now, Ordering::Release);
     }
     flags & feature.bit() != 0
 }
@@ -226,17 +107,6 @@ pub fn enabled(feature: Feature, read: impl FnMut(&str) -> Option<String>) -> bo
 pub fn enabled_now(feature: Feature) -> bool {
     let flags = FLAGS.load(std::sync::atomic::Ordering::Acquire);
     flags & LOADED == 0 || flags & feature.bit() != 0
-}
-
-/// Switches `feature` (the settings page); the caller keeps it in its file.
-pub fn set_enabled(feature: Feature, on: bool, read: impl FnMut(&str) -> Option<String>) {
-    use std::sync::atomic::Ordering;
-    enabled(feature, read);
-    if on {
-        FLAGS.fetch_or(feature.bit(), Ordering::AcqRel);
-    } else {
-        FLAGS.fetch_and(!feature.bit(), Ordering::AcqRel);
-    }
 }
 
 /// Whether the mod is on in Options > Mods, as the last server hook with a game saw it, for
@@ -940,67 +810,6 @@ pub fn take_head(entity: u32) -> Option<&'static str> {
 mod tests {
     use super::*;
 
-    #[test]
-    fn the_table_is_sorted_for_the_binary_search() {
-        assert!(GLOW.windows(2).all(|w| w[0].0 < w[1].0));
-        assert!(GLOW.iter().all(|(_, rgb)| *rgb <= 0xff_ffff));
-    }
-
-    #[test]
-    fn only_glowing_useful_armory_items_glow() {
-        assert_eq!(glow_of("useful_armory:shadowsword"), Some(0x9e60ff));
-        assert_eq!(glow_of("useful_armory:aquitehelmet"), Some(0x8cffe2));
-        assert_eq!(glow_of("useful_armory:lavasword"), Some(0xff8c1e));
-        assert_eq!(glow_of("useful_armory:emeraldsword"), None);
-        assert_eq!(glow_of("minecraft:torch"), None);
-        assert_eq!(glow_of("shadowsword"), None);
-    }
-
-    #[test]
-    fn more_gear_shines_further_and_stays_in_horizons_bounds() {
-        let sword = glow([Some("useful_armory:shadowsword"), None], [None; 4]).unwrap();
-        assert_eq!(sword.rgb, 0x9e60ff);
-        let set = glow(
-            [Some("useful_armory:shadowsword"), None],
-            [
-                Some("useful_armory:shadowhelmet"),
-                Some("useful_armory:shadowbody"),
-                Some("useful_armory:shadowlegs"),
-                Some("useful_armory:shadowboots"),
-            ],
-        )
-        .unwrap();
-        assert_eq!(set.rgb, 0x9e60ff);
-        assert!(set.radius > sword.radius && set.intensity > sword.intensity);
-        for g in [sword, set] {
-            assert!((0.25..=16.0).contains(&g.radius) && (0.0..=1.0).contains(&g.intensity));
-        }
-        assert_eq!(glow([Some("minecraft:torch"), None], [None; 4]), None);
-        assert_eq!(glow([None; 2], [None; 4]), None);
-    }
-
-    #[test]
-    fn mixed_sets_blend() {
-        let g = glow(
-            [Some("useful_armory:shadowsword"), Some("useful_armory:aquitesword")],
-            [None; 4],
-        )
-        .unwrap();
-        assert_eq!(g.rgb, 0x95b0f1);
-    }
-
-    #[test]
-    fn the_nearest_lights_within_reach_are_kept() {
-        let g = dropped("useful_armory:soulednetherstar").unwrap();
-        let mut lights: Vec<_> = (0..10).map(|i| ([f64::from(i) * 4.0, 64.0, 0.0], g)).collect();
-        lights.push(([f64::NAN, 64.0, 0.0], g));
-        lights.reverse();
-        nearest([0.0, 64.0, 0.0], &mut lights, MAX_LIGHTS);
-        assert_eq!(lights.len(), MAX_LIGHTS);
-        assert_eq!(lights[0].0[0], 0.0);
-        assert!(lights.iter().all(|(at, _)| at[0] <= REACH));
-    }
-
     // ---- Phase 2 ----
 
     fn ua(id: &str) -> String {
@@ -1012,28 +821,24 @@ mod tests {
         assert!(read_flag(None));
         assert!(read_flag(Some("true".into())));
         assert!(!read_flag(Some(" false\n".into())));
-        assert_eq!(setting_label(Feature::VeinMining, true), "Vein mining: ON");
-        assert_eq!(setting_label(Feature::Glow, false), "Glow: OFF");
         let keys: std::collections::HashSet<_> = Feature::ALL.iter().map(|f| f.key()).collect();
         assert_eq!(keys.len(), Feature::ALL.len());
     }
 
     #[test]
-    fn settings_load_once_and_switch() {
+    fn settings_load_and_refresh() {
         // Only this test touches the switches.
         let mut asked = 0;
-        assert!(!enabled(Feature::WideDig, |k| {
+        assert!(!enabled_at(Feature::WideDig, 5_000, |k| {
             asked += 1;
             (k == "wide_dig").then(|| "false".to_owned())
         }));
         assert_eq!(asked, Feature::ALL.len());
-        assert!(enabled(Feature::Glow, |_| panic!("read again")));
+        assert!(enabled_at(Feature::VeinMining, 5_500, |_| panic!("read again too soon")));
         assert!(!enabled_now(Feature::WideDig));
-        set_enabled(Feature::WideDig, true, |_| None);
-        assert!(enabled(Feature::WideDig, |_| None));
-        set_enabled(Feature::Glow, false, |_| None);
-        assert!(!enabled_now(Feature::Glow));
-        assert!(enabled_now(Feature::VeinMining));
+        // A second on, the page's change is picked up.
+        assert!(enabled_at(Feature::WideDig, 6_000, |_| None));
+        assert!(enabled_now(Feature::WideDig));
     }
 
     #[test]

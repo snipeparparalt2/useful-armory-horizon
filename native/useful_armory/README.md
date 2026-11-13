@@ -1,7 +1,9 @@
 # Useful Armory, native half (Horizon native mod)
 
 The behaviour the content mod can't do as data. It has the same id as the content mod,
-`useful_armory`, which holds the items. It does five things, each with its own switch:
+`useful_armory`, which holds the items. It needs [Armory Lib](https://github.com/snipeparparalt2/armory_lib) (`armory_lib`), the
+library mod that draws the glow and the mod's creatures and keeps the settings page. It does
+five things, each with its own switch:
 
 - **Glow**: glowing gear casts coloured light.
 - **Set bonuses**: a full armour set gives a bonus.
@@ -37,6 +39,15 @@ One held item lights about 6 blocks. Each extra glowing piece (other hand, each 
 makes the light reach further and shine brighter; a full set with its weapon reaches about
 9 blocks. Mixed sets blend their colours. It is a visual light (Horizon's `native_visuals`
 coloured lights): it does not stop mobs spawning or change the light level blocks see.
+Armory Lib draws it; this mod registers the items and colours (`api/src/content.rs`).
+
+## Creatures
+
+The shade, tide lurker, ember brute, lost pigman, vault guardian and tower sentry are copies
+of the zombie in the content mod. Registered with Armory Lib, each is drawn with its own
+texture and glowing layer on the zombie's body, doesn't turn into a drowned, and takes no
+damage from burning (so daylight can't kill it; the flames still show). A tide lurker's hit
+slows the player for 5 seconds.
 
 ## Set bonuses
 
@@ -103,15 +114,17 @@ The numbers are named constants at the top of each part of `runtime.rs`.
 
 Options > Mods > Useful Armory switches the whole mod on and off. Its page has one switch per
 part: Glow, Set bonuses, Vein mining, Wide dig, Tree felling, Harvest sweep, Weapon effects (all
-on at first). They are kept as files in `horizon-mods/.horizon-mod-data/useful_armory/`. If you
+on at first). Armory Lib draws the page; a change takes effect within a second. They are kept as files in `horizon-mods/.horizon-mod-data/useful_armory/`. If you
 also run the Veinminer or TreeFall native mods, switch off the matching part here (or there):
 both would act on the same break. The server's own switches count, so on a LAN world the host's.
 
 ## Install
 
-Needs the Useful Armory content mod (the `useful_armory` `.hmod` in `horizon-mods/`) for the items.
+Needs the Useful Armory content mod (the `useful_armory` `.hmod` in `horizon-mods/`) for the items,
+and [Armory Lib](https://github.com/snipeparparalt2/armory_lib).
 
-1. Put `useful_armory-<version>.hnmod` in the instance's `horizon-native-mods/` folder.
+1. Put `useful_armory-<version>.hnmod` and `armory_lib-<version>.hnmod` in the instance's
+   `horizon-native-mods/` folder. Without the library the launcher's build stops and says so.
 2. In the Horizon launcher open Mods and press **Build**. Native mods are Rust that is compiled
    into the game, so the launcher downloads its own Rust and rebuilds the game once.
 3. In game: Options > Mods > Useful Armory switches it on and off.
@@ -124,18 +137,16 @@ or `python3 tools/package.py` (or `node tools/package.cjs`) for the `.hnmod`.
 | File | What it is |
 |---|---|
 | `compatibility.json` | The Horizon and horizon-mixins commits it was made and checked on |
-| `mixins/useful_armory/horizon-mixin.toml` | The bundle: three modules and the HEAD hooks below, pinned to Horizon `fdc87ae` |
-| `mixins/useful_armory/runtime.rs` | The decisions, with no game in them: which items glow and do what, set detection, the flood fill, the 3 x 3 geometry, the backstab angle, the caps, the switches. Also this crate's library: `cargo test` |
-| `mixins/useful_armory/glue.rs` | The glow (the player's hands and armour, the mobs, the dropped items), the mod's row and its settings page |
+| `mixins/useful_armory/horizon-mixin.toml` | The bundle: two modules and the HEAD hooks below, the `[api]` package and the dependency on `armory_lib`, pinned to Horizon `fdc87ae` |
+| `mixins/useful_armory/runtime.rs` | The decisions, with no game in them: which items do what, set detection, the flood fill, the 3 x 3 geometry, the backstab angle, the caps, the switches. Also this crate's library: `cargo test` |
+| `mixins/useful_armory/api/` | The package the launcher links beside the game. `src/content.rs` lists the glowing items, the creatures and the settings switches; `src/lib.rs` registers them with Armory Lib |
 | `mixins/useful_armory/gear.rs` | Set bonuses, tool abilities, harvest sweep and weapon effects: what they read and change in the game |
-| the other `.rs` files | One small helper per hook, calling into `glue.rs` or `gear.rs` |
+| the other `.rs` files | One small helper per hook, calling into `gear.rs` |
 
 ## Hooks used
 
 | Hook point | For |
 |---|---|
-| `native_visuals` | The glow's lights |
-| `native_mods`, `native_settings`, `native_settings_click` | The mod's row and settings page |
 | `native_player_tick` | Reads each player's armour (`native_equipment`), gives the set effects (`native_add_effect`, `native_remove_effect`), heals the ultimate set (`native_set_player_status`), deals greatsword splashes (`native_mobs`, `native_hurt_entity`) |
 | `native_living_incoming_damage_v3` | No fall damage (ultimate), half explosion damage (obsidian), for the player victim by UUID |
 | `native_living_knockback` | The obsidian set's knockback, for the player victim by entity id |
