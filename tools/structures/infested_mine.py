@@ -1,6 +1,10 @@
-"""Infested mine (underground, Y -20 to 40; common): an abandoned mine overrun by spiders.
+"""Infested mine (common): an abandoned mine overrun by spiders, about 28 blocks under a
+fallen headframe hung with webs.
 
-One 46 x 15 x 46 piece on two levels (x east, z south):
+One surface-anchored piece, 46 x 38 x 46: the mine is y 0..14, the ground layer is
+y = GROUND, and a ladder shaft climbs from the north end of the main gallery to the
+collapsed headframe on the surface, so the place can be seen and entered.
+The mine itself, 46 x 15 x 46, on two levels (x east, z south):
   main gallery     x 19..26, z 2..30, six high, timber sets in poor repair, broken rails
   loading bay      east of the gallery's north half: platform, sidings, chute, crates (chest)
   lower drifts     A west (z 6..10, cave spider) and B east (z 17..21, cave spider)
@@ -20,7 +24,10 @@ import math
 
 from structkit import AIR, NS, Piece, block_name, state
 
-W, H, D = 46, 15, 46
+W, H, D = 46, 15, 46                   # the mine on its own
+GROUND = 28                            # the ground layer: ~13 blocks of rock over the mine
+PH = GROUND + 9                        # the whole piece's height
+SHAFT = (24, 2)                        # the ladder shaft (x, z), up from the gallery's north end
 LOW = 3                                # lower-level air starts here; y 0..2 is floor
 UP = 10                                # upper-level air starts here; floor at y 9
 WOOD = "oak"
@@ -465,6 +472,21 @@ def _nest(p):
 
 
 def build():
+    p = Piece("infested_mine", W, PH, D, "infested_mine_entry")
+    p.paste(_mine(), 0, 0, 0)
+    sx, sz = SHAFT
+    wall = p.mix(*ROCK)
+    for y in range(LOW, UP + 1):                          # rock behind the ladder in the gallery
+        p.set(sx, y, sz - 1, wall())
+    p.ladder_column(sx, sz, LOW, UP - 1, "south")
+    p.ladder_shaft(sx, sz, UP, GROUND, wall, WOOD, facing="south")
+    for y in (LOW + 6, UP + 3, UP + 9):                   # webs snagged in the shaft
+        p.set(sx + 1, y, sz, "minecraft:cobweb") if p.get(sx + 1, y, sz) == AIR else None
+    _surface(p)
+    return p
+
+
+def _mine():
     p = Piece("infested_mine", W, H, D, "infested_mine")
     _skin(p, _carve_all(p))
     _gallery(p)
@@ -479,14 +501,75 @@ def build():
     return p
 
 
+# ------------------------------------------------------------------ the surface
+def _surface(p):
+    """The fallen headframe: two legs still standing, two down across the yard, the head beam
+    hanging off one end, everything grey with webs; bones and a skull by the mouth, dead
+    bushes, a broken cart rail, a barrel of the last crew's supplies under the wreck."""
+    sx, sz = SHAFT
+    g = GROUND
+    ground = p.mix(("minecraft:coarse_dirt", 5), ("minecraft:gravel", 3), ("minecraft:dirt", 2),
+                   ("minecraft:mossy_cobblestone", 1), (state("minecraft:podzol", snowy="false"), 1))
+    for x in range(sx - 7, sx + 8):
+        for z in range(sz, sz + 13):
+            if (x, z) == (sx, sz) or not p.in_bounds(x, g, z):
+                continue
+            d = abs(x - sx) + abs(z - sz - 5)
+            if d <= 10 and p.rnd.random() < (1.0 if d <= 7 else 0.45):
+                p.set(x, g, z, ground())
+                for y in range(g + 1, g + 4):
+                    if not p.is_set(x, y, z):
+                        p.set(x, y, z, AIR)
+    wood = f"minecraft:{WOOD}_planks"
+    for x in range(sx - 1, sx + 2):                        # rotten collar round the mouth
+        for z in range(sz - 1, sz + 2):
+            if (x, z) != (sx, sz) and p.in_bounds(x, g, z):
+                p.set(x, g, z, wood if p.rnd.random() < 0.7 else "minecraft:mossy_cobblestone")
+    # standing legs on the west, a stub of head beam hanging off them
+    for z in (sz + 1, sz + 3):
+        for y in range(g + 1, g + 6):
+            p.log(sx - 2, y, z, WOOD)
+    for z in range(sz + 1, sz + 4):
+        p.log(sx - 2, g + 6, z, WOOD, axis="z")
+    p.log(sx - 1, g + 6, sz + 2, WOOD, axis="x")
+    p.log(sx, g + 5, sz + 2, WOOD, axis="x")              # the beam's broken end, sagging
+    # fallen legs across the yard
+    for i in range(6):
+        p.log(sx + 1 + i, g + 1, sz + 4 + (i // 3), WOOD, axis="x")
+        p.log(sx + 2, g + 1, sz + 6 + i, WOOD, axis="z") if i < 5 else None
+    # webs over everything
+    for x in range(sx - 3, sx + 6):
+        for y in range(g + 1, g + 7):
+            for z in range(sz, sz + 9):
+                if p.in_bounds(x, y, z) and p.get(x, y, z) in (AIR, None) and p.rnd.random() < 0.12:
+                    p.set(x, y, z, "minecraft:cobweb")
+    p.set(sx, g + 1, sz + 1, "minecraft:cobweb")
+    p.set(sx + 1, g + 1, sz, "minecraft:cobweb")
+    # bones, a skull and the crew's barrel under the wreck
+    p.set(sx - 1, g + 1, sz + 5, state("minecraft:bone_block", axis="x"))
+    p.set(sx + 3, g + 1, sz + 2, state("minecraft:skeleton_skull", rotation="5", powered="false"))
+    p.set(sx - 3, g + 1, sz + 7, state("minecraft:bone_block", axis="z"))
+    p.barrel(sx - 1, g + 1, sz + 3, "up")
+    for x, z in ((sx + 5, sz + 9), (sx - 5, sz + 4), (sx + 6, sz + 3)):
+        if p.in_bounds(x, g + 1, z):
+            p.set(x, g + 1, z, "minecraft:dead_bush")
+    for z in range(sz + 7, sz + 11):                       # a broken run of rail
+        if z != sz + 9:
+            p.set(sx, g + 1, z, state("minecraft:rail", shape="north_south", waterlogged="false"))
+
+
 PLACE = {
     "name": "infested_mine",
     "pieces": {"infested_mine": build},
-    "step": "underground_structures",
-    "start_height": (-20, 40),
-    "surface": False,
+    "step": "surface_structures",
+    # Ground layer y = GROUND sits on the top block (piece bottom = top block y + start_height,
+    # jigsaw.rs place_start), so the mine is always under land, ~13 blocks of rock down.
+    "start_height": -GROUND,
+    "surface": True,
     "terrain": "none",
-    "biomes": ["#minecraft:is_overworld"],
+    "biomes": [
+        "#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_savanna", "#minecraft:is_badlands", "#minecraft:is_hill", "#minecraft:is_mountain", "#minecraft:is_jungle", "minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:snowy_plains", "minecraft:swamp", "minecraft:dark_forest",
+    ],
     "spacing": 16,
     "separation": 6,
     "salt": 418200110,

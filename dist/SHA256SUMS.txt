@@ -1,1 +1,1 @@
-536edae6ce498f6bc24b15303e8dc6e7d5a7c775fd7158f4e6ebbaf581dc79b7  useful_armory-0.1.7.hmod
+c816088e2496c80d9e0e85946f62e9ae2ccbc570d39f71df6b9b473deffc6d30  useful_armory-0.1.7.hmod

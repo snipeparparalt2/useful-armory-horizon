@@ -100,15 +100,17 @@ Twelve generated places, with loot in every chest and barrel:
 | Colosifite watchtower | Hills, savanna, badlands. Guarded by tower sentries |
 | Bandit fort | Forests, taiga, savanna, plains, meadows |
 | Armory blacksmith | Plains, desert, savanna, snowy and taiga villages |
-| Pigman outpost | Nether wastes |
+| Pigman outpost | Nether wastes, just above the lava sea |
 | Shadow vault | A mausoleum on the surface, with a spiral stair down to the vault and its guardians |
-| Miner's cache | Underground, Y 0 to 40 |
-| Forgotten armory | Underground, Y -30 to 20, rare |
-| Infested mine | Underground, Y -20 to 40 |
+| Miner's cache | A mine junction under an old headframe; climb down the ladder shaft |
+| Forgotten armory | Rare. A buried arsenal under a ruined gatehouse; take the stair down |
+| Infested mine | A spider-filled mine under a fallen, web-hung headframe |
 | Crypt | A mausoleum entrance leading down into a multi-room dungeon with one treasure room |
 
-Find one with `/locate structure useful_armory:<name>`, or drop one in front of you with
-`/place structure useful_armory:<name>`. Only newly generated chunks get places. Six **relics**
+Find one with `/locate structure useful_armory:<name>` (it gives the place's corner; the height
+shows as `~`, so look around on the ground there), or drop one in front of you with
+`/place structure useful_armory:<name>`. Every place now shows on the surface: the underground
+ones have an entrance building with a way down. Only newly generated chunks get places. Six **relics**
 (cracked soul gem, ancient hilt, forge master's hammer head, shadow shard, tarnished ring, faded map
 scrap) turn up in their chests.
 

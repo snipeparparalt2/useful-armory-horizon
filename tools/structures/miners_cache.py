@@ -1,6 +1,10 @@
-"""Miner's cache: a worked-out mine junction (underground, Y 0 to 40). A quiet find, no spawner.
+"""Miner's cache: a worked-out mine junction about 24 blocks under an old headframe. A quiet
+find, no spawner.
 
-One 39 x 12 x 39 piece. A timbered hub (13 x 13) with a hoist over a covered shaft and a
+One surface-anchored piece, 39 x 34 x 39: the junction is y 0..11, the ground layer is
+y = GROUND, and a timbered ladder shaft climbs from the hub to a spruce headframe on the
+surface (hoist wheel, spoil heap, a supply barrel), so the place can be seen and entered.
+The junction itself, 39 x 12 x 39: A timbered hub (13 x 13) with a hoist over a covered shaft and a
 ladder shaft stub going up; four 5-wide tunnels leave it:
   north  -> the tool room (workbench, furnaces, anvil, ore sorting, two loot barrels)
   east   -> the sleeping nook (two bunks, cold campfire, wash cauldron)
@@ -12,7 +16,10 @@ it is buried or cut by a cave. Floors are two blocks thick so the puddles stay s
 """
 from structkit import AIR, NS, Piece, block_name, state
 
-W, H, D = 39, 12, 39
+W, H, D = 39, 12, 39                   # the junction on its own
+GROUND = 24                            # the ground layer: ~12 blocks of rock over the junction
+PH = GROUND + 10                       # the whole piece's height
+SHAFT = (14, 13)                       # the ladder shaft (x, z), up from the hub
 LOW = 2                                # lowest air layer; y 0..1 is the floor
 
 ROCK = (("minecraft:stone", 12), ("minecraft:andesite", 2), ("minecraft:cobblestone", 1),
@@ -222,8 +229,8 @@ def _hub(p):
             if z not in (16, 22) and p.get(x, top, z) == AIR and p.rnd.random() < 0.45:
                 p.slab(x, top, z, WOOD, type="top")
     _hoist(p)
-    p.ladder_column(14, 13, LOW, 9, "south")              # shaft stub, choked with gravel
-    p.set(14, 10, 13, "minecraft:gravel")
+    p.ladder_column(14, 13, LOW, 9, "south")              # the shaft up to the headframe
+    p.set(14, 10, 13, "minecraft:gravel")                 # (unplugged in build())
     p.trapdoor(14, 7, 13, WOOD, "south", half="top", open=True)
     # rest corner (south-west): table, benches, a lantern, crates and an ore pile
     _table(p, 15, 23)
@@ -427,6 +434,17 @@ def _cache(p):
 
 
 def build():
+    p = Piece("miners_cache", W, PH, D, "miners_cache_entry")
+    p.paste(_junction(), 0, 0, 0)
+    sx, sz = SHAFT
+    p.set(sx, 10, sz, AIR)                                 # the old gravel plug
+    wall = p.mix(*ROCK)
+    p.ladder_shaft(sx, sz, 10, GROUND, wall, WOOD, facing="south")
+    _surface(p)
+    return p
+
+
+def _junction():
     p = Piece("miners_cache", W, H, D, "miners_cache")
     _skin(p, _carve_all(p))
     _hub(p)
@@ -443,15 +461,93 @@ def build():
     return p
 
 
+# ------------------------------------------------------------------ the surface
+def _surface(p):
+    """The headframe over the shaft mouth: four spruce legs leaning in to a head beam with a
+    hoist wheel and a rope (chain) down the shaft, a plank collar round the mouth, a lean-to
+    with a supply barrel, a spoil heap of the mine's rock, rails out to it and a lantern post."""
+    sx, sz = SHAFT
+    g = GROUND
+    ground = p.mix(("minecraft:coarse_dirt", 5), ("minecraft:gravel", 3), ("minecraft:dirt", 2),
+                   ("minecraft:cobblestone", 1))
+    for x in range(sx - 6, sx + 9):                        # the worked yard
+        for z in range(sz - 6, sz + 9):
+            if (x, z) == (sx, sz) or not p.in_bounds(x, g, z):
+                continue
+            d = abs(x - sx - 1) + abs(z - sz - 1)
+            if d <= 11 and p.rnd.random() < (1.0 if d <= 8 else 0.5):
+                p.set(x, g, z, ground())
+                for y in range(g + 1, g + 4):
+                    if not p.is_set(x, y, z):
+                        p.set(x, y, z, AIR)
+    for x in range(sx - 1, sx + 2):                        # plank collar round the mouth
+        for z in range(sz - 1, sz + 2):
+            if (x, z) != (sx, sz):
+                p.set(x, g, z, f"minecraft:{WOOD}_planks")
+    p.trapdoor(sx, g + 1, sz, WOOD, "south", half="bottom", open=True)
+    # legs: two pairs leaning in towards the head beam over the shaft (x along the beam)
+    for x in (sx - 2, sx + 2):
+        for z, lean in ((sz - 2, 1), (sz + 2, -1)):
+            for i in range(5):
+                zz = z + (lean if i >= 3 else 0)
+                p.log(x, g + 1 + i, zz, WOOD)
+        p.log(x, g + 6, sz, WOOD)
+        for z in (sz - 1, sz + 1):
+            p.log(x, g + 5, z, WOOD, axis="z")
+    for x in range(sx - 2, sx + 3):                        # head beam and the wheel on it
+        p.log(x, g + 7, sz, WOOD, axis="x", stripped=True)
+    for y in (g + 6, g + 8):
+        p.set(sx, y, sz, AIR)
+    p.set(sx, g + 8, sz, state("minecraft:grindstone", face="floor", facing="east"))
+    for y in range(g + 2, g + 7):
+        p.chain(sx, y, sz)
+    p.hanging_lantern(sx + 1, g + 6, sz, chain=0)
+    for x in (sx - 2, sx + 2):                             # cross braces
+        p.stairs(x, g + 3, sz - 1, WOOD, "north", half="top")
+        p.stairs(x, g + 3, sz + 1, WOOD, "south", half="top")
+    # lean-to on the east with the supply barrel and a crate
+    lx = sx + 4
+    for z in (sz - 1, sz + 2):
+        for y in range(g + 1, g + 4):
+            p.log(lx + 2, y, z, WOOD)
+    for z in range(sz - 1, sz + 3):
+        p.slab(lx, g + 4, z, WOOD, type="bottom")
+        p.slab(lx + 1, g + 4, z, WOOD, type="top")
+        p.slab(lx + 2, g + 4, z, WOOD, type="top")
+    p.barrel(lx + 1, g + 1, sz, "up")
+    _crate(p, lx + 1, g + 1, sz + 1)
+    p.set(lx + 1, g + 1, sz - 1, "minecraft:crafting_table")
+    p.set(lx, g + 1, sz + 2, state("minecraft:cauldron"))
+    # the spoil heap to the south-west, with rails running out to it
+    hx, hz = sx - 4, sz + 5
+    spoil = p.mix(("minecraft:gravel", 4), ("minecraft:cobblestone", 3), ("minecraft:andesite", 2),
+                  ("minecraft:coal_ore", 1), ("minecraft:tuff", 1))
+    for x in range(hx - 3, hx + 4):
+        for z in range(hz - 3, hz + 4):
+            h = 3 - max(abs(x - hx), abs(z - hz)) + p.rnd.choice((0, 0, 1))
+            for y in range(g + 1, g + 1 + max(0, h)):
+                if p.in_bounds(x, y, z):
+                    p.set(x, y, z, spoil())
+    for z in range(sz + 2, hz - 1):
+        p.set(sx, g + 1, z, state("minecraft:rail", shape="north_south", waterlogged="false"))
+    p.set(sx, g + 1, hz - 1, "minecraft:gravel")
+    # a lantern post by the path in
+    for y in range(g + 1, g + 4):
+        p.set(sx - 3, y, sz - 3, f"minecraft:{WOOD}_fence")
+    p.lantern(sx - 3, g + 4, sz - 3)
+
+
 PLACE = {
     "name": "miners_cache",
     "pieces": {"miners_cache": build},
-    "step": "underground_structures",
-    "start_height": (0, 40),
-    "surface": False,
+    "step": "surface_structures",
+    # Ground layer y = GROUND sits on the top block (piece bottom = top block y + start_height,
+    # jigsaw.rs place_start), so the junction is always under land, ~12 blocks of rock down.
+    "start_height": -GROUND,
+    "surface": True,
     "terrain": "none",
     "biomes": [
-        "#minecraft:is_overworld",
+        "#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_savanna", "#minecraft:is_badlands", "#minecraft:is_hill", "#minecraft:is_mountain", "#minecraft:is_jungle", "minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:desert", "minecraft:snowy_plains", "minecraft:cherry_grove", "minecraft:windswept_hills", "minecraft:stony_peaks",
     ],
     "spacing": 18,
     "separation": 6,

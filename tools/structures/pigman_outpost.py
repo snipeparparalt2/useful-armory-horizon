@@ -689,7 +689,9 @@ PLACE = {
     "name": "pigman_outpost",
     "pieces": {"pigman_outpost": build},
     "step": "underground_structures",
-    "start_height": (34, 60),
+    # Just above the lava sea (y 31), where the Nether wastes floor is mostly open, as vanilla
+    # puts bastions at a fixed y 33: higher up the keep was usually sealed in netherrack.
+    "start_height": (31, 36),
     "surface": False,
     "terrain": "none",
     "biomes": [

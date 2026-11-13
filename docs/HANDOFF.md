@@ -64,6 +64,17 @@ Useful Armory is a mod for **Horizon**, a Rust rewrite of Minecraft: Java Editio
   fort, village armory blacksmith (added to five village house pools), pigman outpost (Nether),
   shadow vault (surface mausoleum and spiral stair down), miner's cache, forgotten armory,
   infested mine, crypt dungeon (multi-piece jigsaw with a surface mausoleum entrance).
+- **Every place shows on the surface** (2026-11-13, after the owner's first play-test found
+  `/locate` pointing at "nothing": the three underground places sat at fixed depths with no sign
+  of them above). The miner's cache (ladder shaft to a spruce headframe), infested mine (ladder
+  shaft to a fallen, web-hung headframe) and forgotten armory (dog-leg stair to a ruined
+  gatehouse) are now surface-anchored like the shadow vault: ground layer `GROUND`,
+  `start_height = -GROUND`, land biomes only, so the room is always 12 to 18 blocks under land.
+  The toolkit has `Piece.ladder_shaft` and `Piece.dogleg_stair` for this. The pigman outpost
+  moved to y 31..36 (just above the lava sea), where the Nether floor is open.
+- Checked from the owner's save (`New World (3)`): those places did generate fully (chests,
+  spawners, every block) at y -19..25; they were only invisible. `/locate` answers the start
+  chunk's corner with `~` for height, so a teleport keeps the player's own height.
 - 14 chest loot tables (`chests/<place>`, `chests/crypt_treasure`, `chests/supplies` for
   furniture containers), six loot-only relic items, two zombie-based guardian mob types
   (`vault_guardian`, `tower_sentry`) used in spawners, deepslate versions of the three ores.

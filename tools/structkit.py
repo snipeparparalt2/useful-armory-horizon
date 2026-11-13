@@ -824,6 +824,59 @@ class Piece:
             if (sx, sy, sz) in src._waterlogged_markers:
                 self._waterlogged_markers.add((x + sx, y + sy, z + sz))
 
+    # ---- ways down from the surface
+    def ladder_shaft(self, x, z, y0, y1, wall, wood, facing="south", crib_every=4):
+        """A 1 x 1 shaft with a ladder from y0 to y1 at (x, z), in a 3 x 3 shell of `wall`
+        (a block or a mix() picker) with a timber crib of `wood` logs every `crib_every`
+        blocks. The ladder hangs on the side opposite `facing`. The shell is set where the
+        piece has nothing yet, so the shaft can cut through rooms it passes."""
+        back = {"south": (0, -1), "north": (0, 1), "east": (-1, 0), "west": (1, 0)}[facing]
+        for y in range(y0, y1 + 1):
+            crib = crib_every and (y - y0) % crib_every == 0
+            for dx in (-1, 0, 1):
+                for dz in (-1, 0, 1):
+                    if dx == 0 and dz == 0:
+                        continue
+                    c = (x + dx, y, z + dz)
+                    if not self.in_bounds(*c) or self.is_set(*c):
+                        continue
+                    if crib and (dx, dz) != back and (dx and dz):
+                        self.log(*c, wood)
+                    else:
+                        self.set(*c, wall() if callable(wall) else wall)
+            self.set(x, y, z, AIR)
+            self.ladder(x, y, z, facing)
+
+    def dogleg_stair(self, x0, z0, y0, flights, stair, block, wall):
+        """A dog-leg stair in a closed shaft, climbing `flights` flights of four from a landing
+        whose floor block is at y0 - 1 (stand at y0). Interior x0..x0+5, z0..z0+2: flights run
+        along z0 (east, up) and z0+2 (west, up) with a wall at z0+1 between them, and full
+        landings at x0 and x0+5. Returns the standing height of the top landing (at x0 for an
+        even number of flights, x0+5 for odd). `stair`/`block` name the stair material and the
+        landing block; `wall` is a block or a mix() picker for the shell and divider."""
+        pick = (lambda: wall()) if callable(wall) else (lambda: wall)
+        top = y0 + 4 * flights
+        for y in range(y0 - 1, top + 4):
+            for x in range(x0 - 1, x0 + 7):
+                for z in range(z0 - 1, z0 + 4):
+                    shell = x in (x0 - 1, x0 + 6) or z in (z0 - 1, z0 + 3)
+                    divider = z == z0 + 1 and x0 + 1 <= x <= x0 + 4 and y < top + 2
+                    self.set(x, y, z, pick() if shell or divider else AIR)
+        y = y0
+        for f in range(flights):
+            east = f % 2 == 0
+            lane = z0 if east else z0 + 2
+            xs = range(x0 + 1, x0 + 5) if east else range(x0 + 4, x0, -1)
+            for i, x in enumerate(xs):
+                self.stairs(x, y + i, lane, stair, "east" if east else "west")
+            land = x0 + 5 if east else x0
+            for z in (z0, z0 + 1, z0 + 2):
+                self.set(land, y + 3, z, block)
+            y += 4
+        for z in (z0, z0 + 1, z0 + 2):                       # the bottom landing's floor
+            self.set(x0, y0 - 1, z, block)
+        return top
+
     # ---- checks and output
     def validate(self, schema, known_mod_blocks=None):
         """Problems (strings) with the piece's blocks against a block-state schema

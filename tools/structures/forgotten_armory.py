@@ -1,7 +1,11 @@
-"""Forgotten armory: a buried arsenal (underground, Y -30 to 20, rare). Brief:
+"""Forgotten armory: a buried arsenal about 30 blocks under a ruined gatehouse (rare). Brief:
 docs/design/places.md section 8.
 
-Plan (x east, z south; one piece, 33 x 12 x 25):
+One surface-anchored piece, 41 x 35 x 25: the armory is y 0..11, the ground layer is
+y = GROUND, and from the head of its old entrance stair a dog-leg stair climbs a stone shaft
+(x 33..40) to a roofless gatehouse on the surface, so the place can be seen and entered.
+
+Plan of the armory (x east, z south; 33 x 12 x 25 on its own):
 
     hidden |  library        | |  forge (hearth, anvils, quench)  |
     room   |  (bookshelf wall)| |                                  |
@@ -13,16 +17,20 @@ Plan (x east, z south; one piece, 33 x 12 x 25):
            |  barracks (beds, |  treasury (bullion of colosifite    |
            |  footlockers)    |  and shadow blocks)                 |
 
-The player digs in. The central hall (x 6..26, z 7..17) has two arcades of pillars, aisles
+The central hall (x 6..26, z 7..17) has two arcades of pillars, aisles
 under a flat ceiling and a stepped, ribbed vault over the nave. Four side rooms open off the
 aisles; the hidden room lies behind the library's west wall of bookshelves. The old entrance
-stair climbs east from the hall and is choked with rubble where the passage fell in.
+stair climbs east from the hall to the foot of the gatehouse shaft; rubble from its fallen
+ceiling lies along its sides.
 Vault guardian spawners: nave centre and barracks. Loot (chests/forgotten_armory): library,
 forge, treasury, hidden room.
 """
 from structkit import AIR, NS, Piece, ccw, state
 
-W, H, D = 33, 12, 25
+W, H, D = 33, 12, 25                  # the armory on its own
+GROUND = 30                           # the ground layer: ~18 blocks of rock over the armory
+FLIGHTS = 6                           # the shaft's stair: 6 flights of 4 from y 7 to y 31
+PW, PH = 41, GROUND + 5               # the whole piece
 HALL = (6, 7, 26, 17)                 # interior x0, z0, x1, z1
 PILLAR_X = (8, 12, 16, 20, 24)
 PILLAR_Z = (9, 15)
@@ -106,6 +114,14 @@ def _beams(p, box, y, axis_z=True, every=3, wood="spruce"):
 
 
 def build():
+    p = Piece("forgotten_armory", PW, PH, D, "armory_entry")
+    p.paste(_armory(), 0, 0, 0)
+    _shaft(p)
+    _gatehouse(p)
+    return p
+
+
+def _armory():
     p = Piece("forgotten_armory", W, H, D, "armory")
     masonry = p.mix(("minecraft:stone_bricks", 8), ("minecraft:cracked_stone_bricks", 3),
                     ("minecraft:mossy_stone_bricks", 2), ("minecraft:stone", 1), ("minecraft:andesite", 1),
@@ -548,18 +564,88 @@ def _entrance(p):
             p.stairs(x, y + 4, z, "stone_bricks", "west", half="top")
     p.wall_torch(28, 5, 11, "south")
     p.wall_torch(28, 5, 13, "north")
-    # the collapse: rubble fills the top of the stair and slumps down it
-    for z in (11, 12, 13):
-        p.fill(32, 6, z, 32, 10, z, lambda: _rubble(p))
-        top31 = 8 + (z == CZ)
-        p.fill(31, 6, z, 31, top31, z, lambda: _rubble(p))
-        if z != 13:
-            p.set(30, 5, z, _rubble(p))
-        p.slab(30, 6 if z != 13 else 5, z, "cobblestone")
+    # rubble from the fallen ceiling along the stair's sides; the way up is open
     p.slab(29, 4, 11, "cobblestone")
-    p.set(29, 4, 12, "minecraft:gravel")
-    p.stairs(28, 3, 13, "cobblestone", "east")
-    p.set(30, 7, 11, "minecraft:hanging_roots[waterlogged=false]")
+    p.set(31, 6, 13, "minecraft:gravel")
+    p.slab(30, 6, 11, "cobblestone")
+    p.set(30, 9, 11, "minecraft:hanging_roots[waterlogged=false]")
+    for z in (11, 12, 13):                                 # the stair's head opens east
+        p.clear((32, 7, z, 32, 10, z))
+
+
+# ------------------------------------------------------------------ the way up
+def _masonry(p):
+    return p.mix(("minecraft:stone_bricks", 8), ("minecraft:cracked_stone_bricks", 3),
+                 ("minecraft:mossy_stone_bricks", 2), ("minecraft:cobblestone", 1),
+                 ("minecraft:andesite", 1))
+
+
+def _shaft(p):
+    """From the stair's head (stand at y 7, x 32) a short landing, then a dog-leg stair in a
+    closed stone shaft (interior x 34..39, z 11..13) up to the gatehouse floor at GROUND."""
+    wall = _masonry(p)
+    for z in (11, 12, 13):                                 # the landing through the shaft wall
+        p.set(33, 6, z, "minecraft:polished_andesite")
+        for y in range(7, 11):
+            p.set(33, y, z, AIR)
+        p.set(33, 11, z, wall())
+    top = p.dogleg_stair(34, 11, 7, FLIGHTS, "stone_bricks", "minecraft:polished_andesite", wall)
+    assert top == GROUND + 1, top
+    for z in (11, 12, 13):                                 # re-open the landing the shell closed
+        for y in range(7, 11):
+            p.set(33, y, z, AIR)
+    for y in range(9, GROUND, 8):                          # a wall torch on every second landing
+        p.wall_torch(34, y, 10 + 1, "south") if p.get(34, y, 11) == AIR else None
+
+
+def _gatehouse(p):
+    """A roofless stone gatehouse on the surface: the shaft's head walls carried up as a ruin
+    with broken tops, an arched west doorway onto the top landing, a fallen lintel, pillars of
+    the old approach, moss, vines and a weapon rack against the north wall."""
+    g = GROUND
+    wall = _masonry(p)
+    ground = p.mix(("minecraft:coarse_dirt", 4), ("minecraft:gravel", 2), (state("minecraft:grass_block", snowy="false"), 3),
+                   ("minecraft:mossy_cobblestone", 1), ("minecraft:cobblestone", 1))
+    for x in range(24, PW):                                # a worn patch round the ruin
+        for z in range(4, 21):
+            if not (33 <= x <= 40 and 10 <= z <= 14):
+                d = max(abs(x - 36) - 5, abs(z - 12) - 4, 0)
+                if d <= 3 and p.rnd.random() < (1.0 if d <= 1 else 0.6):
+                    p.set(x, g, z, ground())
+                    for y in range(g + 1, g + 5):
+                        if not p.is_set(x, y, z):
+                            p.set(x, y, z, AIR)
+    for x in range(33, 41):                                # ruined wall tops: some courses gone
+        for z in range(10, 15):
+            if 34 <= x <= 39 and 11 <= z <= 13:
+                continue
+            for y in range(g + 1, g + 5):
+                gone = y >= g + 2 + p.rnd.choice((0, 1, 2, 3))
+                if gone:
+                    p.set(x, y, z, AIR)
+                elif p.get(x, y, z) not in (None, AIR):
+                    p.set(x, y, z, wall())
+    for z in (11, 12, 13):                                 # the west doorway onto the landing
+        for y in range(g + 1, g + 4):
+            p.set(33, y, z, AIR)
+    p.stairs(33, g + 4, 11, "stone_bricks", "north", half="top")
+    p.stairs(33, g + 4, 13, "stone_bricks", "south", half="top")
+    p.set(33, g + 4, 12, "minecraft:chiseled_stone_bricks")
+    p.set(32, g + 1, 10, "minecraft:chiseled_stone_bricks")   # the fallen lintel's pieces
+    p.slab(31, g + 1, 14, "stone_bricks")
+    for x, z in ((27, 9), (27, 15), (30, 9), (30, 15)):     # the approach's pillars, broken
+        for y in range(g + 1, g + 1 + p.rnd.choice((1, 2, 3, 4))):
+            p.set(x, y, z, "minecraft:stone_bricks" if p.rnd.random() < 0.7 else "minecraft:mossy_stone_bricks")
+    for x in range(26, 33):                                # the old paved approach
+        for z in (11, 12, 13):
+            if p.rnd.random() < 0.75:
+                p.set(x, g, z, p.rnd.choice(("minecraft:stone_bricks", "minecraft:cracked_stone_bricks",
+                                             "minecraft:mossy_stone_bricks", "minecraft:gravel")))
+    for x, y, z, f in ((40, g + 2, 12, "west"), (36, g + 2, 14, "north")):
+        if p.get(x, y, z) not in (None, AIR):
+            p.set(x - (1 if f == "west" else 0), y, z - (1 if f == "north" else 0), state("minecraft:vine", east="true", north="false", south="false", up="false", west="false") if f == "west" else state("minecraft:vine", south="true", north="false", east="false", up="false", west="false"))
+    p.set(34, g + 1, 10, "minecraft:mossy_cobblestone")
+    p.lantern(32, g + 1, 13)
 
 
 # ------------------------------------------------------------------ age
@@ -603,12 +689,14 @@ def _age(p):
 PLACE = {
     "name": "forgotten_armory",
     "pieces": {"forgotten_armory": build},
-    "step": "underground_structures",
-    "start_height": (-30, 20),
-    "surface": False,
+    "step": "surface_structures",
+    # Ground layer y = GROUND sits on the top block (piece bottom = top block y + start_height,
+    # jigsaw.rs place_start), so the armory is always under land, ~18 blocks of rock down.
+    "start_height": -GROUND,
+    "surface": True,
     "terrain": "none",
     "biomes": [
-        "#minecraft:is_overworld",
+        "#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_savanna", "#minecraft:is_badlands", "#minecraft:is_hill", "#minecraft:is_mountain", "minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:snowy_plains", "minecraft:windswept_hills",
     ],
     "spacing": 40,
     "separation": 14,
