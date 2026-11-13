@@ -357,6 +357,38 @@ MOBS = {
                       "minecraft:attack_damage": 4.0, "minecraft:armor": 4.0},
                      [("minecraft:rotten_flesh", 0, 2, None), ("colosifiteingot", 1, 1, 0.2),
                       ("faded_map_scrap", 1, 1, 0.05)]),
+    # 0.1.7 phase 3. All four copy the zombie for now, so they also burn in daylight and turn into
+    # drowned under water until the native half switches that off for them (see docs/HANDOFF.md).
+    "shade": ("Shade",
+              {"minecraft:max_health": 14.0, "minecraft:movement_speed": 0.33,
+               "minecraft:attack_damage": 3.0, "minecraft:armor": 0.0},
+              [("shadow_shard", 1, 1, 0.4)]),
+    "tide_lurker": ("Tide lurker",
+                    {"minecraft:max_health": 22.0, "minecraft:movement_speed": 0.24,
+                     "minecraft:attack_damage": 4.0, "minecraft:armor": 2.0},
+                    [("minecraft:kelp", 0, 2, None), ("minecraft:rotten_flesh", 0, 1, None),
+                     ("aquiteingot", 1, 1, 0.25)]),
+    "ember_brute": ("Ember brute",
+                    {"minecraft:max_health": 40.0, "minecraft:movement_speed": 0.21,
+                     "minecraft:attack_damage": 7.0, "minecraft:armor": 4.0},
+                    [("minecraft:coal", 0, 2, None), ("colosifiteore", 1, 2, 0.6)]),
+    "lost_pigman": ("Lost pigman",
+                    {"minecraft:max_health": 20.0, "minecraft:movement_speed": 0.25,
+                     "minecraft:attack_damage": 5.0, "minecraft:armor": 2.0},
+                    [("minecraft:gold_nugget", 1, 3, None), ("emagma", 1, 1, 0.15),
+                     ("pigmansword", 1, 1, 0.02)]),
+}
+# Natural spawning (neoforge:add_spawns, read by Horizon's mod_content_biomes.rs). One file per
+# biome set: a modifier's "biomes" is one tag or a list of ids, never both. Weights sit next to
+# vanilla's monster spawns (zombie 95, zombified piglin 100).
+SPAWNS = {
+    "shade_caves": ("shade", ["minecraft:dripstone_caves", "minecraft:lush_caves", "minecraft:deep_dark"], 40, 1, 3),
+    "tide_lurker_beaches": ("tide_lurker", "#minecraft:is_beach", 30, 1, 2),
+    "tide_lurker_rivers": ("tide_lurker", "#minecraft:is_river", 30, 1, 2),
+    "tide_lurker_swamps": ("tide_lurker", ["minecraft:swamp", "minecraft:mangrove_swamp"], 30, 1, 2),
+    "ember_brute_badlands": ("ember_brute", "#minecraft:is_badlands", 20, 1, 1),
+    "ember_brute_savanna": ("ember_brute", "#minecraft:is_savanna", 15, 1, 1),
+    "lost_pigman_nether_wastes": ("lost_pigman", ["minecraft:nether_wastes"], 40, 1, 3),
 }
 
 
@@ -390,6 +422,11 @@ def loot_and_mobs(known_items):
                 one["conditions"] = [{"condition": "minecraft:random_chance", "chance": chance}]
             pools.append(one)
         write_json(DATA / "loot_table/entities" / f"{mob}.json", {"type": "minecraft:entity", "pools": pools})
+    for name, (mob, biomes, weight, lo, hi) in SPAWNS.items():
+        assert mob in MOBS, mob
+        write_json(DATA / "neoforge/biome_modifier" / f"spawn_{name}.json", {
+            "type": "neoforge:add_spawns", "biomes": biomes,
+            "spawners": [{"type": f"{NS}:{mob}", "weight": weight, "minCount": lo, "maxCount": hi}]})
     missing = sorted(used - known_items)
     assert not missing, f"loot names items the mod does not have: {missing}"
 

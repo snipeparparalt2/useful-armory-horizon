@@ -8,7 +8,7 @@ Layout (x east, z south; the tower stands north of the middle, the gate is on th
       y 1..4    store room (door on the south side): barrels, crates, sacks, firewood, chest
       y 6..9    bunk room: four beds, table and benches, stove, tower sentry spawner
       y 11..14  armoury: weapon racks, anvil, grindstone, colosifite bullion, chest
-      y 16..19  lookout: wide windows, map table, tower sentry spawner
+      y 16..19  lookout: wide windows, map table, ember brute spawner
   * the top: a walkway (y 20) wider than the tower, carried on upside-down stair
     machicolations, behind a crenellated parapet; a conical deepslate roof on four posts with
     a colosifite block finial, the best chest and a signal fire (campfire on hay) under it.
@@ -16,7 +16,7 @@ Layout (x east, z south; the tower stands north of the middle, the gate is on th
     east run still carries a stable lean-to, the south run has the gatehouse stub with a
     broken arch and portcullis; a well, a vegetable plot, a woodpile, an archery butt.
 Loot (chests/colosifite_watchtower): store room, armoury, and the best one on the roof.
-Spawners (useful_armory:tower_sentry): bunk room and lookout, both under a roof.
+Spawners: a tower sentry in the bunk room and an ember brute in the lookout, both under a roof.
 """
 from structkit import AIR, NS, Piece, state
 
@@ -488,7 +488,7 @@ def _lookout(p):
     p.set(CX - 2, y, CZ - 4, "minecraft:spruce_stairs[facing=south,half=bottom,shape=straight,waterlogged=false]")
     p.set(CX + 2, y, CZ - 4, "minecraft:spruce_stairs[facing=south,half=bottom,shape=straight,waterlogged=false]")
     p.set(CX - 4, y, CZ - 3, "minecraft:spruce_stairs[facing=west,half=bottom,shape=straight,waterlogged=false]")
-    p.spawner(CX, y, CZ + 1, SENTRY)
+    p.spawner(CX, y, CZ + 1, f"{NS}:ember_brute")
     p.lantern(CX - 1, 19, CZ - 1, hanging=True)
     p.lantern(CX + 2, 19, CZ, hanging=True)
     _cobweb(p, CX + 3, 19, CZ + 3)

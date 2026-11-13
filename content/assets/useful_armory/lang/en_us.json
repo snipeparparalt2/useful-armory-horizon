@@ -140,5 +140,9 @@
   "block.useful_armory.deepslate_colosifite_ore": "\u00a76Deepslate colosifite ore",
   "block.useful_armory.deepslate_shadow_ore": "\u00a78Deepslate shadow ore",
   "entity.useful_armory.vault_guardian": "Vault guardian",
-  "entity.useful_armory.tower_sentry": "Tower sentry"
+  "entity.useful_armory.tower_sentry": "Tower sentry",
+  "entity.useful_armory.shade": "Shade",
+  "entity.useful_armory.tide_lurker": "Tide lurker",
+  "entity.useful_armory.ember_brute": "Ember brute",
+  "entity.useful_armory.lost_pigman": "Lost pigman"
 }

@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#minecraft:is_savanna",
+  "spawners": [
+    {
+      "type": "useful_armory:ember_brute",
+      "weight": 15,
+      "minCount": 1,
+      "maxCount": 1
+    }
+  ]
+}

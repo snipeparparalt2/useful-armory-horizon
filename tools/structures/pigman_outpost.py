@@ -365,7 +365,7 @@ def _yard(p):
         for dz in (-1, 0, 1):
             if dx or dz:
                 p.set(GX + dx, 1, 17 + dz, GILDED if dx and dz else "minecraft:chiseled_polished_blackstone")
-    p.spawner(GX, 2, 17, "minecraft:zombified_piglin")
+    p.spawner(GX, 2, 17, f"{NS}:lost_pigman")
     # soul braziers either side of the path in front of the channels
     for x in (10, 14):
         p.set(x, 2, 15, GILDED)

@@ -21,7 +21,7 @@ One surface-anchored piece, 41 x 52 x 48 (x east, y up, z south):
 The sanctum is entered through an iron gate in its south wall (iron door between iron bars,
 opened by a lever on the lintel). Main chest on the dais under a ceiling of glowing shadow
 ore; one cache in each alcove; one small cache on a landing half way down the stair. Vault
-guardian spawners: in the corridor in front of the gate, and on the sanctum floor.
+spawners: a shade in the corridor in front of the gate, a vault guardian on the sanctum floor.
 """
 from structkit import AIR, NS, OPPOSITE, Piece, ccw, state
 
@@ -404,7 +404,7 @@ def _corridor_niches(p):
 # ------------------------------------------------------------------ the gate
 def _gate(p):
     """South wall of the sanctum: an arch on the inside, iron bars either side of an iron door
-    on the corridor face, a lintel with a lever that opens it. The corridor guardian waits
+    on the corridor face, a lintel with a lever that opens it. The corridor shade waits
     in front of it."""
     wz_in, wz_out = ROOM[3] + 1, ROOM[3] + 2
     p.clear((GATE_X - 1, 2, wz_in, GATE_X + 1, 3, wz_in))
@@ -421,7 +421,7 @@ def _gate(p):
     for x in (GATE_X - 2, GATE_X + 2):
         p.fill(x, 2, wz_out, x, 4, wz_out, "minecraft:polished_deepslate")
         p.set(x, 5, wz_out, "minecraft:chiseled_deepslate")
-    p.spawner(GATE_X, 2, wz_out + 2, GUARDIAN)
+    p.spawner(GATE_X, 2, wz_out + 2, f"{NS}:shade")
 
 
 # ------------------------------------------------------------------ alcoves

@@ -97,6 +97,28 @@ crypt was simulated against Horizon's jigsaw rules (400 layouts, each with one t
 ## Still to do for 0.1.7
 
 ### Phase 3: creatures
+**Data side done (2026-11-12, `tools/gen_phase1.py` MOBS and SPAWNS):** entity types, loot tables,
+names and natural spawns for the shade, tide lurker, ember brute and lost pigman, all copying
+`minecraft:zombie` with their own four attributes. Spawns are `neoforge:add_spawns` files in
+`neoforge/biome_modifier/spawn_*.json`. Their format was checked against Horizon's
+`mod_content_biomes.rs` at `fdc87ae`; a modifier's `biomes` is one tag or a list of ids, not both.
+Shades spawn in dripstone caves, lush caves and the deep dark; tide lurkers on beaches, rivers and
+swamps; ember brutes in badlands and savanna; lost pigmen in nether wastes. Themed spawners swapped
+in: a shade in the crypt's collapsed room and the vault corridor, an ember brute in the
+watchtower lookout, a lost pigman in the pigman outpost.
+**Native side still to do (could not be compiled in that session; crates.io was unreachable):**
+- Looks: a mod living type uses its template's model and texture (`mobs.rs`), so they look like
+  zombies until `native_mob_submit` draws them. That hook draws block-model parts
+  (`native_standalone_models` + `native_draw_model`), not a skinned mob. Make head, body, arm and
+  leg part models from the textures in `textures/entity/<mob>/` (64x64 humanoid UVs) and pose
+  them with the frame's walk cycle and head turn.
+- Zombie rules they inherit: they **burn in daylight** (`burns_in_day`), which matters most for the
+  ember brute in badlands, and **turn into drowned under water**, which matters for the tide
+  lurker. Switch both off for our types.
+- Behaviours: tide lurker slows on hit, ember brute sets the player on fire, shade is fast with low
+  health (done by attributes).
+- Sounds: still zombie sounds; custom ones are still to do.
+
 - Give the two guardians their own looks (native `native_mob_submit` draws a model in place of
   the zombie's; part models as standalone models; walk animation).
 - New hostile mobs, each a zombie-template entity type in `content/data/useful_armory/horizon/

@@ -14,7 +14,7 @@ that carves its own air):
   crypt/ossuary      13 x  7 x 13  bone-lined walls of skulls, bone pillar; skeleton spawner
   crypt/chapel       13 x  9 x 15  pews, altar on a dais, chest behind the altar
   crypt/flooded      13 x  9 x 13  pit flooded two deep, causeway, sunken chest
-  crypt/collapsed    13 x  9 x 13  vault fallen in, rubble heap, buried chest; zombie spawner
+  crypt/collapsed    13 x  9 x 13  vault fallen in, rubble heap, buried chest; shade spawner
   crypt/guard_room   15 x  7 x 15  racks, bunks, table, cell; vault guardian spawner
   crypt/treasure     13 x  8 x 13  one door; dais, sarcophagus, three treasure chests,
                                    vault guardian spawner. Exactly one per crypt.
@@ -999,7 +999,7 @@ def flooded():
 def collapsed():
     """13 x 9 x 13. The vault over the north-east has fallen in: a rubble slope from the
     broken ceiling (a cavity to y 7) down across the floor, a toppled column, a chest dug
-    into the foot of the heap; zombie spawner on the clear floor."""
+    into the foot of the heap; shade spawner on the clear floor."""
     p = Piece("crypt/collapsed", 13, 9, 13, "crypt/collapsed")
     pal = _pal(p, "ruin")
     _room_shell(p, pal, 2, 2, 10, 10, 6)
@@ -1043,8 +1043,8 @@ def collapsed():
     p.set(3, 2, 4, "minecraft:deepslate[axis=y]")
     for x in (4, 5):
         p.set(x, 1, 4, "minecraft:deepslate[axis=x]")
-    # zombie spawner on the clear floor, a fallen lantern, candles
-    p.spawner(4, 1, 8, "minecraft:zombie")
+    # shade spawner on the clear floor, a fallen lantern, candles
+    p.spawner(4, 1, 8, f"{NS}:shade")
     p.set(3, 1, 6, "minecraft:soul_lantern[hanging=false,waterlogged=false]")
     p.hanging_lantern(5, 5, 9, chain=1, soul=True)
     for x, z in ((2, 10), (9, 10)):
