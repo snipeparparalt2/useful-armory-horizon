@@ -1,0 +1,115 @@
+{
+  "fallback": "useful_armory:crypt/caps",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "lithostitched:guaranteed",
+        "delegate": {
+          "element_type": "minecraft:single_pool_element",
+          "location": "useful_armory:crypt/treasure",
+          "projection": "rigid",
+          "processors": "minecraft:empty"
+        },
+        "count": 1,
+        "min_depth": 2
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/corridor",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/corner",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/t_junction",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/tomb_hall",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/ossuary",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/collapsed",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "lithostitched:limited",
+        "delegate": {
+          "element_type": "minecraft:single_pool_element",
+          "location": "useful_armory:crypt/chapel",
+          "projection": "rigid",
+          "processors": "minecraft:empty"
+        },
+        "limit": 1,
+        "min_depth": 0
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "lithostitched:limited",
+        "delegate": {
+          "element_type": "minecraft:single_pool_element",
+          "location": "useful_armory:crypt/flooded",
+          "projection": "rigid",
+          "processors": "minecraft:empty"
+        },
+        "limit": 1,
+        "min_depth": 0
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "lithostitched:limited",
+        "delegate": {
+          "element_type": "minecraft:single_pool_element",
+          "location": "useful_armory:crypt/guard_room",
+          "projection": "rigid",
+          "processors": "minecraft:empty"
+        },
+        "limit": 2,
+        "min_depth": 0
+      }
+    }
+  ]
+}

@@ -2,10 +2,37 @@
   "fallback": "useful_armory:crypt/caps",
   "elements": [
     {
-      "weight": 1,
+      "weight": 4,
       "element": {
         "element_type": "minecraft:single_pool_element",
         "location": "useful_armory:crypt/corridor",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/corner",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/t_junction",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/crossing",
         "projection": "rigid",
         "processors": "minecraft:empty"
       }
