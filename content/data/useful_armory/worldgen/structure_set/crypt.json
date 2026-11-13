@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "useful_armory:crypt",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 418200111,
+    "spacing": 18,
+    "separation": 7
+  }
+}

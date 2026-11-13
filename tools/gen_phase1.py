@@ -1,35 +1,40 @@
 #!/usr/bin/env python3
-"""Release 0.2 "Places to loot": writes its data and art into content/.
+"""Release 0.1.7 "Places": writes its data and art into content/.
 
-    python3 tools/gen_phase1.py
+    python3 -I tools/gen_phase1.py [--schema path/to/block_schema.json]
 
-Everything this release adds is generated here, so one file shows what it is made of:
+Everything this release adds is generated here and in the modules it imports:
 
   * deepslate versions of the three ores
   * six relic items that only come from loot
   * two guardian mob types (zombie-based) for spawners
-  * nine structures: their building files (.nbt), worldgen files and biome tags
-  * one loot table per structure, plus the guardians' drops
+  * one loot table per place, plus the guardians' drops
+  * the places themselves: tools/structures/ (one module per place, built with
+    tools/structkit.py) give the building files (.nbt), worldgen files and biome tags
+
+With --schema every block of every piece is checked against the block-state schema first;
+any problem stops the run (exit 1) before anything is written.
 
 Re-running it rewrites the same files (the random choices are seeded). It needs Pillow for
-the textures. It does not touch anything that existed before 0.2 except the three ore
-features (deepslate now gets the deepslate ore), the language file, the creative tab and
-the block tags, which it adds to.
+the textures. The structure step owns, and empties before writing, data/useful_armory/
+structure/, worldgen/structure/, worldgen/structure_set/, worldgen/template_pool/ and
+tags/worldgen/biome/has_structure/. Outside those it touches nothing that existed before
+0.2 except the three ore features (deepslate now gets the deepslate ore), the language
+file, the creative tab and the block tags, which it adds to.
 """
-import gzip
+import argparse
 import json
-import random
-import struct
+import shutil
+import sys
 from pathlib import Path
 
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parents[1]
-CONTENT = ROOT / "content"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import structkit  # noqa: E402
+from structkit import CONTENT, DATA, NS  # noqa: E402
+
 ASSETS = CONTENT / "assets" / "useful_armory"
-DATA = CONTENT / "data" / "useful_armory"
-NS = "useful_armory"
-DATA_VERSION = 5023          # Minecraft 26.3, as Horizon fdc87ae writes it
 
 
 def write_json(path, value):
@@ -43,399 +48,196 @@ def edit_json(path, change):
     write_json(path, value)
 
 
-# ------------------------------------------------------------------ NBT (structure files)
-class Short(int):
-    pass
+# ------------------------------------------------------------------ places
+OWNED = ["structure", "worldgen/structure", "worldgen/structure_set", "worldgen/template_pool",
+         "tags/worldgen/biome/has_structure"]
 
 
-def _nbt_payload(v):
-    if isinstance(v, bool):
-        return 1, struct.pack(">b", int(v))
-    if isinstance(v, Short):
-        return 2, struct.pack(">h", int(v))
-    if isinstance(v, int):
-        return 3, struct.pack(">i", v)
-    if isinstance(v, str):
-        raw = v.encode("utf-8")
-        return 8, struct.pack(">H", len(raw)) + raw
-    if isinstance(v, dict):
-        out = b""
-        for key, item in v.items():
-            tag, payload = _nbt_payload(item)
-            name = key.encode("utf-8")
-            out += struct.pack(">bH", tag, len(name)) + name + payload
-        return 10, out + b"\x00"
-    if isinstance(v, (list, tuple)):
-        if not v:
-            return 9, struct.pack(">bi", 0, 0)
-        parts = [_nbt_payload(item) for item in v]
-        tags = {t for t, _ in parts}
-        assert len(tags) == 1, "a list holds one kind of tag"
-        return 9, struct.pack(">bi", tags.pop(), len(parts)) + b"".join(p for _, p in parts)
-    raise TypeError(type(v))
+def _q(path):
+    return path if ":" in path else f"{NS}:{path}"
 
 
-def write_nbt(path, root):
-    tag, payload = _nbt_payload(root)
-    assert tag == 10
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "wb") as raw:
-        # mtime=0 keeps the file byte-identical between runs
-        with gzip.GzipFile(fileobj=raw, mode="wb", mtime=0) as out:
-            out.write(b"\x0a\x00\x00" + payload)
+def height(value):
+    if isinstance(value, int):
+        return {"absolute": value}
+    if isinstance(value, (tuple, list)):
+        lo, hi = value
+        return {"type": "minecraft:uniform", "min_inclusive": {"absolute": lo},
+                "max_inclusive": {"absolute": hi}}
+    return value
 
 
-# ------------------------------------------------------------------ building pieces
-def parse_block(text):
-    """'minecraft:chest[facing=north]' -> ('minecraft:chest', {'facing': 'north'})."""
-    if "[" not in text:
-        return text, {}
-    name, rest = text[:-1].split("[", 1)
-    return name, dict(pair.split("=") for pair in rest.split(","))
+def pool_element(spec):
+    """(piece, weight) or a dict (see tools/structures/__init__.py) -> a pool entry."""
+    if isinstance(spec, (tuple, list)):
+        spec = {"piece": spec[0], "weight": spec[1]}
+    if spec.get("empty"):
+        return {"weight": spec.get("weight", 1), "element": {"element_type": "minecraft:empty_pool_element"}}
+    element = {"element_type": "minecraft:single_pool_element", "location": _q(spec["piece"]),
+               "projection": spec.get("projection", "rigid"),
+               "processors": spec.get("processors", "minecraft:empty")}
+    if "guaranteed" in spec:
+        element = {"element_type": "lithostitched:guaranteed", "delegate": element,
+                   "count": spec["guaranteed"], "min_depth": spec.get("min_depth", 0)}
+    elif "limit" in spec:
+        element = {"element_type": "lithostitched:limited", "delegate": element,
+                   "limit": spec["limit"], "min_depth": spec.get("min_depth", 0)}
+    return {"weight": spec.get("weight", 1), "element": element}
 
 
-AIR = "minecraft:air"
+def place_pools(place):
+    """{pool path: (fallback id, [element specs])} for a jigsaw place."""
+    name = place["name"]
+    pools = place.get("pools") or {f"{name}/start": [(piece, 1) for piece in place["pieces"]]}
+    out = {}
+    for path, value in pools.items():
+        if isinstance(value, dict):
+            out[path] = (_q(value.get("fallback", "minecraft:empty")), list(value["elements"]))
+        else:
+            out[path] = ("minecraft:empty", list(value))
+    return out
 
 
-class Piece:
-    """A box of blocks. Cells never set stay whatever the world has there."""
-
-    def __init__(self, name, w, h, d, seed):
-        self.name, self.size = name, (w, h, d)
-        self.cells = {}
-        self.rnd = random.Random(f"useful_armory/{seed}")
-
-    def set(self, x, y, z, block, nbt=None):
-        w, h, d = self.size
-        assert 0 <= x < w and 0 <= y < h and 0 <= z < d, (self.name, x, y, z)
-        self.cells[(x, y, z)] = (block, nbt)
-
-    def fill(self, x0, y0, z0, x1, y1, z1, block):
-        for x in range(x0, x1 + 1):
-            for y in range(y0, y1 + 1):
-                for z in range(z0, z1 + 1):
-                    self.set(x, y, z, block() if callable(block) else block)
-
-    def shell(self, x0, y0, z0, x1, y1, z1, block, inside=AIR):
-        """A closed box of `block` with `inside` in it."""
-        for x in range(x0, x1 + 1):
-            for y in range(y0, y1 + 1):
-                for z in range(z0, z1 + 1):
-                    edge = x in (x0, x1) or y in (y0, y1) or z in (z0, z1)
-                    self.set(x, y, z, (block() if callable(block) else block) if edge else inside)
-
-    def mix(self, *weighted):
-        """A block picked at random each time: mix(('a', 6), ('b', 1))."""
-        names = [n for n, _ in weighted]
-        weights = [w for _, w in weighted]
-        return lambda: self.rnd.choices(names, weights)[0]
-
-    def chest(self, x, y, z, table, facing="south", block="minecraft:chest"):
-        state = f"{block}[facing={facing}]" if block != "minecraft:barrel" else "minecraft:barrel[facing=up]"
-        self.set(x, y, z, state, {"id": block, "LootTable": f"{NS}:chests/{table}"})
-
-    def spawner(self, x, y, z, entity):
-        self.set(x, y, z, "minecraft:spawner", {
-            "id": "minecraft:mob_spawner",
-            "SpawnData": {"entity": {"id": entity}},
-            "Delay": Short(20), "MinSpawnDelay": Short(200), "MaxSpawnDelay": Short(800),
-            "SpawnCount": Short(2), "MaxNearbyEntities": Short(4),
-            "RequiredPlayerRange": Short(16), "SpawnRange": Short(4),
-        })
-
-    def save(self):
-        palette, index, blocks = [], {}, []
-        for (x, y, z), (block, nbt) in sorted(self.cells.items(), key=lambda c: (c[0][1], c[0][2], c[0][0])):
-            if block not in index:
-                name, props = parse_block(block)
-                entry = {"Name": name}
-                if props:
-                    entry["Properties"] = props
-                index[block] = len(palette)
-                palette.append(entry)
-            cell = {"pos": [x, y, z], "state": index[block]}
-            if nbt:
-                cell["nbt"] = nbt
-            blocks.append(cell)
-        write_nbt(DATA / "structure" / f"{self.name}.nbt", {
-            "size": list(self.size), "palette": palette, "blocks": blocks,
-            "entities": [], "DataVersion": DATA_VERSION,
-        })
-        return len(blocks)
+def _piece_of(spec):
+    if isinstance(spec, (tuple, list)):
+        return spec[0]
+    return None if spec.get("empty") else spec["piece"]
 
 
-def ruined_forge():
-    p = Piece("ruined_forge", 9, 6, 9, "forge")
-    floor = p.mix(("minecraft:cobblestone", 5), ("minecraft:mossy_cobblestone", 2), ("minecraft:stone_bricks", 2))
-    wall = p.mix(("minecraft:stone_bricks", 5), ("minecraft:cracked_stone_bricks", 2), ("minecraft:mossy_stone_bricks", 2))
-    p.fill(0, 0, 0, 8, 0, 8, floor)
-    p.fill(0, 1, 0, 8, 5, 8, AIR)
-    for x in range(9):
-        for z in range(9):
-            if x in (0, 8) or z in (0, 8):
-                corner = x in (0, 8) and z in (0, 8)
-                # the walls have crumbled: lower away from the corners
-                top = 4 if corner else p.rnd.choice((1, 2, 2, 3, 3))
-                for y in range(1, top + 1):
-                    p.set(x, y, z, wall())
-    for y in (1, 2):
-        p.set(4, y, 8, AIR)                                       # doorway
-    p.set(1, 1, 1, "minecraft:furnace[facing=south,lit=false]")
-    p.set(2, 1, 1, "minecraft:blast_furnace[facing=south,lit=false]")
-    p.set(4, 1, 1, "minecraft:smithing_table")
-    p.set(6, 1, 2, "minecraft:damaged_anvil[facing=north]")
-    p.set(7, 1, 6, "minecraft:cauldron")
-    p.set(7, 1, 1, "minecraft:mossy_cobblestone")
-    p.set(6, 1, 7, "minecraft:cobblestone")
-    p.chest(1, 1, 6, "ruined_forge", "east")
-    return p
+def check_places(places, built):
+    """Problems with how the places fit together (names, pools, connectors, loot, mobs)."""
+    problems = []
+    names = [p["name"] for p in places]
+    for dup in sorted({n for n in names if names.count(n) > 1}):
+        problems.append(f"place {dup} is defined twice")
+    owner = {}
+    for place in places:
+        for key in place["pieces"]:
+            if key in owner:
+                problems.append(f"piece {key} belongs to {owner[key]} and {place['name']}")
+            owner[key] = place["name"]
+            if built[key].name != key:
+                problems.append(f"piece {key}: its builder names it {built[key].name!r}")
+            w, _, d = built[key].size
+            if w > 48 or d > 48:
+                problems.append(f"piece {key}: {w} x {d} is wider than 48 x 48")
+    for place in places:
+        if "add_to" in place:
+            continue
+        for key in ("step", "start_height", "terrain", "biomes", "spacing", "separation", "salt"):
+            if key not in place:
+                problems.append(f"place {place['name']}: no {key}")
+        if not 0 < place.get("separation", 0) < place.get("spacing", 0):
+            problems.append(f"place {place['name']}: separation must be below spacing")
+        pools = place_pools(place)
+        start = place.get("start_pool", f"{place['name']}/start")
+        if start not in pools:
+            problems.append(f"place {place['name']}: start pool {start} is not among its pools")
+        pool_pieces = {}
+        for path, (fallback, elements) in pools.items():
+            pieces = [_piece_of(e) for e in elements]
+            for piece in pieces:
+                if piece is not None and piece not in place["pieces"]:
+                    problems.append(f"pool {path}: piece {piece} is not one of {place['name']}'s pieces")
+            pool_pieces[_q(path)] = ([p for p in pieces if p in place["pieces"]], fallback)
+            if fallback != "minecraft:empty" and fallback not in {_q(k) for k in pools}:
+                problems.append(f"pool {path}: fallback {fallback} is not a pool of {place['name']}")
+        used = {p for path, (_, els) in pools.items() for p in map(_piece_of, els) if p}
+        for key in place["pieces"]:
+            if key not in used:
+                problems.append(f"piece {key} is in no pool of {place['name']}")
+        for key in place["pieces"]:
+            piece = built[key]
+            w, h, d = piece.size
+            for (x, y, z), orientation, nbt in piece.jigsaws():
+                pool, target = nbt.get("pool", "minecraft:empty"), nbt.get("target", "minecraft:empty")
+                if pool == "minecraft:empty":
+                    continue
+                if pool not in pool_pieces:
+                    problems.append(f"{key} jigsaw at {(x, y, z)}: pool {pool} is not a pool of {place['name']}")
+                    continue
+                names_there = set()
+                fallback_chain, seen = [pool], set()
+                while fallback_chain:
+                    current = fallback_chain.pop()
+                    if current in seen or current not in pool_pieces:
+                        continue
+                    seen.add(current)
+                    for other in pool_pieces[current][0]:
+                        names_there |= {n.get("name") for _, _, n in built[other].jigsaws()}
+                    fallback_chain.append(pool_pieces[current][1])
+                if target not in names_there:
+                    problems.append(f"{key} jigsaw at {(x, y, z)}: no piece in {pool} (or its fallback) "
+                                    f"has a jigsaw named {target}")
+                front = orientation.split("_")[0]
+                dx, dy, dz = structkit.VECTOR[front]
+                if piece.in_bounds(x + dx, y + dy, z + dz):
+                    problems.append(f"{key} jigsaw at {(x, y, z)} faces {front} into its own piece; "
+                                    f"connectors sit in the outer layer facing out")
+    for key, piece in built.items():
+        for (x, y, z), (b, nbt) in sorted(piece.cells.items()):
+            if not nbt:
+                continue
+            table = nbt.get("LootTable")
+            if table:
+                stem = table.split("chests/", 1)[-1]
+                if not table.startswith(f"{NS}:chests/") or stem not in CHESTS:
+                    problems.append(f"{key} {(x, y, z)}: loot table {table} is not one of CHESTS")
+            entity = nbt.get("SpawnData", {}).get("entity", {}).get("id")
+            if entity and entity.startswith(NS + ":") and entity.split(":")[1] not in MOBS:
+                problems.append(f"{key} {(x, y, z)}: spawner mob {entity} is not one of MOBS")
+    return problems
 
 
-def wanderers_camp():
-    p = Piece("wanderers_camp", 7, 4, 7, "camp")
-    ground = p.mix(("minecraft:coarse_dirt", 3), ("minecraft:dirt_path", 1), ("minecraft:gravel", 1))
-    p.fill(0, 0, 0, 6, 0, 6, ground)
-    p.fill(0, 1, 0, 6, 3, 6, AIR)
-    p.set(3, 0, 3, "minecraft:cobblestone")
-    p.set(3, 1, 3, "minecraft:campfire[facing=north,lit=true,signal_fire=false,waterlogged=false]")
-    for x0, z0, wool in ((0, 0, "minecraft:white_wool"), (4, 4, "minecraft:red_wool")):
-        for z in range(z0, z0 + 3):                                # a ridge tent, open at both ends
-            p.set(x0, 1, z, wool)
-            p.set(x0 + 2, 1, z, wool)
-            p.set(x0 + 1, 2, z, wool)
-    p.chest(5, 1, 1, "wanderers_camp", block="minecraft:barrel")
-    p.set(5, 1, 2, "minecraft:crafting_table")
-    p.set(1, 1, 5, "minecraft:hay_block[axis=y]")
-    p.set(3, 1, 5, "minecraft:spruce_log[axis=x]")
-    p.set(1, 1, 3, "minecraft:spruce_log[axis=z]")
-    p.set(2, 1, 4, "minecraft:lantern[hanging=false,waterlogged=false]")
-    return p
+def structures(schema_path=None):
+    from structures import PLACES
 
+    built = {}
+    for place in PLACES:
+        for key, build in place["pieces"].items():
+            assert key not in built, f"piece {key} is built twice"
+            built[key] = build()
+    problems = check_places(PLACES, built)
+    if schema_path:
+        schema = structkit.load_schema(schema_path)
+        known = structkit.mod_blocks()
+        for piece in built.values():
+            problems += piece.validate(schema, known)
+    if problems:
+        print(f"{len(problems)} structure problem(s):", file=sys.stderr)
+        for problem in problems:
+            print("  " + problem, file=sys.stderr)
+        sys.exit(1)
 
-def aquite_shrine():
-    p = Piece("aquite_shrine", 7, 6, 7, "shrine")
-    for x in range(7):
-        for z in range(7):
-            edge = x in (0, 6) or z in (0, 6)
-            p.set(x, 0, z, "minecraft:dark_prismarine" if edge else "minecraft:prismarine_bricks")
-    p.fill(0, 1, 0, 6, 5, 6, AIR)
-    for x, z in ((1, 1), (5, 1), (1, 5), (5, 5)):
-        p.fill(x, 1, z, x, 3, z, "minecraft:prismarine_bricks")
-        p.set(x, 4, z, "minecraft:sea_lantern")
-    for x, z in ((3, 0), (0, 3), (6, 3), (3, 6)):
-        p.set(x, 1, z, f"{NS}:aquiteore")                         # glowing ore set in the rim
-    p.fill(2, 1, 2, 4, 1, 4, "minecraft:prismarine")
-    p.set(3, 1, 3, "minecraft:dark_prismarine")
-    p.chest(3, 2, 3, "aquite_shrine", "south")
-    return p
-
-
-def colosifite_watchtower():
-    p = Piece("colosifite_watchtower", 7, 15, 7, "tower")
-    wall = p.mix(("minecraft:stone_bricks", 6), ("minecraft:cracked_stone_bricks", 2), ("minecraft:mossy_stone_bricks", 1))
-    p.shell(0, 0, 0, 6, 12, 6, wall)
-    for y in (4, 8):
-        p.fill(1, y, 1, 5, y, 5, "minecraft:spruce_planks")       # upper floors
-    for y in range(1, 13):
-        p.set(3, y, 1, "minecraft:ladder[facing=south,waterlogged=false]")
-    for y in (1, 2):
-        p.set(3, y, 6, AIR)                                       # door
-    for y in (6, 10):                                             # arrow slits
-        for x, z in ((3, 0), (0, 3), (6, 3), (3, 6)):
-            p.set(x, y, z, AIR)
-    p.fill(0, 13, 0, 6, 14, 6, AIR)
-    for x in range(7):                                            # battlements
-        for z in range(7):
-            if (x in (0, 6) or z in (0, 6)) and (x + z) % 2 == 0:
-                corner = x in (0, 6) and z in (0, 6)
-                p.set(x, 13, z, f"{NS}:colosfiteblock" if corner else wall())
-    p.chest(1, 1, 5, "colosifite_watchtower", "north")
-    p.chest(5, 9, 5, "colosifite_watchtower", "north")
-    p.spawner(3, 9, 3, f"{NS}:tower_sentry")                      # roofed, so the sentries do not burn
-    p.set(5, 5, 1, "minecraft:hay_block[axis=y]")
-    p.set(1, 5, 5, "minecraft:barrel[facing=up]")
-    return p
-
-
-def pigman_outpost():
-    p = Piece("pigman_outpost", 9, 6, 9, "outpost")
-    brick = p.mix(("minecraft:nether_bricks", 6), ("minecraft:cracked_nether_bricks", 2))
-    p.shell(0, 0, 0, 8, 5, 8, brick)
-    for x, z in ((1, 1), (7, 1), (1, 7), (7, 7)):
-        p.fill(x, 1, z, x, 4, z, "minecraft:gold_block" if (x, z) in ((1, 1), (7, 1)) else "minecraft:chiseled_nether_bricks")
-    for y in (1, 2):
-        p.set(4, y, 8, AIR)                                       # door
-    p.set(4, 0, 4, "minecraft:magma_block")
-    p.spawner(4, 1, 4, "minecraft:zombified_piglin")
-    p.chest(4, 1, 1, "pigman_outpost", "south")
-    p.set(3, 1, 1, "minecraft:gold_block")
-    p.set(5, 1, 1, "minecraft:gold_block")
-    p.set(2, 1, 6, "minecraft:lantern[hanging=false,waterlogged=false]")
-    p.set(6, 1, 6, "minecraft:lantern[hanging=false,waterlogged=false]")
-    return p
-
-
-def shadow_vault():
-    p = Piece("shadow_vault", 9, 7, 9, "vault")
-    brick = p.mix(("minecraft:deepslate_bricks", 6), ("minecraft:cracked_deepslate_bricks", 2),
-                  (f"{NS}:deepslate_shadow_ore", 1))
-    p.shell(0, 0, 0, 8, 6, 8, brick)
-    p.fill(1, 0, 1, 7, 0, 7, "minecraft:deepslate_tiles")
-    for x, z in ((1, 1), (7, 1), (1, 7), (7, 7)):
-        p.fill(x, 1, z, x, 5, z, f"{NS}:shadowblock")
-    p.fill(3, 1, 3, 5, 1, 5, "minecraft:polished_deepslate")
-    p.set(4, 1, 4, "minecraft:deepslate_tiles")
-    p.spawner(4, 2, 4, f"{NS}:vault_guardian")
-    p.chest(4, 1, 1, "shadow_vault", "south")
-    for x, z in ((2, 1, ), (6, 1), (1, 4), (7, 4)):
-        p.set(x, 1, z, "minecraft:soul_lantern[hanging=false,waterlogged=false]")
-    return p
-
-
-def miners_cache():
-    p = Piece("miners_cache", 7, 6, 11, "cache")
-    rock = p.mix(("minecraft:stone", 5), ("minecraft:cobblestone", 3), ("minecraft:andesite", 1))
-    p.shell(1, 0, 0, 5, 4, 10, rock)
-    for z in (2, 5, 8):                                           # timber frames
-        for x in (1, 5):
-            p.fill(x, 1, z, x, 3, z, "minecraft:oak_log[axis=y]")
-        p.fill(1, 4, z, 5, 4, z, "minecraft:oak_planks")
-    for z in range(1, 10):
-        if z not in (4, 7):                                       # a few rails are missing
-            p.set(3, 1, z, "minecraft:rail[shape=north_south,waterlogged=false]")
-    p.chest(2, 1, 5, "miners_cache", block="minecraft:barrel")
-    p.set(4, 1, 9, "minecraft:gravel")
-    p.set(4, 2, 9, "minecraft:gravel")
-    p.set(4, 1, 8, "minecraft:gravel")
-    p.set(2, 1, 9, "minecraft:cobblestone")
-    p.set(4, 3, 2, "minecraft:cobweb")
-    p.set(2, 3, 8, "minecraft:cobweb")
-    p.set(4, 1, 2, "minecraft:lantern[hanging=false,waterlogged=false]")
-    p.set(2, 1, 6, f"{NS}:colosifiteore")
-    return p
-
-
-def forgotten_armory():
-    p = Piece("forgotten_armory", 17, 6, 9, "armory")
-    wall = p.mix(("minecraft:stone_bricks", 6), ("minecraft:cracked_stone_bricks", 2), ("minecraft:mossy_stone_bricks", 1))
-    p.shell(0, 0, 0, 16, 5, 8, wall)
-    for x in (5, 11):                                             # two inner walls, a doorway in each
-        p.fill(x, 1, 1, x, 4, 7, wall)
-        for y in (1, 2):
-            p.set(x, y, 4, AIR)
-    # west room: the library
-    p.fill(1, 1, 1, 4, 2, 1, "minecraft:bookshelf")
-    p.chest(1, 1, 7, "forgotten_armory", "north")
-    p.set(4, 1, 7, "minecraft:lantern[hanging=false,waterlogged=false]")
-    # middle room: the guard post
-    for x, z in ((6, 1), (10, 1), (6, 7), (10, 7)):
-        p.fill(x, 1, z, x, 4, z, "minecraft:chiseled_stone_bricks")
-    p.spawner(8, 1, 4, f"{NS}:vault_guardian")
-    p.set(8, 4, 2, "minecraft:cobweb")
-    p.set(7, 4, 6, "minecraft:cobweb")
-    # east room: the workshop
-    p.set(15, 1, 1, "minecraft:smithing_table")
-    p.set(14, 1, 1, "minecraft:damaged_anvil[facing=north]")
-    p.set(12, 1, 1, "minecraft:grindstone[face=floor,facing=north]")
-    p.set(15, 1, 4, f"{NS}:colosfiteblock")
-    p.chest(15, 1, 7, "forgotten_armory", "north")
-    p.set(12, 1, 7, "minecraft:lantern[hanging=false,waterlogged=false]")
-    return p
-
-
-def armory_blacksmith():
-    p = Piece("village/armory_blacksmith", 9, 7, 9, "blacksmith")
-    p.fill(0, 0, 0, 8, 0, 8, "minecraft:cobblestone")
-    p.fill(0, 1, 0, 8, 6, 8, AIR)
-    p.shell(0, 1, 0, 8, 4, 6, "minecraft:oak_planks")             # the shop
-    p.fill(0, 1, 0, 8, 1, 6, "minecraft:cobblestone")             # stone footing course
-    p.fill(1, 1, 1, 7, 1, 5, AIR)
-    for x, z in ((0, 0), (8, 0), (0, 6), (8, 6), (0, 8), (8, 8)):
-        p.fill(x, 1, z, x, 4, z, "minecraft:oak_log[axis=y]")
-    p.fill(0, 4, 0, 8, 4, 8, "minecraft:spruce_planks")           # roof, over the porch too
-    p.fill(1, 5, 1, 7, 5, 7, "minecraft:spruce_slab[type=bottom,waterlogged=false]")
-    for y in (1, 2):
-        p.set(4, y, 6, AIR)                                       # door
-    p.set(2, 2, 6, "minecraft:glass")
-    p.set(6, 2, 6, "minecraft:glass")
-    p.chest(1, 1, 1, "village_blacksmith", "south")
-    p.set(4, 1, 1, "minecraft:blast_furnace[facing=south,lit=false]")
-    p.set(7, 1, 1, "minecraft:smithing_table")
-    p.set(7, 1, 4, "minecraft:lantern[hanging=false,waterlogged=false]")
-    # the porch
-    p.set(1, 1, 7, "minecraft:furnace[facing=south,lit=false]")
-    p.set(6, 1, 7, "minecraft:anvil[facing=east]")
-    p.set(7, 1, 7, "minecraft:grindstone[face=floor,facing=north]")
-    # where a village street joins on
-    p.set(4, 0, 8, "minecraft:jigsaw[orientation=south_up]", {
-        "id": "minecraft:jigsaw", "name": "minecraft:building_entrance",
-        "target": "minecraft:building_entrance", "pool": "minecraft:empty",
-        "final_state": "minecraft:cobblestone", "joint": "aligned",
-        "selection_priority": 0, "placement_priority": 0,
-    })
-    return p
-
-
-# name -> (piece, step, start height, on the surface?, terrain, biomes, spacing, separation, salt)
-def uniform(lo, hi):
-    return {"type": "minecraft:uniform", "min_inclusive": {"absolute": lo}, "max_inclusive": {"absolute": hi}}
-
-
-STRUCTURES = {
-    "ruined_forge": (ruined_forge, "surface_structures", {"absolute": -1}, True, "beard_thin",
-                     ["#minecraft:is_forest", "minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow"],
-                     28, 10, 418200101),
-    "wanderers_camp": (wanderers_camp, "surface_structures", {"absolute": -1}, True, "beard_thin",
-                       ["#minecraft:is_forest", "#minecraft:is_taiga", "#minecraft:is_savanna", "minecraft:plains",
-                        "minecraft:snowy_plains", "minecraft:desert", "minecraft:meadow"],
-                       24, 8, 418200102),
-    "aquite_shrine": (aquite_shrine, "surface_structures", {"absolute": -1}, True, "beard_thin",
-                      ["#minecraft:is_beach", "#minecraft:is_river", "minecraft:swamp", "minecraft:mangrove_swamp"],
-                      30, 10, 418200103),
-    "colosifite_watchtower": (colosifite_watchtower, "surface_structures", {"absolute": -1}, True, "beard_thin",
-                              ["#minecraft:is_hill", "#minecraft:is_savanna", "#minecraft:is_badlands"],
-                              34, 12, 418200104),
-    "pigman_outpost": (pigman_outpost, "underground_structures", uniform(34, 60), False, "none",
-                       ["minecraft:nether_wastes"], 20, 8, 418200105),
-    "shadow_vault": (shadow_vault, "underground_structures", uniform(-52, -12), False, "none",
-                     ["#minecraft:is_overworld"], 22, 8, 418200106),
-    "miners_cache": (miners_cache, "underground_structures", uniform(0, 40), False, "none",
-                     ["#minecraft:is_overworld"], 18, 6, 418200107),
-    "forgotten_armory": (forgotten_armory, "underground_structures", uniform(-30, 20), False, "none",
-                         ["#minecraft:is_overworld"], 40, 14, 418200108),
-}
-VILLAGES = ("plains", "desert", "savanna", "snowy", "taiga")
-
-
-def structures():
-    made = {}
-    for name, (build, step, height, surface, terrain, biomes, spacing, separation, salt) in STRUCTURES.items():
-        made[name] = build().save()
+    for owned in OWNED:
+        shutil.rmtree(DATA / owned, ignore_errors=True)
+    made = {key: piece.save(DATA / "structure" / f"{key}.nbt") for key, piece in built.items()}
+    for place in PLACES:
+        name = place["name"]
+        if "add_to" in place:
+            write_json(DATA / "worldgen/template_pool" / f"{name}.json", {
+                "horizon:add_to": list(place["add_to"]),
+                "elements": [pool_element((piece, place.get("weight", 1))) for piece in place["pieces"]]})
+            continue
         structure = {
-            "type": "minecraft:jigsaw", "biomes": f"#{NS}:has_structure/{name}", "step": step,
-            "spawn_overrides": {}, "terrain_adaptation": terrain, "start_pool": f"{NS}:{name}/start",
-            "size": 1, "start_height": height, "max_distance_from_center": 80,
+            "type": "minecraft:jigsaw", "biomes": f"#{NS}:has_structure/{name}", "step": place["step"],
+            "spawn_overrides": {}, "terrain_adaptation": place["terrain"],
+            "start_pool": _q(place.get("start_pool", f"{name}/start")),
+            "size": place.get("size", 1), "start_height": height(place["start_height"]),
+            "max_distance_from_center": place.get("max_distance", 80),
         }
-        if surface:
+        if place.get("surface"):
             structure["project_start_to_heightmap"] = "WORLD_SURFACE_WG"
         write_json(DATA / "worldgen/structure" / f"{name}.json", structure)
-        write_json(DATA / "worldgen/template_pool" / name / "start.json", {
-            "fallback": "minecraft:empty",
-            "elements": [{"weight": 1, "element": {
-                "element_type": "minecraft:single_pool_element", "location": f"{NS}:{name}",
-                "projection": "rigid", "processors": "minecraft:empty"}}]})
+        for path, (fallback, elements) in place_pools(place).items():
+            write_json(DATA / "worldgen/template_pool" / f"{path}.json", {
+                "fallback": fallback, "elements": [pool_element(e) for e in elements]})
         write_json(DATA / "worldgen/structure_set" / f"{name}.json", {
             "structures": [{"structure": f"{NS}:{name}", "weight": 1}],
-            "placement": {"type": "minecraft:random_spread", "salt": salt,
-                          "spacing": spacing, "separation": separation}})
-        write_json(DATA / "tags/worldgen/biome/has_structure" / f"{name}.json", {"values": biomes})
-    made["village/armory_blacksmith"] = armory_blacksmith().save()
-    write_json(DATA / "worldgen/template_pool/village/armory_blacksmith.json", {
-        "horizon:add_to": [f"minecraft:village/{v}/houses" for v in VILLAGES],
-        "elements": [{"weight": 2, "element": {
-            "element_type": "minecraft:single_pool_element", "location": f"{NS}:village/armory_blacksmith",
-            "projection": "rigid", "processors": "minecraft:empty"}}]})
-    return made
+            "placement": {"type": "minecraft:random_spread", "salt": place["salt"],
+                          "spacing": place["spacing"], "separation": place["separation"]}})
+        write_json(DATA / "tags/worldgen/biome/has_structure" / f"{name}.json", {"values": list(place["biomes"])})
+    return made, built
 
 
 # ------------------------------------------------------------------ loot
@@ -465,7 +267,7 @@ COMMON = [item("minecraft:bread", 8, 1, 3), item("minecraft:coal", 8, 1, 4), ite
           item("minecraft:lapis_lazuli", 5, 1, 4), item("minecraft:quartz", 5, 1, 4), item("minecraft:redstone", 5, 1, 4),
           item("redstoneingot", 3, 1, 2), item("longstick", 4, 1, 2), item("minecraft:stick", 4, 1, 4)]
 CHESTS = {
-    # table: (uncommon pool, rare pool, weight of "nothing" in the rare pool)
+    # table: (uncommon pool, rare pool, weight of "nothing" in the rare pool[, rolls overriding ROLLS])
     "ruined_forge": ([item("colosifiteingot", 6, 1, 3), item("aquiteingot", 4, 1, 2), item("obsidainingot", 3, 1, 2),
                       item("minecraft:iron_ingot", 6, 1, 4), item("quartzpickaxe", 2, worn=True),
                       item("redstoneaxe", 2, worn=True)],
@@ -505,7 +307,30 @@ CHESTS = {
                             item("aquiteingot", 3, 1, 2), item("longstick", 5, 1, 3),
                             item("quartzsword", 2), item("lapispickaxe", 2), item("redstoneshovel", 2)],
                            [item("forge_hammer_head", 2), item("minecraft:diamond", 1)], 10),
+    "bandit_fort": ([item("minecraft:emerald", 6, 1, 4), item("minecraft:arrow", 6, 4, 12),
+                     item("minecraft:iron_ingot", 5, 1, 3), item("minecraft:crossbow", 2, worn=True),
+                     item("colosifiteingot", 3, 1, 2), item("lapissword", 2, worn=True),
+                     item("redstoneaxe", 2, worn=True), item("quartzamorhelmet", 2, worn=True)],
+                    [item("tarnished_ring", 3), item("faded_map_scrap", 4), item("ancient_hilt", 2)], 8),
+    "infested_mine": ([item("minecraft:string", 8, 2, 6), item("minecraft:spider_eye", 5, 1, 3),
+                       item("colosifiteore", 5, 1, 3), item("aquiteore", 4, 1, 2), item("redstoneingot", 4, 1, 3),
+                       item("minecraft:rail", 4, 2, 6), item("obsidainstring", 3, 1, 2),
+                       item("redstonepicaxe", 2, worn=True), item("colosifitepickaxe", 1, worn=True)],
+                      [item("faded_map_scrap", 3), item("tarnished_ring", 2), item("diamondstick", 1)], 9),
+    "crypt": ([item("minecraft:bone", 8, 2, 6), item("minecraft:gold_nugget", 6, 2, 8),
+               item("minecraft:candle", 4, 1, 3), item("shadow_shard", 4, 1, 2), item("obsidainingot", 3, 1, 2),
+               item("aquitedagger", 2, worn=True), item("lapisdagger", 2, worn=True)],
+              [item("cracked_soul_gem", 2), item("ancient_hilt", 3), item("tarnished_ring", 3)], 9),
+    # the one treasure room per crypt: more rolls, better items, and the rare pool nearly always pays
+    "crypt_treasure": ([item("minecraft:diamond", 4, 1, 3), item("minecraft:gold_ingot", 6, 2, 6),
+                        item("minecraft:emerald", 5, 2, 5), item("shadowingot", 5, 1, 3), item("obsidainingot", 5, 2, 4),
+                        item("shadowdagger", 2, worn=True), item("shadowsword", 2, worn=True),
+                        item("colosifitehalbert", 2, worn=True), item("shadowhelmet", 2, worn=True)],
+                       [item("cracked_soul_gem", 4), item("swordpart2", 2), item("swordpart3", 2),
+                        item("forge_hammer_head", 2), item("ultimatenugget", 1)], 1,
+                       {"uncommon": (3, 5), "rare": (1, 2)}),
 }
+ROLLS = {"common": (3, 5), "uncommon": (1, 3), "rare": (1, 1)}
 MOBS = {
     # id: (name, attributes, drops)
     "vault_guardian": ("Vault guardian",
@@ -528,11 +353,13 @@ def loot_and_mobs(known_items):
             if e["type"] == "minecraft:item" and e["name"].startswith(NS + ":"):
                 used.add(e["name"].split(":")[1])
 
-    for name, (uncommon, rare, nothing) in CHESTS.items():
+    for name, (uncommon, rare, nothing, *more) in CHESTS.items():
+        rolls = {**ROLLS, **(more[0] if more else {})}
         check(COMMON), check(uncommon), check(rare)
         write_json(DATA / "loot_table/chests" / f"{name}.json", {
             "type": "minecraft:chest",
-            "pools": [pool(3, 5, COMMON), pool(1, 3, uncommon), pool(1, 1, rare, nothing)]})
+            "pools": [pool(*rolls["common"], COMMON), pool(*rolls["uncommon"], uncommon),
+                      pool(*rolls["rare"], rare, nothing)]})
     for mob, (_, attributes, drops) in MOBS.items():
         write_json(DATA / "horizon/entity_type" / f"{mob}.json",
                    {"template": "minecraft:zombie", "attributes": attributes})
@@ -767,12 +594,18 @@ def relics_and_ores():
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("--schema", help="block_schema.json to validate every structure block against")
+    args = parser.parse_args()
+    made, _ = structures(args.schema)        # checks first: exits 1 before writing on a problem
     relics_and_ores()
     known = {p.stem for p in (DATA / "horizon/item").glob("*.json")} | {p.stem for p in (DATA / "horizon/block").glob("*.json")}
     loot_and_mobs(known)
-    for name, count in structures().items():
+    for name, count in made.items():
         print(f"structure {name}: {count} blocks")
-    print(f"{len(RELICS)} relics, {len(DEEPSLATE_ORES)} deepslate ores, {len(MOBS)} mob types, {len(CHESTS)} chest tables")
+    print(f"{len(RELICS)} relics, {len(DEEPSLATE_ORES)} deepslate ores, {len(MOBS)} mob types, "
+          f"{len(CHESTS)} chest tables, {len(made)} structure pieces"
+          + (" (validated)" if args.schema else ""))
 
 
 if __name__ == "__main__":

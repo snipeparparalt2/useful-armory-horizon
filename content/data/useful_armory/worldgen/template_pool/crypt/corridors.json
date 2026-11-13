@@ -1,0 +1,14 @@
+{
+  "fallback": "useful_armory:crypt/caps",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/corridor",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}

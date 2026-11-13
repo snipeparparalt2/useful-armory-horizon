@@ -1,0 +1,28 @@
+{
+  "fallback": "useful_armory:crypt/caps",
+  "elements": [
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "lithostitched:guaranteed",
+        "delegate": {
+          "element_type": "minecraft:single_pool_element",
+          "location": "useful_armory:crypt/treasure",
+          "projection": "rigid",
+          "processors": "minecraft:empty"
+        },
+        "count": 1,
+        "min_depth": 3
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "useful_armory:crypt/room",
+        "projection": "rigid",
+        "processors": "minecraft:empty"
+      }
+    }
+  ]
+}
