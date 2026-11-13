@@ -26,4 +26,4 @@ Aquite and Shadow mineral accents have emissive masks; Colosifite is shown betwe
 
 ![Ore accents at night](images/emissive-ores-night.png)
 
-Use the individual PNG files when uploading the mod-page gallery. See [artwork licensing](../ARTWORK_LICENSE.md); third-party game and shader content retains its respective rights.
+Use the individual PNG files when uploading the mod-page gallery. Useful Armory's own artwork is under the [MPL-2.0](../LICENSE); third-party game and shader content in the captures retains its respective rights.

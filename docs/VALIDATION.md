@@ -43,7 +43,7 @@ All supplied PNG files and animation metadata are preserved byte-for-byte, inclu
 
 Removed the Test Tool (`useful_armory:wow`) and Bruh moment (`useful_armory:bruhmoment`) registrations, model definitions, creative entries, block tags, loot definition, language labels, and their unused test images. Neither had a crafting recipe. Existing saves referencing these removed IDs no longer have corresponding mod definitions.
 
-Current counts: **116 standalone item definitions, 6 block definitions, 124 recipes**. Code/data/documentation are MIT-licensed; artwork is separately reserved. Both current distribution packages include the license notices. Native gameplay code remains unchanged at 0.1.1.
+Current counts: **116 standalone item definitions, 6 block definitions, 124 recipes**. Everything, code and art, is licensed under MPL-2.0 (changed 2026-11-12); the content package carries the licence text as `LICENSE`. Native gameplay code remains unchanged at 0.1.1.
 
 ### Standalone emissive update
 

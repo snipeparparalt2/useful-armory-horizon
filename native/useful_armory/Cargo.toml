@@ -3,6 +3,7 @@ name = "horizon-mod-useful-armory"
 version = "0.1.7"
 edition = "2024"
 publish = false
+license = "MPL-2.0"
 description = "Useful Armory's native half for Horizon: the glow, armour set bonuses, tool abilities and weapon effects."
 
 # The mod's logic and its tests: the same file the bundle adds to the game.

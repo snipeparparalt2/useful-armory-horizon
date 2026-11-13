@@ -1,0 +1,14 @@
+# Read by the Horizon mod registry from the newest release's tag. Entries set in the registry win.
+name = "Useful Armory"
+summary = "Eight armour and tool sets, daggers, greatswords and halberds, set bonuses, tool abilities, coloured gear light, trinkets and dungeons."
+description = """
+A rebuilt and expanded port of the 1.12.2 Useful Armory mod for Horizon.
+
+Eight material sets plus the Ultimate set, full-set bonuses, daggers, greatswords and halberds,
+unique weapons, sneak abilities (vein mining, 3x3 digging, tree felling, harvest sweep), gear that
+lights up the world in its own colour, twelve generated structures with loot, and new ores.
+
+Two files: the .hmod goes in horizon-mods/, the .hnmod in horizon-native-mods/.
+"""
+authors = ["snipeparpar"]
+license = "MPL-2.0"

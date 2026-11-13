@@ -1,3 +1,7 @@
 target/
 __pycache__/
 *.pyc
+
+# signing keys never go in the repo
+*.key
+minisign.key

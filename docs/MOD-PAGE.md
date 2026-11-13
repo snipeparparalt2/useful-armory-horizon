@@ -16,4 +16,4 @@ Put the `.hmod` in `horizon-mods/`, enable Useful Armory, and restart. Do not pu
 
 Screenshots use Wisdom Horizon 1.3.7 shaders, which are optional and not included. Emissive textures stay bright themselves; they do not illuminate the surroundings. The current build does not support emissive overlays on held or inventory items.
 
-**License:** MIT for code/data/text documentation; artwork rights reserved, with third-party content retaining its own rights. See the repository's license files.
+**License:** MPL-2.0 for everything, code and art. Third-party content shown in screenshots keeps its own rights. See `LICENSE`.

@@ -8,6 +8,7 @@ assignees: ''
 
 **Horizon revision:**
 **Content mod version:**
+**Native mod version (.hnmod), if installed:**
 **Shader pack and version, if used:**
 **Other mods:**
 **World preset and dimension:**
