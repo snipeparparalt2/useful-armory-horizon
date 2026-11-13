@@ -17,7 +17,7 @@ status are in [HANDOFF.md](HANDOFF.md).
 
 ---
 
-## Proposed 0.1.8 "The Armory": show off, maintain and carry your gear
+## 0.1.8 "The Armory": show off, maintain and carry your gear (owner's pick for after 0.1.7)
 
 The mod is called Useful Armory, but there is nowhere to put the armory. This update is about
 displaying, maintaining and carrying gear.
@@ -50,7 +50,7 @@ displaying, maintaining and carrying gear.
 | Aquite reef | Warm-ocean ruin overgrown with aquite crystal; the tide lurkers' home | data, art | M |
 | Colosifite fissure | A badlands crack with lava falls and rich colosifite seams; ember brutes guard it | data, art | M |
 | Shadow rift | Deep dark ruin round a torn rift; shades pour out at night | data, native, art | M |
-| A ninth material, from the End | An End-only ore and full set (working name **Astralite**), with a slow-falling set bonus and a void-resistant tool line | data, native, art | L |
+| A ninth material, from the End | An End-only ore and full set, **Astralite** (name chosen by the owner), with a slow-falling set bonus and a void-resistant tool line | data, native, art | L |
 | Star forge | End-island structure where Astralite is worked; a hard fight at the top | data, native, art | L |
 | Ultimate rework | Ultimate crafted from one ingot of every material, so it becomes the real endgame | data | S |
 | Materials in any world | Ore routes for flat and void worlds (a sieve, or trading with the travelling smith), so every world preset has a way to get them | data, native | M |
@@ -68,4 +68,5 @@ displaying, maintaining and carrying gear.
 
 Each update should be finished and seen working in game before the next one starts, and each
 feature should ship with its tooltip, recipe, sound, Codex page and a test checklist. A good
-first choice after 0.1.7 is **0.1.8**: it is mostly about the gear players already have.
+first choice after 0.1.7 is **0.1.8**: it is mostly about the gear players already have. The owner
+chose 0.1.8 as the next update and wants nothing more from the original 1.12.2 mod for now.
