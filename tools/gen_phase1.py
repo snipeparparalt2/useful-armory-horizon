@@ -357,8 +357,8 @@ MOBS = {
                       "minecraft:attack_damage": 4.0, "minecraft:armor": 4.0},
                      [("minecraft:rotten_flesh", 0, 2, None), ("colosifiteingot", 1, 1, 0.2),
                       ("faded_map_scrap", 1, 1, 0.05)]),
-    # 0.1.7 phase 3. All four copy the zombie for now, so they also burn in daylight and turn into
-    # drowned under water until the native half switches that off for them (see docs/HANDOFF.md).
+    # 0.1.7 phase 3. All four copy the zombie. Without Armory Lib they also burn in daylight and
+    # turn into drowned under water; armory_lib.json (tools/gen_armory_lib.py) switches that off.
     "shade": ("Shade",
               {"minecraft:max_health": 14.0, "minecraft:movement_speed": 0.33,
                "minecraft:attack_damage": 3.0, "minecraft:armor": 0.0},

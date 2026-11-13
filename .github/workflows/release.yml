@@ -29,6 +29,10 @@ jobs:
             "$version"|"$version"-*) ;;
             *) echo "tag $GITHUB_REF_NAME does not match version $version"; exit 1 ;;
           esac
+      - name: Check armory_lib.json matches its generator
+        run: |
+          python3 tools/gen_armory_lib.py
+          git diff --exit-code -- content/data/useful_armory/armory_lib.json || { echo "run tools/gen_armory_lib.py and commit"; exit 1; }
       - name: Rebuild the packages and compare with dist/
         run: |
           cp -r dist /tmp/committed
@@ -52,7 +56,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(ls dist/*.hmod dist/*.hnmod dist/*.minisig dist/SHA256SUMS.txt 2>/dev/null)
+          shopt -s nullglob
+          files="$(echo dist/*.hmod dist/*.hnmod dist/*.minisig dist/SHA256SUMS.txt)"
+          [ -n "$files" ] || { echo "nothing in dist/ to attach"; exit 1; }
           [ -f minisign.pub ] && files="$files minisign.pub"
           flags=""
           notes="Useful Armory ${GITHUB_REF_NAME#v} for Horizon fdc87ae (Nightly 2026-11-08, game data 26.3)."

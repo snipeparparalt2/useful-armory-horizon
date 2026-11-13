@@ -89,3 +89,11 @@ What was checked without the game:
 6. Deepslate ores below Y 0 in new chunks, and their inventory icons.
 
 Known rough edges: surface buildings sit flat on the highest ground under them, so on slopes one side can be buried or raised. The Pigman outpost is placed by height only, so it can end up inside netherrack or sticking out over a lava lake.
+
+## 0.1.7 (in development)
+
+From 0.1.7 the mod is again one content `.hmod` with no code. What needs code is done by the
+separate library mod [Armory Lib](https://github.com/snipeparparalt2/armory_lib), from
+`content/data/useful_armory/armory_lib.json`. `cargo horizon-mod check` accepts the `.hmod`
+("no code: content only"); the library's file check accepts `armory_lib.json`. Not yet tested
+in game.

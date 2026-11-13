@@ -8,8 +8,9 @@ Eight material sets plus the Ultimate set, full-set bonuses, daggers, greatsword
 unique weapons, sneak abilities (vein mining, 3x3 digging, tree felling, harvest sweep), gear that
 lights up the world in its own colour, twelve generated structures with loot, and new ores.
 
-Three files: useful_armory (.hmod) goes in horizon-mods/; useful_armory_native (.hnmod) and the
-library it needs, armory_lib (.hnmod), go in horizon-native-mods/.
+One file, no code: put the .hmod in horizon-mods/. The coloured gear light, set bonuses, sneak
+abilities, weapon effects and the new creatures' looks come from the separate library mod
+Armory Lib (armory_lib); without it every item, ore, creature and place still works.
 """
 authors = ["snipeparpar"]
 license = "MPL-2.0"

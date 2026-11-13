@@ -26,14 +26,12 @@ owner makes and keeps the key. An agent must never generate, hold or commit the 
 ```powershell
 python tools/package.py
 minisign -Sm dist/useful_armory-0.1.7.hmod
-minisign -Sm dist/useful_armory_native-0.1.7.hnmod
 ```
 
-Each command writes `<file>.minisig` next to the file. Check them before uploading:
+It writes `dist/useful_armory-0.1.7.hmod.minisig`. Commit it, then check it before tagging:
 
 ```powershell
 minisign -Vm dist/useful_armory-0.1.7.hmod -p minisign.pub
-minisign -Vm dist/useful_armory_native-0.1.7.hnmod -p minisign.pub
 cargo horizon-mod check dist/useful_armory-0.1.7.hmod --key <public key> --signature dist/useful_armory-0.1.7.hmod.minisig
 ```
 
@@ -41,8 +39,9 @@ cargo horizon-mod check dist/useful_armory-0.1.7.hmod --key <public key> --signa
 
 ## Publishing
 
-1. Create a GitHub release, tagged `v0.1.7`. It must not be a draft or pre-release. Attach the
-   `.hmod`, the `.hnmod` and both `.minisig` files. The release notes become the changelog.
+1. Push the tag `v0.1.7`. The release workflow makes the GitHub release (not a draft, not a
+   pre-release) with the `.hmod` and its committed `.minisig` attached. The release notes become
+   the changelog.
 2. First listing only: submit the repository at https://playhorizon.dev/mods/submit with the public
    key. This opens a pull request in `horizon-rust/horizon-mods` for a reviewer.
 3. Later releases are picked up and checked automatically. A published file never changes. To fix

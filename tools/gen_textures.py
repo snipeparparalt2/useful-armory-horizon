@@ -5,8 +5,8 @@ Usage:  python3 gen_textures.py <path-to>/assets/useful_armory/textures [--std-a
 
 --std-armor writes the worn armour at the vanilla 64x32 size instead of 128x64.
 --halo      paints the old soft coloured halo around glowing sprites. Off by default: the
-            glow is real coloured light now, cast in game by Useful Armory's native half
-            (native/useful_armory), so the icons stay clean. GLOW_ITEMS below is what that mod lights.
+            glow is real coloured light now, cast in game by Armory Lib from the colours in
+            tools/gen_armory_lib.py, so the icons stay clean. GLOW_ITEMS below is what it lights.
 
 Every sprite is drawn from a shape template (below) and shaded with a
 per-material colour ramp, so changing a palette in MATERIALS and re-running

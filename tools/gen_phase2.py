@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Phase 2 ("gear that does things"): the content side of the native half's abilities.
+"""Phase 2 ("gear that does things"): the tooltips and reach of the gear abilities.
 
     python3 tools/gen_phase2.py
 
-For each item the native half (native/useful_armory) gives an ability, adds one plain lore line
+For each item that has an ability (Armory Lib carries them out, from tools/gen_armory_lib.py's
+file), adds one plain lore line
 saying what it does to content/data/useful_armory/horizon/item/<id>.json: "Full set: ..." on
 each armour piece, one short line on the tools and weapons. Lore already there is kept; the
 script's own line is replaced, not added again, so it can run any number of times.
@@ -12,7 +13,7 @@ Halberds get their extra block of reach as data: an `minecraft:entity_interactio
 attribute modifier in the main hand, added to the item's `minecraft:attribute_modifiers` list
 (once, by its id).
 
-The ids are the content mod's own legacy names; keep them in step with runtime.rs.
+The ids are the content mod's own legacy names; keep them in step with gen_armory_lib.py.
 """
 import json
 from pathlib import Path

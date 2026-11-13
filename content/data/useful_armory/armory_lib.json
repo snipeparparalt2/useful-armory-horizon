@@ -1,0 +1,433 @@
+{
+  "schema": 1,
+  "page": {
+    "title": "Useful Armory 0.1.7",
+    "description": "Glowing gear lights up the world; full armour sets give bonuses; sneak to vein mine, dig 3 x 3 or fell trees; hoes harvest an area; weapons have effects. Each part can be switched off here.",
+    "switches": [
+      {
+        "key": "glow",
+        "label": "Glow"
+      },
+      {
+        "key": "set_bonuses",
+        "label": "Set bonuses"
+      },
+      {
+        "key": "vein_mining",
+        "label": "Vein mining"
+      },
+      {
+        "key": "wide_dig",
+        "label": "Wide dig"
+      },
+      {
+        "key": "tree_felling",
+        "label": "Tree felling"
+      },
+      {
+        "key": "harvest_sweep",
+        "label": "Harvest sweep"
+      },
+      {
+        "key": "weapon_effects",
+        "label": "Weapon effects"
+      }
+    ]
+  },
+  "gear_lights": [
+    {
+      "items": [
+        "useful_armory:thenetherlegacy"
+      ],
+      "color": "#50e6f0",
+      "setting": "glow"
+    },
+    {
+      "items": [
+        "useful_armory:aquiteaxe",
+        "useful_armory:aquitebody",
+        "useful_armory:aquiteboots",
+        "useful_armory:aquitedagger",
+        "useful_armory:aquitegreatsword",
+        "useful_armory:aquitehalbert",
+        "useful_armory:aquitehelmet",
+        "useful_armory:aquitehoe",
+        "useful_armory:aquitelegs",
+        "useful_armory:aquitepickaxe",
+        "useful_armory:aquiteshovel",
+        "useful_armory:aquitesword"
+      ],
+      "color": "#8cffe2",
+      "setting": "glow"
+    },
+    {
+      "items": [
+        "useful_armory:soulednetherstar"
+      ],
+      "color": "#96f0ff",
+      "setting": "glow"
+    },
+    {
+      "items": [
+        "useful_armory:shadowaxe",
+        "useful_armory:shadowbody",
+        "useful_armory:shadowboots",
+        "useful_armory:shadowdagger",
+        "useful_armory:shadowgreatsword",
+        "useful_armory:shadowhelmet",
+        "useful_armory:shadowhoe",
+        "useful_armory:shadowlegs",
+        "useful_armory:shadowotehrweapon",
+        "useful_armory:shadowpickaxe",
+        "useful_armory:shadowshovel",
+        "useful_armory:shadowsword"
+      ],
+      "color": "#9e60ff",
+      "setting": "glow"
+    },
+    {
+      "items": [
+        "useful_armory:erottenflesh"
+      ],
+      "color": "#b4ff46",
+      "setting": "glow"
+    },
+    {
+      "items": [
+        "useful_armory:souleater"
+      ],
+      "color": "#e8aaec",
+      "setting": "glow"
+    },
+    {
+      "items": [
+        "useful_armory:lavasword"
+      ],
+      "color": "#ff8c1e",
+      "setting": "glow"
+    }
+  ],
+  "mob_looks": [
+    {
+      "kind": "useful_armory:ember_brute",
+      "rig": "zombie",
+      "texture": "useful_armory:entity/ember_brute/ember_brute",
+      "emissive": "useful_armory:entity/ember_brute/ember_brute_e"
+    },
+    {
+      "kind": "useful_armory:lost_pigman",
+      "rig": "zombie",
+      "texture": "useful_armory:entity/lost_pigman/lost_pigman"
+    },
+    {
+      "kind": "useful_armory:shade",
+      "rig": "zombie",
+      "texture": "useful_armory:entity/shade/shade",
+      "emissive": "useful_armory:entity/shade/shade_e"
+    },
+    {
+      "kind": "useful_armory:tide_lurker",
+      "rig": "zombie",
+      "texture": "useful_armory:entity/tide_lurker/tide_lurker",
+      "emissive": "useful_armory:entity/tide_lurker/tide_lurker_e"
+    },
+    {
+      "kind": "useful_armory:tower_sentry",
+      "rig": "zombie",
+      "texture": "useful_armory:entity/tower_sentry/tower_sentry",
+      "emissive": "useful_armory:entity/tower_sentry/tower_sentry_e"
+    },
+    {
+      "kind": "useful_armory:vault_guardian",
+      "rig": "zombie",
+      "texture": "useful_armory:entity/vault_guardian/vault_guardian",
+      "emissive": "useful_armory:entity/vault_guardian/vault_guardian_e"
+    }
+  ],
+  "mob_rules": [
+    {
+      "kind": "useful_armory:ember_brute",
+      "no_conversion": true,
+      "no_sunburn": true,
+      "fire_proof": true
+    },
+    {
+      "kind": "useful_armory:lost_pigman",
+      "no_conversion": true,
+      "no_sunburn": true,
+      "fire_proof": true
+    },
+    {
+      "kind": "useful_armory:shade",
+      "no_conversion": true,
+      "no_sunburn": true
+    },
+    {
+      "kind": "useful_armory:tide_lurker",
+      "no_conversion": true,
+      "no_sunburn": true,
+      "on_hit": [
+        {
+          "effect": "minecraft:slowness",
+          "amplifier": 1,
+          "ticks": 100
+        }
+      ]
+    },
+    {
+      "kind": "useful_armory:tower_sentry",
+      "no_conversion": true,
+      "no_sunburn": true
+    },
+    {
+      "kind": "useful_armory:vault_guardian",
+      "no_conversion": true,
+      "no_sunburn": true
+    }
+  ],
+  "armor_sets": [
+    {
+      "pieces": [
+        "useful_armory:aquitehelmet",
+        "useful_armory:aquitebody",
+        "useful_armory:aquitelegs",
+        "useful_armory:aquiteboots"
+      ],
+      "setting": "set_bonuses",
+      "effects": [
+        "minecraft:water_breathing",
+        "minecraft:dolphins_grace"
+      ]
+    },
+    {
+      "pieces": [
+        "useful_armory:colosifitearmorhelmet",
+        "useful_armory:colosifitearmorbody",
+        "useful_armory:colosifitearmorlegs",
+        "useful_armory:colosifitearmorboots"
+      ],
+      "setting": "set_bonuses",
+      "effects": [
+        "minecraft:fire_resistance"
+      ]
+    },
+    {
+      "pieces": [
+        "useful_armory:emeraldarmorhelmet",
+        "useful_armory:emeraldarmorbody",
+        "useful_armory:emeraldarmorlegs",
+        "useful_armory:emeraldarmorboots"
+      ],
+      "setting": "set_bonuses",
+      "effects": [
+        "minecraft:luck"
+      ]
+    },
+    {
+      "pieces": [
+        "useful_armory:lapisarmorhelmet",
+        "useful_armory:lapisarmorbody",
+        "useful_armory:lapisarmorlegs",
+        "useful_armory:lapisarmorboots"
+      ],
+      "setting": "set_bonuses",
+      "experience_bonus": 0.25
+    },
+    {
+      "pieces": [
+        "useful_armory:obsidainarmorhelmet",
+        "useful_armory:obsidainarmorbody",
+        "useful_armory:obsidainarmorlegs",
+        "useful_armory:obsidainarmorboots"
+      ],
+      "setting": "set_bonuses",
+      "knockback_taken": 0.5,
+      "explosion_taken": 0.5
+    },
+    {
+      "pieces": [
+        "useful_armory:quartzamorhelmet",
+        "useful_armory:quartzamorbody",
+        "useful_armory:quartzamorlegs",
+        "useful_armory:quartzamorboots"
+      ],
+      "setting": "set_bonuses",
+      "effects": [
+        "minecraft:speed"
+      ]
+    },
+    {
+      "pieces": [
+        "useful_armory:redstonearmorhelmet",
+        "useful_armory:redstonearmorbody",
+        "useful_armory:redstonearmorlegs",
+        "useful_armory:redstonearmorboots"
+      ],
+      "setting": "set_bonuses",
+      "effects": [
+        "minecraft:haste"
+      ]
+    },
+    {
+      "pieces": [
+        "useful_armory:shadowhelmet",
+        "useful_armory:shadowbody",
+        "useful_armory:shadowlegs",
+        "useful_armory:shadowboots"
+      ],
+      "setting": "set_bonuses",
+      "effects": [
+        "minecraft:night_vision"
+      ]
+    },
+    {
+      "pieces": [
+        "useful_armory:ultimateahelmet",
+        "useful_armory:ultimateabody",
+        "useful_armory:ultimatealegs",
+        "useful_armory:ultimateaboots"
+      ],
+      "setting": "set_bonuses",
+      "no_fall_damage": true,
+      "regen": {
+        "every_ticks": 80,
+        "health": 1.0
+      }
+    }
+  ],
+  "tools": [
+    {
+      "items": [
+        "useful_armory:colosifitepickaxe",
+        "useful_armory:emeraldpickaxe",
+        "useful_armory:shadowpickaxe"
+      ],
+      "ability": "vein_mine",
+      "setting": "vein_mining"
+    },
+    {
+      "items": [
+        "useful_armory:obsidianpickaxe",
+        "useful_armory:obsidianshovel"
+      ],
+      "ability": "wide_dig",
+      "setting": "wide_dig"
+    },
+    {
+      "items": [
+        "useful_armory:aquiteaxe",
+        "useful_armory:emeraldaxe",
+        "useful_armory:shadowaxe"
+      ],
+      "ability": "fell_tree",
+      "setting": "tree_felling"
+    }
+  ],
+  "ores": [
+    "useful_armory:aquiteore",
+    "useful_armory:colosifiteore",
+    "useful_armory:shadowore",
+    "useful_armory:deepslate_aquite_ore",
+    "useful_armory:deepslate_colosifite_ore",
+    "useful_armory:deepslate_shadow_ore"
+  ],
+  "harvest": [
+    {
+      "items": [
+        "useful_armory:aquitehoe",
+        "useful_armory:colosifitehoe",
+        "useful_armory:emeraldhoe",
+        "useful_armory:lapishoe",
+        "useful_armory:obsidianhoe",
+        "useful_armory:quartzhoe",
+        "useful_armory:redstonehoe",
+        "useful_armory:shadowhoe"
+      ],
+      "radius": 1,
+      "setting": "harvest_sweep"
+    },
+    {
+      "items": [
+        "useful_armory:reaperscyth"
+      ],
+      "radius": 2,
+      "setting": "harvest_sweep"
+    }
+  ],
+  "weapons": [
+    {
+      "items": [
+        "useful_armory:aquitedagger",
+        "useful_armory:colosifitedagger",
+        "useful_armory:emeralddagger",
+        "useful_armory:lapisdagger",
+        "useful_armory:quartzdagger",
+        "useful_armory:shadowdagger"
+      ],
+      "setting": "weapon_effects",
+      "backstab": 2.0
+    },
+    {
+      "items": [
+        "useful_armory:aquitegreatsword",
+        "useful_armory:colosifitegreatsword",
+        "useful_armory:emeraldgreatsword",
+        "useful_armory:lapisgreatsword",
+        "useful_armory:quartzgreatsword",
+        "useful_armory:shadowgreatsword"
+      ],
+      "setting": "weapon_effects",
+      "splash": {
+        "radius": 1.5,
+        "share": 0.5
+      }
+    },
+    {
+      "items": [
+        "useful_armory:lavasword"
+      ],
+      "setting": "weapon_effects",
+      "fire_ticks": 80
+    },
+    {
+      "items": [
+        "useful_armory:souleater"
+      ],
+      "setting": "weapon_effects",
+      "heal_on_kill": 2.0
+    },
+    {
+      "items": [
+        "useful_armory:pigmansword"
+      ],
+      "setting": "weapon_effects",
+      "bonus_against": {
+        "kinds": [
+          "minecraft:piglin",
+          "minecraft:piglin_brute",
+          "minecraft:hoglin",
+          "minecraft:zoglin",
+          "minecraft:zombified_piglin"
+        ],
+        "multiplier": 1.5
+      }
+    },
+    {
+      "items": [
+        "useful_armory:thenetherlegacy"
+      ],
+      "setting": "weapon_effects",
+      "bonus_in": {
+        "dimension": "minecraft:the_nether",
+        "multiplier": 1.5
+      }
+    },
+    {
+      "items": [
+        "useful_armory:reaperscyth"
+      ],
+      "setting": "weapon_effects",
+      "heads": true
+    }
+  ]
+}

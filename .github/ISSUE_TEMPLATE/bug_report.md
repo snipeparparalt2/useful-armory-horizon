@@ -7,8 +7,8 @@ assignees: ''
 ---
 
 **Horizon revision:**
-**Content mod version:**
-**Native mod version (.hnmod), if installed:**
+**Useful Armory version:**
+**Armory Lib version, if installed:**
 **Shader pack and version, if used:**
 **Other mods:**
 **World preset and dimension:**

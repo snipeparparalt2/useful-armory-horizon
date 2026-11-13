@@ -10,12 +10,12 @@ its own files and keys, so running it again changes nothing.
 
 What works from data alone:
 - Trinkets work **in the off hand** through vanilla attribute modifiers, and the tooltip shows
-  them. Working anywhere in the hotbar needs the native half (see docs/HANDOFF.md). The lapis
-  ring's bonus experience is native only.
+  them. Working anywhere in the hotbar needs Armory Lib (see docs/HANDOFF.md). The lapis
+  ring's bonus experience needs it too.
 - The waystone and the soul forge are placeable, glowing, mineable blocks. Teleporting and
-  upgrading are native.
-- Backpacks, the recall charm, the golem core and the soul jars are craftable items whose use is
-  native.
+  upgrading need Armory Lib.
+- Backpacks, the recall charm, the golem core and the soul jars are craftable items whose use
+  needs Armory Lib.
 """
 import sys
 from pathlib import Path

@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
-"""Pack the mod into the files Horizon loads.
+"""Pack the mod into the file Horizon loads.
 
     python3 tools/package.py
 
 Writes into dist/:
-  useful_armory-<version>.hmod        the content mod (content/), for horizon-mods/
-  useful_armory_native-<version>.hnmod   the native half (native/useful_armory/): the glow, set
-                                      bonuses, tool abilities and weapon effects, for
-                                      horizon-native-mods/
+  useful_armory-<version>.hmod   the whole mod (content/), for horizon-mods/
+  SHA256SUMS.txt                 its checksum
 
-Both are deterministic zips in the layout Horizon's docs/api/mod-files.md describes. The native
-half has its own id, useful_armory_native: the registry lists each file under one id.
+A deterministic zip in the layout Horizon's docs/api/mod-files.md describes. The mod has no
+code: what needs code is done by the separate library mod Armory Lib, from
+content/data/useful_armory/armory_lib.json (tools/gen_armory_lib.py).
 """
 import hashlib
-import json
 import tomllib
 import zipfile
 from pathlib import Path
@@ -39,29 +37,12 @@ def content_mod():
     write_zip(DIST / f"{manifest['id']}-{manifest['version']}.hmod", files)
 
 
-def native_mod():
-    root = ROOT / "native" / "useful_armory"
-    compat = json.loads((root / "compatibility.json").read_text())
-    bundle = next(p for p in (root / "mixins").iterdir() if (p / "horizon-mixin.toml").is_file())
-    mixin = tomllib.loads((bundle / "horizon-mixin.toml").read_text())
-    mod_id, version = mixin["mod"]["id"], mixin["mod"]["version"]
-    if mixin["compatibility"]["horizon_revision"] != compat["horizon_revision"]:
-        raise SystemExit("horizon-mixin.toml and compatibility.json pin different Horizon commits")
-    manifest = {"schema": 1, "id": mod_id, "version": version, "game": compat["game"],
-                "horizon": compat["horizon_revision"], "mixins": compat["horizon_mixins_revision"]}
-    files = {"horizon-native.json": (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode()}
-    # The bundle's sources and, under api/, the package that registers with Armory Lib.
-    for path in sorted(bundle.rglob("*")):
-        if path.is_file() and path.suffix in (".rs", ".toml") and "target" not in path.parts:
-            files[f"mixins/{mod_id}/{path.relative_to(bundle).as_posix()}"] = path.read_bytes()
-    write_zip(DIST / f"{mod_id}-{version}.hnmod", files)
-
-
 if __name__ == "__main__":
     DIST.mkdir(exist_ok=True)
+    for old in DIST.glob("*.hnmod"):
+        old.unlink()
     content_mod()
-    native_mod()
-    packages = sorted(p for p in DIST.iterdir() if p.suffix in (".hmod", ".hnmod"))
+    packages = sorted(p for p in DIST.iterdir() if p.suffix == ".hmod")
     (DIST / "SHA256SUMS.txt").write_text(
         "".join(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n" for p in packages))
 

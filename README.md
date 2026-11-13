@@ -28,7 +28,12 @@
 </p>
 
 > **Status:** 0.1.7 is being built on `main` and has not been play-tested yet. The latest published
-> release is **0.1.6** (content only). Everything below describes 0.1.7 unless it says otherwise.
+> release is **0.1.6**. Everything below describes 0.1.7 unless it says otherwise.
+
+**One file, from the mod browser.** Useful Armory is a single `.hmod` with no code in it. What
+needs code (the gear light, set bonuses, sneak abilities, weapon effects and the creatures'
+looks) comes from the separate library mod [Armory Lib](https://github.com/snipeparparalt2/armory_lib). Without it you still get every
+item, block, ore, creature and place. Features that need Armory Lib are marked ★ below.
 
 ## What's inside
 
@@ -38,7 +43,7 @@
 Each has a sword, pickaxe, axe, shovel, hoe and four armour pieces. On top of those comes the
 **Ultimate** set, which cycles through seven colours.
 
-**Full-set bonuses.** Wear all four pieces of a set:
+**Full-set bonuses** ★. Wear all four pieces of a set:
 
 | Set | Bonus |
 |---|---|
@@ -52,7 +57,7 @@ Each has a sword, pickaxe, axe, shovel, hoe and four armour pieces. On top of th
 | Shadow | Night vision |
 | Ultimate | Slow regeneration and no fall damage |
 
-**Glowing gear.** Glowing items (Aquite, Shadow and a few special weapons) light up the world
+**Glowing gear** ★. Glowing items (Aquite, Shadow and a few special weapons) light up the world
 around you in their own colour, whether you hold them, wear them or drop them. Aquite and Shadow
 armour and ores also have full-bright accents.
 
@@ -62,25 +67,25 @@ armour and ores also have full-bright accents.
 
 <img src="docs/images/weapons.png" align="left" width="320" alt="Daggers, greatswords and halberds">
 
-- **Daggers** deal bonus damage when you strike from behind.
-- **Greatswords** splash damage onto nearby enemies.
+- **Daggers** ★ deal bonus damage when you strike from behind.
+- **Greatswords** ★ splash damage onto nearby enemies.
 - **Halberds** reach one block further.
-- **Unique weapons**: the **Magma sword** sets targets on fire, the **Soul eater** heals you on a
+- **Unique weapons** ★: the **Magma sword** sets targets on fire, the **Soul eater** heals you on a
   kill, the **Pigman sword** hits piglins harder, **The Nether's legacy** is stronger in the Nether,
   and the **Reaper scythe** makes mobs drop their heads.
 
 <br clear="left">
 
-### Tools that do more (hold sneak)
+### Tools that do more (hold sneak) ★
 
 | Ability | Tools |
 |---|---|
 | Vein mining | Colosifite, Emerald and Shadow pickaxes |
 | 3x3 digging | Obsidian pickaxe and shovel |
 | Tree felling | Aquite, Emerald and Shadow axes |
-| Harvest sweep | Any hoe (3x3), the Reaper scythe (5x5) |
+| Harvest sweep | The mod's hoes (3x3), the Reaper scythe (5x5) |
 
-Every ability has its own switch under **Options > Mods > Useful Armory**. Use these switches if
+With Armory Lib, every ability has its own switch under **Options > Mods > Useful Armory**. Use these switches if
 you also run a separate vein-mining or tree-felling mod.
 
 ### Places to find
@@ -147,25 +152,22 @@ pack.
 
 You need **Horizon nightly `fdc87ae`** (2026-11-08), which runs game data 26.3.
 
-From 0.1.7 on, Useful Armory comes as **two files**, attached to each
-[release](../../releases), and needs the library mod [Armory Lib](https://github.com/snipeparparalt2/armory_lib):
+**From the mod browser:** install Useful Armory, and Armory Lib if you want the extras. That's all.
 
-| File | Put it in | What it is |
-|---|---|---|
-| `useful_armory-<version>.hmod` | `horizon-mods/` | Items, blocks, recipes, loot, places and world generation |
-| `useful_armory_native-<version>.hnmod` | `horizon-native-mods/` | The Rust code for glowing gear, set bonuses, tool abilities and weapon effects. The launcher compiles it into the game. |
-| `armory_lib-<version>.hnmod` ([Armory Lib releases](https://github.com/snipeparparalt2/armory_lib/releases)) | `horizon-native-mods/` | The library the native half is built on: it draws the glow and the new mobs and keeps the settings page. |
+**By hand:** download `useful_armory-<version>.hmod` from the [releases](../../releases).
 
 1. Open your Horizon game folder. On a default Windows install it is `%APPDATA%\horizon`.
-2. Put each file in its folder, and remove older copies of Useful Armory.
-3. Build in the Horizon launcher, enable **Useful Armory** in the Mods screen, and restart.
+2. Put the `.hmod` in `horizon-mods/` and remove older copies of Useful Armory, including any
+   `useful_armory*.hnmod` from earlier test builds in `horizon-native-mods/`.
+3. Enable **Useful Armory** in the Mods screen and restart. No Build is needed.
+
+**For the extras ★**, add [Armory Lib](https://github.com/snipeparparalt2/armory_lib/releases): its `armory_lib-<version>.hnmod` goes
+in `horizon-native-mods/`, then press **Build** in the launcher. It is a native mod: Rust compiled
+into the game and not sandboxed, so only install it from sources you trust. Its whole source is in
+its repository. Back up important worlds before changing mods or Horizon versions.
 
 **Getting `missing horizon-native.json`?** The `.hmod` is in `horizon-native-mods/`. Move it to
 `horizon-mods/`.
-
-Native mods are compiled into the game and are not sandboxed, so only install them from sources you
-trust. The full source is in [`native/useful_armory/`](native/useful_armory). Back up important
-worlds before changing mods or Horizon versions.
 
 ### Check a download
 
@@ -194,8 +196,8 @@ will follow the 0.1.7 play-test. See [docs/SCREENSHOTS.md](docs/SCREENSHOTS.md) 
 ```sh
 python3 tools/gen_phase1.py --schema <block_schema.json>   # places, loot, relics, ores, mobs
 python3 tools/gen_phase2.py                                # ability tooltips on items
-python3 tools/package.py                                   # dist/useful_armory-<version>.hmod and .hnmod
-(cd native/useful_armory && cargo test)                    # native logic tests
+python3 tools/gen_armory_lib.py                            # data/useful_armory/armory_lib.json for Armory Lib
+python3 tools/package.py                                   # dist/useful_armory-<version>.hmod
 cargo horizon-mod check dist/useful_armory-<version>.hmod  # Horizon's own package check
 ```
 
@@ -208,7 +210,8 @@ overwrite their files, so review the changes before committing. Releases are sig
 
 Every update gets a GitHub release. Pushing a version tag makes it
 (`.github/workflows/release.yml`): the workflow rebuilds the package, checks it against `dist/`
-and attaches both files, their checksums and, once committed, their signatures.
+and attaches the `.hmod`, its checksum and, once committed, its signature. Armory Lib has its own
+releases in its own repository.
 
 ```sh
 git tag v0.1.7-pre.1 && git push origin v0.1.7-pre.1   # a pre-release: a build still being tested
@@ -221,7 +224,8 @@ it with a new version number.
 ## Repository map
 
 - `content/`: everything the content mod loads (textures, models, recipes, loot, places)
-- `native/useful_armory/`: the native half (Rust). It depends on [Armory Lib](https://github.com/snipeparparalt2/armory_lib), which has its own repository
+- `content/data/useful_armory/armory_lib.json`: what the gear and creatures do, for Armory Lib
+  (written by `tools/gen_armory_lib.py`)
 - `tools/`: generators, packaging and the item list
 - `docs/`: [items](docs/items.md), [roadmap](docs/ROADMAP.md), [validation](docs/VALIDATION.md), [screenshots](docs/SCREENSHOTS.md), [signing](docs/SIGNING.md)
 - `dist/`: the latest built packages and their checksums

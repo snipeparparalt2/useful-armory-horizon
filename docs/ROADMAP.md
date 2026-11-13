@@ -4,14 +4,14 @@
 after it on this page is a **proposal**. The owner picks what goes in and in which order, and
 nothing below gets started before 0.1.7 is released.
 
-Tags: **[data]** content mod only (JSON, structures, loot); **[native]** needs the Rust half;
+Tags: **[data]** content mod only (JSON, structures, loot); **[native]** needs code, which goes in Armory Lib;
 **[art]** needs new textures or models. Size: S (a day), M (a few days), L (a week or more).
 
 ## 0.1.7: gear that does things, places, creatures, trinkets, souls (in progress)
 
 Places and loot, set bonuses, tool abilities, weapon effects and coloured gear light are done but
 untested in game. Creatures are partly done: the four new mobs exist as data, and their looks
-and behaviours still need native work. Still to come: trinkets, backpacks and waystones; souls,
+and behaviours come from Armory Lib (looks and rules done, AI still to do). Still to come: trinkets, backpacks and waystones; souls,
 the soul forge and bosses; the shadow citadel; custom enchantments and armour trims. Details and
 status are in [HANDOFF.md](HANDOFF.md).
 
