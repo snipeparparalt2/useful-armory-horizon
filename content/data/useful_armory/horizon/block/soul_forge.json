@@ -1,0 +1,17 @@
+{
+  "template": "minecraft:white_glazed_terracotta",
+  "properties": {
+    "hardness": 3.5,
+    "light": 10,
+    "sounds": "minecraft:polished_blackstone_bricks"
+  },
+  "item": true,
+  "components": {
+    "minecraft:item_model": "useful_armory:soul_forge",
+    "minecraft:item_name": {
+      "translate": "block.useful_armory.soul_forge"
+    },
+    "minecraft:max_stack_size": 64,
+    "minecraft:rarity": "uncommon"
+  }
+}

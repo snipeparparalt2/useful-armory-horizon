@@ -1,0 +1,30 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:shadow_amulet",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.shadow_amulet"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Sneak more than twice as fast"
+      },
+      {
+        "text": "Hold it in your off hand"
+      }
+    ],
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:sneaking_speed",
+        "id": "useful_armory:trinket_sneaking_speed",
+        "amount": 0.4,
+        "operation": "add_value",
+        "slot": "offhand"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "rare"
+}

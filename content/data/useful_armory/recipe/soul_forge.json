@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BSB",
+    "BFB",
+    "BBB"
+  ],
+  "key": {
+    "B": "minecraft:polished_blackstone_bricks",
+    "S": "useful_armory:shadowingot",
+    "F": "minecraft:blast_furnace"
+  },
+  "result": {
+    "id": "useful_armory:soul_forge",
+    "count": 1
+  }
+}

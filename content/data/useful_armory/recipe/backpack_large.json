@@ -1,0 +1,19 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW",
+    "GBG",
+    "LLL"
+  ],
+  "key": {
+    "W": "minecraft:red_wool",
+    "G": "minecraft:gold_ingot",
+    "B": "useful_armory:backpack_medium",
+    "L": "minecraft:leather"
+  },
+  "result": {
+    "id": "useful_armory:backpack_large",
+    "count": 1
+  }
+}

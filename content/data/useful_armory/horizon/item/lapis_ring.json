@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:lapis_ring",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.lapis_ring"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "More experience from every orb"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "uncommon"
+}

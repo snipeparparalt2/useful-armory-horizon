@@ -132,6 +132,23 @@
     "useful_armory:faded_map_scrap",
     "useful_armory:deepslate_aquite_ore",
     "useful_armory:deepslate_colosifite_ore",
-    "useful_armory:deepslate_shadow_ore"
+    "useful_armory:deepslate_shadow_ore",
+    "useful_armory:aquite_ring",
+    "useful_armory:colosifite_charm",
+    "useful_armory:emerald_amulet",
+    "useful_armory:lapis_ring",
+    "useful_armory:obsidian_charm",
+    "useful_armory:quartz_ring",
+    "useful_armory:shadow_amulet",
+    "useful_armory:ring_of_luck",
+    "useful_armory:backpack_small",
+    "useful_armory:backpack_medium",
+    "useful_armory:backpack_large",
+    "useful_armory:recall_charm",
+    "useful_armory:golem_core",
+    "useful_armory:soul_jar",
+    "useful_armory:soul_jar_full",
+    "useful_armory:waystone",
+    "useful_armory:soul_forge"
   ]
 }

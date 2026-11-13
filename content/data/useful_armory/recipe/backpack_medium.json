@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "LBL",
+    "LLL"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "L": "minecraft:leather",
+    "B": "useful_armory:backpack_small"
+  },
+  "result": {
+    "id": "useful_armory:backpack_medium",
+    "count": 1
+  }
+}

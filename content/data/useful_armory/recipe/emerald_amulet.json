@@ -1,0 +1,17 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "N N",
+    "N N",
+    " E "
+  ],
+  "key": {
+    "N": "minecraft:gold_nugget",
+    "E": "minecraft:emerald"
+  },
+  "result": {
+    "id": "useful_armory:emerald_amulet",
+    "count": 1
+  }
+}

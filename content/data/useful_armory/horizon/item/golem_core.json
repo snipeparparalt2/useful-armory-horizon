@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:golem_core",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.golem_core"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Wakes an armory golem that follows and guards you"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "rare"
+}

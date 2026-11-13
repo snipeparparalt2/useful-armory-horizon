@@ -1,0 +1,13 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "useful_armory:tarnished_ring",
+    "minecraft:emerald",
+    "minecraft:gold_ingot"
+  ],
+  "result": {
+    "id": "useful_armory:ring_of_luck",
+    "count": 1
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:soul_jar",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.soul_jar"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Fills with the souls of what you slay"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "uncommon"
+}

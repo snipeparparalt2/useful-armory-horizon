@@ -1,0 +1,30 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:quartz_ring",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.quartz_ring"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Light on your feet"
+      },
+      {
+        "text": "Hold it in your off hand"
+      }
+    ],
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:movement_speed",
+        "id": "useful_armory:trinket_movement_speed",
+        "amount": 0.1,
+        "operation": "add_multiplied_total",
+        "slot": "offhand"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "uncommon"
+}

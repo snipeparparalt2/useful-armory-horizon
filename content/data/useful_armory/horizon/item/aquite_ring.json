@@ -1,0 +1,37 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:aquite_ring",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.aquite_ring"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Mine at full speed and hold your breath longer under water"
+      },
+      {
+        "text": "Hold it in your off hand"
+      }
+    ],
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:submerged_mining_speed",
+        "id": "useful_armory:trinket_submerged_mining_speed",
+        "amount": 0.8,
+        "operation": "add_value",
+        "slot": "offhand"
+      },
+      {
+        "type": "minecraft:oxygen_bonus",
+        "id": "useful_armory:trinket_oxygen_bonus",
+        "amount": 1.0,
+        "operation": "add_value",
+        "slot": "offhand"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "uncommon"
+}

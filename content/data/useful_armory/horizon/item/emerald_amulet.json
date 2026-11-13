@@ -1,0 +1,30 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:emerald_amulet",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.emerald_amulet"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Two more hearts"
+      },
+      {
+        "text": "Hold it in your off hand"
+      }
+    ],
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:max_health",
+        "id": "useful_armory:trinket_max_health",
+        "amount": 4.0,
+        "operation": "add_value",
+        "slot": "offhand"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "uncommon"
+}

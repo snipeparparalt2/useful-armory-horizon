@@ -1,0 +1,19 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "PCP",
+    " A "
+  ],
+  "key": {
+    "S": "minecraft:string",
+    "P": "minecraft:ender_pearl",
+    "C": "minecraft:compass",
+    "A": "useful_armory:aquiteingot"
+  },
+  "result": {
+    "id": "useful_armory:recall_charm",
+    "count": 1
+  }
+}

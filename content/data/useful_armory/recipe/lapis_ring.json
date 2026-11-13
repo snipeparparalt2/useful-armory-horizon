@@ -1,0 +1,17 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " N ",
+    "NGN",
+    " N "
+  ],
+  "key": {
+    "N": "minecraft:gold_nugget",
+    "G": "minecraft:lapis_block"
+  },
+  "result": {
+    "id": "useful_armory:lapis_ring",
+    "count": 1
+  }
+}

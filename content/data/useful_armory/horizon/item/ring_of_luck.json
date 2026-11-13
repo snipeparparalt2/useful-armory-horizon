@@ -1,0 +1,30 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:ring_of_luck",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.ring_of_luck"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "The tarnished ring, made whole again"
+      },
+      {
+        "text": "Hold it in your off hand"
+      }
+    ],
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:luck",
+        "id": "useful_armory:trinket_luck",
+        "amount": 2.0,
+        "operation": "add_value",
+        "slot": "offhand"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "rare"
+}

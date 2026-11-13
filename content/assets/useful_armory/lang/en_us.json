@@ -144,5 +144,22 @@
   "entity.useful_armory.shade": "Shade",
   "entity.useful_armory.tide_lurker": "Tide lurker",
   "entity.useful_armory.ember_brute": "Ember brute",
-  "entity.useful_armory.lost_pigman": "Lost pigman"
+  "entity.useful_armory.lost_pigman": "Lost pigman",
+  "item.useful_armory.aquite_ring": "Aquite ring",
+  "item.useful_armory.colosifite_charm": "Colosifite charm",
+  "item.useful_armory.emerald_amulet": "Emerald amulet",
+  "item.useful_armory.lapis_ring": "Lapis ring",
+  "item.useful_armory.obsidian_charm": "Obsidian charm",
+  "item.useful_armory.quartz_ring": "Quartz ring",
+  "item.useful_armory.shadow_amulet": "Shadow amulet",
+  "item.useful_armory.ring_of_luck": "Ring of luck",
+  "item.useful_armory.backpack_small": "Small backpack",
+  "item.useful_armory.backpack_medium": "Backpack",
+  "item.useful_armory.backpack_large": "Large backpack",
+  "item.useful_armory.recall_charm": "Recall charm",
+  "item.useful_armory.golem_core": "Golem core",
+  "item.useful_armory.soul_jar": "Soul jar",
+  "item.useful_armory.soul_jar_full": "Full soul jar",
+  "block.useful_armory.waystone": "Waystone",
+  "block.useful_armory.soul_forge": "Soul forge"
 }

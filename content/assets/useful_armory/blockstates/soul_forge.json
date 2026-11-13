@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "useful_armory:block/soul_forge"
+    },
+    "facing=east": {
+      "model": "useful_armory:block/soul_forge",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "useful_armory:block/soul_forge",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "useful_armory:block/soul_forge",
+      "y": 270
+    }
+  }
+}

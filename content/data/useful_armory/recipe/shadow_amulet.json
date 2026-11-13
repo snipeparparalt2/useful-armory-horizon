@@ -1,0 +1,17 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "N N",
+    "N N",
+    " E "
+  ],
+  "key": {
+    "N": "minecraft:iron_nugget",
+    "E": "useful_armory:shadowingot"
+  },
+  "result": {
+    "id": "useful_armory:shadow_amulet",
+    "count": 1
+  }
+}

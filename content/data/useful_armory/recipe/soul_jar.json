@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " P ",
+    "GSG",
+    "GGG"
+  ],
+  "key": {
+    "P": "minecraft:oak_planks",
+    "G": "minecraft:glass",
+    "S": "minecraft:soul_sand"
+  },
+  "result": {
+    "id": "useful_armory:soul_jar",
+    "count": 1
+  }
+}

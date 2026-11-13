@@ -7,6 +7,7 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
+| Aquite ring | `aquite_ring` |  |  |  |  |  |  | Mine at full speed and hold your breath longer under water / Hold it in your off hand |
 | Aquite axe | `aquiteaxe` | 2 | -3 |  |  | 800 | 6 | Sneak: fells the whole tree |
 | Aquite Chestplate | `aquitebody` |  |  | 7 | 1 | 416 |  | Full set: water breathing and faster swimming |
 | Aquite Boots | `aquiteboots` |  |  | 3 | 1 | 338 |  | Full set: water breathing and faster swimming |
@@ -25,6 +26,7 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
+| Colosifite charm | `colosifite_charm` |  |  |  |  |  |  | Flames die down on you twice as fast / Hold it in your off hand |
 | Colosifite Chestplate | `colosifitearmorbody` |  |  | 7 | 1.5 | 480 |  | Full set: fire resistance |
 | Colosifite Boots | `colosifitearmorboots` |  |  | 2 | 1.5 | 390 |  | Full set: fire resistance |
 | Colosifite Helmet | `colosifitearmorhelmet` |  |  | 3 | 1.5 | 330 |  | Full set: fire resistance |
@@ -43,6 +45,7 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
+| Emerald amulet | `emerald_amulet` |  |  |  |  |  |  | Two more hearts / Hold it in your off hand |
 | Emerald Chestplate | `emeraldarmorbody` |  |  | 8 | 4 | 832 |  | Full set: luck |
 | Emerald Boots | `emeraldarmorboots` |  |  | 4 | 4 | 676 |  | Full set: luck |
 | Emerald Helmet | `emeraldarmorhelmet` |  |  | 4 | 4 | 572 |  | Full set: luck |
@@ -60,6 +63,7 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
+| Lapis ring | `lapis_ring` |  |  |  |  |  |  | More experience from every orb |
 | Lapis Chestplate | `lapisarmorbody` |  |  | 5 | 0.4 | 240 |  | Full set: 25% more experience |
 | Lapis Boots | `lapisarmorboots` |  |  | 2 | 0.4 | 195 |  | Full set: 25% more experience |
 | Lapis Helmet | `lapisarmorhelmet` |  |  | 2 | 0.4 | 165 |  | Full set: 25% more experience |
@@ -83,6 +87,7 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 | Obsidain Leggings | `obsidainarmorlegs` |  |  | 6 | 1.5 | 525 |  | Full set: knockback resistance, half explosion damage |
 | Obsidainingot | `obsidainingot` |  |  |  |  |  |  |  |
 | Obsidain string | `obsidainstring` |  |  |  |  |  |  | yeah but why? |
+| Obsidian charm | `obsidian_charm` |  |  |  |  |  |  | Hits and blasts push you back much less / Hold it in your off hand |
 | Obsidian axe | `obsidianaxe` | 3 | -2.7 |  |  | 6000 | 6 |  |
 | Obsidian hoe | `obsidianhoe` | 0 | -3 |  |  | 6000 | 6 | Harvests and replants grown crops 3 x 3 |
 | Obsidian pickaxe | `obsidianpickaxe` | 1 | -3 |  |  | 6000 | 5 | Sneak: digs 3 x 3 |
@@ -93,6 +98,7 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
+| Quartz ring | `quartz_ring` |  |  |  |  |  |  | Light on your feet / Hold it in your off hand |
 | Quartz chestplate | `quartzamorbody` |  |  | 5 | 1.3 | 400 |  | Full set: speed |
 | Quartz Boots | `quartzamorboots` |  |  | 2 | 1.3 | 325 |  | Full set: speed |
 | Quartz Helmet | `quartzamorhelmet` |  |  | 2 | 1.3 | 275 |  | Full set: speed |
@@ -125,6 +131,7 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
+| Shadow amulet | `shadow_amulet` |  |  |  |  |  |  | Sneak more than twice as fast / Hold it in your off hand |
 | Shadow shard | `shadow_shard` |  |  |  |  |  |  | Cold to the touch |
 | Shadow axe | `shadowaxe` | 5 | -3 |  |  | 8000 | 8 | Sneak: fells the whole tree |
 | Shadow Chestplate | `shadowbody` |  |  | 8 | 2.5 | 560 |  | Full set: night vision |
@@ -156,6 +163,9 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 | Name | Id | Attack damage | Attack speed | Armour | Toughness | Durability | Mining speed | Tooltip |
 |---|---|---|---|---|---|---|---|---|
 | Ancient hilt | `ancient_hilt` |  |  |  |  |  |  | The blade is long gone |
+| Large backpack | `backpack_large` |  |  |  |  |  |  | Carries 27 stacks |
+| Backpack | `backpack_medium` |  |  |  |  |  |  | Carries 18 stacks |
+| Small backpack | `backpack_small` |  |  |  |  |  |  | Carries 9 stacks |
 | Bloddy rotten flesh | `bloddyrottenflesh` |  |  |  |  |  |  | ew |
 | Cracked soul gem | `cracked_soul_gem` |  |  |  |  |  |  | Something is still moving inside it |
 | Diamond stick | `diamondstick` |  |  |  |  |  |  | wow expensive why would you make this? |
@@ -163,10 +173,15 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 | glowing rotten flesh | `erottenflesh` |  |  |  |  |  |  | WHY IS IT GLOWING WTF???? |
 | Faded map scrap | `faded_map_scrap` |  |  |  |  |  |  | Most of the markings have worn away |
 | Forge master's hammer head | `forge_hammer_head` |  |  |  |  |  |  | Still warm |
+| Golem core | `golem_core` |  |  |  |  |  |  | Wakes an armory golem that follows and guards you |
 | magma sword | `lavasword` | 6.5 | -2.5 |  |  | 10000 |  | Sets targets on fire |
 | Long stick | `longstick` |  |  |  |  |  |  | used for weapons that need a longer handle |
 | Pigman sword | `pigmansword` | 7.5 | -3 |  |  | 10000 |  | 50% more damage to piglins and hoglins |
 | Reaper scythe | `reaperscyth` | 5 | -3 |  |  | 1000 | 8 | Harvests crops 5 x 5; kills may drop heads |
+| Recall charm | `recall_charm` |  |  |  |  |  |  | Takes you back to your bed or a waystone you have found |
+| Ring of luck | `ring_of_luck` |  |  |  |  |  |  | The tarnished ring, made whole again / Hold it in your off hand |
+| Soul jar | `soul_jar` |  |  |  |  |  |  | Fills with the souls of what you slay |
+| Full soul jar | `soul_jar_full` |  |  |  |  |  |  | Souls for the soul forge |
 | Soul eater | `souleater` | 12 | -2 |  |  | 100000 |  | Heals a heart on each kill |
 | Souled netherstar | `soulednetherstar` |  |  |  |  |  |  | the diamonds around it must of made the soul come out |
 | Sword handle | `swordpart1` |  |  |  |  |  |  | it may just be a handle but what kind of a handle is this expensive to make |
@@ -187,4 +202,6 @@ Attack damage and speed are the modifiers on top of the player's base (1 damage,
 | Deepslate shadow ore | `deepslate_shadow_ore` | `minecraft:deepslate_iron_ore` | 3 |
 | Shadow block | `shadowblock` | `minecraft:iron_block` | 2 |
 | Shadow ore | `shadowore` | `minecraft:iron_ore` | 1.5 |
+| Soul forge | `soul_forge` | `minecraft:white_glazed_terracotta` | 3.5 |
 | Ultimate block | `ultimateblock` | `minecraft:iron_block` | 3 |
+| Waystone | `waystone` | `minecraft:chiseled_stone_bricks` | 3 |

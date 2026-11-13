@@ -1,0 +1,37 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:obsidian_charm",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.obsidian_charm"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Hits and blasts push you back much less"
+      },
+      {
+        "text": "Hold it in your off hand"
+      }
+    ],
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:knockback_resistance",
+        "id": "useful_armory:trinket_knockback_resistance",
+        "amount": 0.3,
+        "operation": "add_value",
+        "slot": "offhand"
+      },
+      {
+        "type": "minecraft:explosion_knockback_resistance",
+        "id": "useful_armory:trinket_explosion_knockback_resistance",
+        "amount": 0.5,
+        "operation": "add_value",
+        "slot": "offhand"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "uncommon"
+}

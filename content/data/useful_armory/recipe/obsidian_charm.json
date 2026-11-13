@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "NON",
+    " N "
+  ],
+  "key": {
+    "S": "minecraft:string",
+    "N": "minecraft:gold_nugget",
+    "O": "useful_armory:obsidainingot"
+  },
+  "result": {
+    "id": "useful_armory:obsidian_charm",
+    "count": 1
+  }
+}

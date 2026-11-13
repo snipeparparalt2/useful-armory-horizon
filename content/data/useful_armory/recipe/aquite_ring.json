@@ -1,0 +1,17 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " N ",
+    "NGN",
+    " N "
+  ],
+  "key": {
+    "N": "minecraft:iron_nugget",
+    "G": "useful_armory:aquiteingot"
+  },
+  "result": {
+    "id": "useful_armory:aquite_ring",
+    "count": 1
+  }
+}

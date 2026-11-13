@@ -1,0 +1,30 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:colosifite_charm",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.colosifite_charm"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Flames die down on you twice as fast"
+      },
+      {
+        "text": "Hold it in your off hand"
+      }
+    ],
+    "minecraft:attribute_modifiers": [
+      {
+        "type": "minecraft:burning_time",
+        "id": "useful_armory:trinket_burning_time",
+        "amount": -0.5,
+        "operation": "add_multiplied_base",
+        "slot": "offhand"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "uncommon"
+}

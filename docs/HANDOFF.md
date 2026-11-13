@@ -145,6 +145,30 @@ watchtower lookout, a lost pigman in the pigman outpost.
   Other body shapes are marked vanilla mobs converted when they spawn.
 
 ### Phase 4: trinkets, storage and travel
+**Data side done (2026-11-12, `tools/gen_phase4.py`):** item definitions, models, names, recipes
+and creative-tab entries for the eight trinkets, three backpacks, recall charm, golem core, soul
+jar and full soul jar. The waystone and soul forge are placeable glowing blocks with an emissive
+element, loot and recipes; the soul forge copies glazed terracotta, so it faces the player when
+placed. The ring of luck is crafted from the tarnished ring, an emerald and a gold ingot.
+Trinkets already work **in the off hand** through vanilla attribute modifiers:
+- aquite ring: underwater mining and oxygen
+- colosifite charm: burning time halved
+- emerald amulet: +4 health
+- obsidian charm: knockback and explosion knockback resistance
+- quartz ring: +10% speed
+- shadow amulet: sneaking speed
+- ring of luck: +2 luck
+
+**Native side still to do:**
+- Trinkets work anywhere in the hotbar (apply the same modifiers), and the lapis ring's bonus
+  experience (it has no vanilla attribute).
+- Backpack inventories, stored on the item.
+- Waystone discovery, naming and travel (costs experience by distance), and the recall charm
+  teleport.
+- The golem core summoning the armory golem.
+- The soul jar filling from kills and turning into `soul_jar_full`.
+- The soul forge menu (phase 5).
+
 - Trinkets: eight passive accessories (aquite ring, colosifite charm, emerald amulet, lapis
   ring, obsidian charm, quartz ring, shadow amulet, and the tarnished ring relic restored into
   a ring of luck). First version: active while in the hotbar or off hand. A dedicated

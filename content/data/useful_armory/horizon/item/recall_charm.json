@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:recall_charm",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.recall_charm"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Takes you back to your bed or a waystone you have found"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "rare"
+}

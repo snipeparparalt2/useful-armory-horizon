@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:soul_jar_full",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.soul_jar_full"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Souls for the soul forge"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "rare"
+}

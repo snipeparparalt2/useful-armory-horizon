@@ -1,0 +1,18 @@
+{
+  "group": "useful_armory",
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BAB",
+    "BPB",
+    "BBB"
+  ],
+  "key": {
+    "B": "minecraft:stone_bricks",
+    "A": "useful_armory:aquiteingot",
+    "P": "minecraft:ender_pearl"
+  },
+  "result": {
+    "id": "useful_armory:waystone",
+    "count": 1
+  }
+}

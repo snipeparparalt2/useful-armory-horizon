@@ -1,0 +1,18 @@
+{
+  "template": "minecraft:iron_ingot",
+  "components": {
+    "minecraft:item_model": "useful_armory:backpack_large",
+    "minecraft:item_name": {
+      "translate": "item.useful_armory.backpack_large"
+    },
+    "!minecraft:cooking_fuel": {},
+    "!minecraft:repairable": {},
+    "minecraft:lore": [
+      {
+        "text": "Carries 27 stacks"
+      }
+    ]
+  },
+  "max_stack_size": 1,
+  "rarity": "rare"
+}
