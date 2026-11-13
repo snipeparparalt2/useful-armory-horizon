@@ -1,2 +1,2 @@
 a1a9167c7f2a1f15b5b3996aae9b861b7a6a6a8336bdb3e0b8570f9b12a1e1f5  useful_armory-0.1.7.hmod
-445d869a8d528678c82cec8d825eba94a87dd3a7b95c89632496eaf3e91eaadd  useful_armory-0.1.7.hnmod
+7611046b72cdeff77a8f7d9c190b5043f388edc4ca97bdb3e9955c7f6d170c38  useful_armory_native-0.1.7.hnmod

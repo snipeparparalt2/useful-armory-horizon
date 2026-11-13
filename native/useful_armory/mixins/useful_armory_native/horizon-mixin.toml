@@ -1,9 +1,10 @@
 # Useful Armory, native half (docs/native-mods.md): the behaviour the content mod can't do as
-# data. It has the same id as the content mod (useful_armory .hmod), which holds the items.
+# data. The content mod (id useful_armory, the .hmod) holds the items; this half has its own
+# id, as the registry lists each file under one id.
 # The glow (glowing items cast coloured light), armour set bonuses, tool abilities, the hoes'
 # harvest sweep and weapon effects, each with a switch on the mod's settings page.
 [mod]
-id = "useful_armory"
+id = "useful_armory_native"
 version = "0.1.7"
 priority = 100
 

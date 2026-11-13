@@ -26,14 +26,14 @@ owner makes and keeps the key. An agent must never generate, hold or commit the 
 ```powershell
 python tools/package.py
 minisign -Sm dist/useful_armory-0.1.7.hmod
-minisign -Sm dist/useful_armory-0.1.7.hnmod
+minisign -Sm dist/useful_armory_native-0.1.7.hnmod
 ```
 
 Each command writes `<file>.minisig` next to the file. Check them before uploading:
 
 ```powershell
 minisign -Vm dist/useful_armory-0.1.7.hmod -p minisign.pub
-minisign -Vm dist/useful_armory-0.1.7.hnmod -p minisign.pub
+minisign -Vm dist/useful_armory_native-0.1.7.hnmod -p minisign.pub
 cargo horizon-mod check dist/useful_armory-0.1.7.hmod --key <public key> --signature dist/useful_armory-0.1.7.hmod.minisig
 ```
 

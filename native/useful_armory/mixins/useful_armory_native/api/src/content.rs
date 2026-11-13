@@ -1,7 +1,10 @@
 //! What Useful Armory registers with Armory Lib, as plain tables with nothing from the game
 //! in them. `cargo test` in `native/useful_armory` runs this file's tests.
 
-pub const ID: &str = "useful_armory";
+/// The native half's id: its row in Options > Mods and its settings folder.
+pub const ID: &str = "useful_armory_native";
+/// The content mod's namespace: items, entity types and textures.
+pub const NAMESPACE: &str = "useful_armory";
 pub const TITLE: &str = "Useful Armory 0.1.7";
 pub const DESCRIPTION: &str = "Glowing gear lights up the world; full armour sets give bonuses; sneak to vein mine, dig 3 x 3 or fell trees; hoes harvest an area; weapons have effects. Each part can be switched off here.";
 
@@ -52,14 +55,15 @@ pub const GLOW: &[(&str, u32)] = &[
 ];
 
 /// The mod's creatures, all copies of `minecraft:zombie`: id, whether the texture has a
-/// glowing `_e` layer, and the effect its hit leaves (id, amplifier, ticks).
-pub const MOBS: &[(&str, bool, Option<(&str, u8, i32)>)] = &[
-    ("ember_brute", true, None),
-    ("lost_pigman", false, None),
-    ("shade", true, None),
-    ("tide_lurker", true, Some(("minecraft:slowness", 1, 100))),
-    ("tower_sentry", true, None),
-    ("vault_guardian", true, None),
+/// glowing `_e` layer, whether fire harms it, and the effect its hit leaves (id, amplifier,
+/// ticks).
+pub const MOBS: &[(&str, bool, bool, Option<(&str, u8, i32)>)] = &[
+    ("ember_brute", true, false, None),
+    ("lost_pigman", false, false, None),
+    ("shade", true, true, None),
+    ("tide_lurker", true, true, Some(("minecraft:slowness", 1, 100))),
+    ("tower_sentry", true, true, None),
+    ("vault_guardian", true, true, None),
 ];
 
 #[cfg(test)]

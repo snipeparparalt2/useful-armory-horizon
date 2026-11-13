@@ -1,0 +1,62 @@
+# Publishes a GitHub release when a version tag is pushed:
+#   git tag v<version> && git push origin v<version>            a full release
+#   git tag v<version>-pre.1 && git push origin v<version>-pre.1   a pre-release (a build still being tested)
+# The tag must match the version in the source. The files attached are the ones in dist/,
+# rebuilt here first and compared entry by entry to prove they match the source. Signatures (dist/*.minisig) are attached
+# when the owner has committed them; the signing key never comes near this workflow.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check the tag against the source version
+        run: |
+          version=$(python3 -c 'import tomllib;print(tomllib.load(open("content/horizon-mod.toml","rb"))["version"])')
+          tag="${GITHUB_REF_NAME#v}"
+          case "$tag" in
+            "$version"|"$version"-*) ;;
+            *) echo "tag $GITHUB_REF_NAME does not match version $version"; exit 1 ;;
+          esac
+      - name: Rebuild the packages and compare with dist/
+        run: |
+          cp -r dist /tmp/committed
+          python3 tools/package.py
+          python3 - <<'PY'
+          import pathlib, sys, zipfile
+          def entries(path):
+              with zipfile.ZipFile(path) as z:
+                  return {n: z.read(n) for n in z.namelist()}
+          built = sorted(p.name for p in pathlib.Path("dist").glob("*.h*mod"))
+          kept = sorted(p.name for p in pathlib.Path("/tmp/committed").glob("*.h*mod"))
+          if built != kept:
+              sys.exit(f"dist/ holds {kept}, the source builds {built}: run tools/package.py and commit")
+          for name in built:
+              if entries(f"dist/{name}") != entries(f"/tmp/committed/{name}"):
+                  sys.exit(f"dist/{name} does not match the source: run tools/package.py and commit")
+          PY
+          # Attach the committed files: they are the ones the checksums and signatures cover.
+          git checkout -- dist
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(ls dist/*.hmod dist/*.hnmod dist/*.minisig dist/SHA256SUMS.txt 2>/dev/null)
+          [ -f minisign.pub ] && files="$files minisign.pub"
+          flags=""
+          notes="Useful Armory ${GITHUB_REF_NAME#v} for Horizon fdc87ae (Nightly 2026-11-08, game data 26.3)."
+          case "$GITHUB_REF_NAME" in
+            *-*) flags="--prerelease"; notes="$notes Development build: not play-tested yet." ;;
+          esac
+          gh release create "$GITHUB_REF_NAME" $files --title "Useful Armory ${GITHUB_REF_NAME#v}" --notes "$notes" --generate-notes $flags

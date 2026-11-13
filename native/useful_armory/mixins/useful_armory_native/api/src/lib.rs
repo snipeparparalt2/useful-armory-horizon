@@ -18,7 +18,7 @@ struct Mod;
 impl Hooks for Mod {}
 
 fn register() {
-    let id = content::ID;
+    let (id, ns) = (content::ID, content::NAMESPACE);
     armory_lib::register_page(Page {
         mod_id: id.into(),
         title: content::TITLE.into(),
@@ -30,19 +30,22 @@ fn register() {
     });
     for (item, rgb) in content::GLOW {
         armory_lib::register_gear_light(
-            GearLight::new(id, &format!("{id}:{item}"), *rgb).setting("glow"),
+            GearLight::new(id, &format!("{ns}:{item}"), *rgb).setting("glow"),
         );
     }
-    for (mob, glows, hit) in content::MOBS {
-        let kind = format!("{id}:{mob}");
-        let texture = format!("{id}:entity/{mob}/{mob}");
+    for (mob, glows, burns, hit) in content::MOBS {
+        let kind = format!("{ns}:{mob}");
+        let texture = format!("{ns}:entity/{mob}/{mob}");
         let mut look = MobLook::new(id, &kind, Rig::zombie(), &texture);
         if *glows {
             look = look.emissive(&format!("{texture}_e"));
         }
         armory_lib::register_mob_look(look);
-        // Copies of a zombie: they must not die in daylight or turn into drowned.
-        let mut rules = MobRules::new(id, &kind).no_conversion().fire_proof();
+        // Copies of a zombie: daylight must not light them, nor water turn them into drowned.
+        let mut rules = MobRules::new(id, &kind).no_conversion().no_sunburn();
+        if !*burns {
+            rules = rules.fire_proof();
+        }
         if let Some((effect, amplifier, ticks)) = hit {
             rules = rules.on_hit(effect, *amplifier, *ticks);
         }

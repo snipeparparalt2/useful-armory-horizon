@@ -12,8 +12,8 @@
 // bundle adds to the game (`game::useful_armory`) and this folder's Cargo library, so
 // `cargo test` runs it without the game. `glue.rs` and `gear.rs` read and change the game.
 
-/// The mod's id (Options > Mods; the content mod's id too).
-pub const ID: &str = "useful_armory";
+/// The native half's id (Options > Mods, its settings folder). The content mod is `useful_armory`.
+pub const ID: &str = "useful_armory_native";
 
 /// The content mod's namespace: only its items are looked up.
 const NAMESPACE: &str = "useful_armory:";

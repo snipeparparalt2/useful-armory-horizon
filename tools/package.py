@@ -5,13 +5,14 @@
 
 Writes into dist/:
   useful_armory-<version>.hmod        the content mod (content/), for horizon-mods/
-  useful_armory-<version>.hnmod       the native half (native/useful_armory/): the glow, set
+  useful_armory_native-<version>.hnmod   the native half (native/useful_armory/): the glow, set
                                       bonuses, tool abilities and weapon effects, for
                                       horizon-native-mods/
 
-Both are deterministic zips in the layout Horizon's docs/api/mod-files.md describes. They share
-the id and version but not the extension, so neither overwrites the other.
+Both are deterministic zips in the layout Horizon's docs/api/mod-files.md describes. The native
+half has its own id, useful_armory_native: the registry lists each file under one id.
 """
+import hashlib
 import json
 import tomllib
 import zipfile
@@ -60,5 +61,8 @@ if __name__ == "__main__":
     DIST.mkdir(exist_ok=True)
     content_mod()
     native_mod()
+    packages = sorted(p for p in DIST.iterdir() if p.suffix in (".hmod", ".hnmod"))
+    (DIST / "SHA256SUMS.txt").write_text(
+        "".join(f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n" for p in packages))
 
 

@@ -1,7 +1,7 @@
 # Useful Armory, native half (Horizon native mod)
 
-The behaviour the content mod can't do as data. It has the same id as the content mod,
-`useful_armory`, which holds the items. It needs [Armory Lib](https://github.com/snipeparparalt2/armory_lib) (`armory_lib`), the
+The behaviour the content mod can't do as data. Its id is `useful_armory_native`; the content
+mod, `useful_armory`, holds the items. It needs [Armory Lib](https://github.com/snipeparparalt2/armory_lib) (`armory_lib`), the
 library mod that draws the glow and the mod's creatures and keeps the settings page. It does
 five things, each with its own switch:
 
@@ -45,8 +45,8 @@ Armory Lib draws it; this mod registers the items and colours (`api/src/content.
 
 The shade, tide lurker, ember brute, lost pigman, vault guardian and tower sentry are copies
 of the zombie in the content mod. Registered with Armory Lib, each is drawn with its own
-texture and glowing layer on the zombie's body, doesn't turn into a drowned, and takes no
-damage from burning (so daylight can't kill it; the flames still show). A tide lurker's hit
+texture and glowing layer on the zombie's body, doesn't turn into a drowned, and isn't set alight by daylight. The ember brute
+and the lost pigman also take no damage from fire. A tide lurker's hit
 slows the player for 5 seconds.
 
 ## Set bonuses
@@ -123,24 +123,24 @@ both would act on the same break. The server's own switches count, so on a LAN w
 Needs the Useful Armory content mod (the `useful_armory` `.hmod` in `horizon-mods/`) for the items,
 and [Armory Lib](https://github.com/snipeparparalt2/armory_lib).
 
-1. Put `useful_armory-<version>.hnmod` and `armory_lib-<version>.hnmod` in the instance's
+1. Put `useful_armory_native-<version>.hnmod` and `armory_lib-<version>.hnmod` in the instance's
    `horizon-native-mods/` folder. Without the library the launcher's build stops and says so.
 2. In the Horizon launcher open Mods and press **Build**. Native mods are Rust that is compiled
    into the game, so the launcher downloads its own Rust and rebuilds the game once.
 3. In game: Options > Mods > Useful Armory switches it on and off.
 
-From source: `horizon-launcher native-build native/useful_armory/mixins/useful_armory --instance <instance> --trust-native-code`,
-or `python3 tools/package.py` (or `node tools/package.cjs`) for the `.hnmod`.
+From source: `horizon-launcher native-build native/useful_armory/mixins/useful_armory_native --instance <instance> --trust-native-code`,
+or `python3 tools/package.py` for the `.hnmod`.
 
 ## Files
 
 | File | What it is |
 |---|---|
 | `compatibility.json` | The Horizon and horizon-mixins commits it was made and checked on |
-| `mixins/useful_armory/horizon-mixin.toml` | The bundle: two modules and the HEAD hooks below, the `[api]` package and the dependency on `armory_lib`, pinned to Horizon `fdc87ae` |
-| `mixins/useful_armory/runtime.rs` | The decisions, with no game in them: which items do what, set detection, the flood fill, the 3 x 3 geometry, the backstab angle, the caps, the switches. Also this crate's library: `cargo test` |
-| `mixins/useful_armory/api/` | The package the launcher links beside the game. `src/content.rs` lists the glowing items, the creatures and the settings switches; `src/lib.rs` registers them with Armory Lib |
-| `mixins/useful_armory/gear.rs` | Set bonuses, tool abilities, harvest sweep and weapon effects: what they read and change in the game |
+| `mixins/useful_armory_native/horizon-mixin.toml` | The bundle: two modules and the HEAD hooks below, the `[api]` package and the dependency on `armory_lib`, pinned to Horizon `fdc87ae` |
+| `mixins/useful_armory_native/runtime.rs` | The decisions, with no game in them: which items do what, set detection, the flood fill, the 3 x 3 geometry, the backstab angle, the caps, the switches. Also this crate's library: `cargo test` |
+| `mixins/useful_armory_native/api/` | The package the launcher links beside the game. `src/content.rs` lists the glowing items, the creatures and the settings switches; `src/lib.rs` registers them with Armory Lib |
+| `mixins/useful_armory_native/gear.rs` | Set bonuses, tool abilities, harvest sweep and weapon effects: what they read and change in the game |
 | the other `.rs` files | One small helper per hook, calling into `gear.rs` |
 
 ## Hooks used

@@ -15,7 +15,9 @@ Useful Armory is a mod for **Horizon**, a Rust rewrite of Minecraft: Java Editio
   published version, 0.1.6, is the tag `bugfix`.
 - Only GitHub **releases** reach players and the Horizon mod browser, so pushing to `main` does
   not publish anything. Make the 0.1.7 release only after the owner has tested it in game.
-- The mod has two halves with the same id, `useful_armory`:
+- The mod has two halves. The content mod's id is `useful_armory`; the native half's is
+  `useful_armory_native` (changed 2026-11-13: the registry lists each file under one id, as other
+  two-part mods there do). Items, entity types and textures stay in the `useful_armory` namespace:
   - **Content mod** (`content/`, packed as `.hmod`): items, blocks, recipes, loot, structures,
     worldgen. Data only. Goes in the game's `horizon-mods/` folder.
   - **Native mod** (`native/useful_armory/`, packed as `.hnmod`): Rust that the Horizon
@@ -58,7 +60,7 @@ Useful Armory is a mod for **Horizon**, a Rust rewrite of Minecraft: Java Editio
   furniture containers), six loot-only relic items, two zombie-based guardian mob types
   (`vault_guardian`, `tower_sentry`) used in spawners, deepslate versions of the three ores.
 
-**Phase 2, gear that does things (native).** In `native/useful_armory/mixins/useful_armory/`
+**Phase 2, gear that does things (native).** In `native/useful_armory/mixins/useful_armory_native/`
 (`runtime.rs` pure logic with unit tests, `gear.rs`, one small file per hook; the glow and the
 settings page are registered with Armory Lib from `api/`).
 Tooltips are added to item JSON by `tools/gen_phase2.py`.
@@ -108,9 +110,9 @@ It lives in **its own repository**, https://github.com/snipeparparalt2/armory_li
 
 **How it is built** (checked against Horizon's launcher source, `launcher/src/native_mods/api.rs`
 and `dependencies.rs`, at `fdc87ae`):
-- It is a pure trait mod: a bundle with only an `[api]` package (`mixins/armory_lib/api/`, Cargo
-  package `armory_lib`) and no mixin injections. It uses catalog hooks and `Host` only.
-- Useful Armory's bundle now has an `[api]` package too (`native/useful_armory/mixins/useful_armory/api/`)
+- It is a trait mod: an `[api]` package (`mixins/armory_lib/api/`, Cargo package `armory_lib`)
+  using catalog hooks and `Host`, plus one small mixin half for the daylight burn.
+- Useful Armory's bundle now has an `[api]` package too (`native/useful_armory/mixins/useful_armory_native/api/`)
   and `[dependencies] armory_lib = "^0.1"` in `horizon-mixin.toml`. Its `hooks()` registers the
   mod's tables (`api/src/content.rs`) with the library. The launcher adds the Cargo dependency
   itself; don't write it in `Cargo.toml`.
@@ -127,8 +129,10 @@ and `dependencies.rs`, at `fdc87ae`):
    (`minecraft:zombie#main`), posed each frame and drawn with `Host::draw_model_part` in
    `mob_submit`, plus an emissive pass. Used for all six mobs. This replaced the block-model-parts
    idea: Horizon has real entity model layers at this commit.
-2. Mob rules (`register_mob_rules`): no conversion (`living_conversion_pre`), burning harmless
-   (`living_incoming_damage_v3`), hit effects on players. Used for all six; the tide lurker slows.
+2. Mob rules (`register_mob_rules`): no conversion (`living_conversion_pre`), no daylight burn
+   (the mixin half, below), fire harmless (`living_incoming_damage_v3`), hit effects on players.
+   All six don't convert or sunburn; ember brute and lost pigman are fire-proof; the tide lurker
+   slows.
 3. Carried-item effects (`register_carried_effect`): effects only. Not used yet (phase 4 trinkets
    use attribute modifiers; see below).
 4. Coloured gear light (`register_gear_light`): moved out of Useful Armory (`glue.rs` is gone).
@@ -140,9 +144,14 @@ modifiers as carried effects, bodies built in code (`layer_definitions`) for the
 bosses.
 
 **Limits found:**
-- No hook stops the sun lighting an undead copy (`burn_undead` in `mobs/ai.rs` only checks the
-  head slot). `fire_proof` cancels the damage; the flames still draw. A true fix needs a mixin
-  injection at `burn_undead` or a Horizon hook.
+- No catalog hook stops the sun lighting an undead copy (`burn_undead` in `mobs/ai.rs`), and
+  that function is in the crate `horizon_client_lib`, where trait injections can't go (they are
+  refused outside `horizon-client`). So the library has a mixin half: `bridge.rs` is added to
+  `client_lib.rs` as a **public** module (`visibility = "pub"`), which the `[api]` package reaches
+  as `horizon_client::armory_lib_bridge` and fills with the types to spare, and `sunburn.rs` is
+  an ordinary cancellable HEAD injection at `horizon_client_lib::mobs::ai::burn_undead`. This
+  public-module bridge is the way for an `[api]` package and mixin code to share state.
+  A binding's value may only be a target parameter or its borrow (`&*m`), not a field path.
 - `Host` has no way to set a player on fire, so the ember brute's burning hit is not done.
 - `living_incoming_damage_v2` fires only for a player's weapon hit; mob-on-player damage is v3,
   which has no host, so hit effects are applied in the hurt player's next `player_tick`.
@@ -161,12 +170,18 @@ add the three to the workspace members, then
 `RUSTFLAGS="-D warnings" cargo check -p horizon-native-game`. The real launcher build has not
 been run.
 
-**Release:** three files for players: the library's `.hnmod` goes in `horizon-native-mods/` too,
-from the library's own GitHub release (`v0.1.0`), signed, with its own registry listing
-(`horizon-registry.toml` and `docs/images/icon.png` are in its repo). Registry entries have one
-id each, and existing two-part mods there list their halves under two ids (for example
-`wayfarer_stones` and `wayfarer_stones_native`), so ask the registry how to list Useful Armory's
-two files, which share one id.
+**Releases (owner's decision, 2026-11-13): every update gets a GitHub release, in both repos.**
+Pushing a tag makes one (`.github/workflows/release.yml` in each repo): `v<version>-pre.N` is a
+pre-release for builds not yet played, `v<version>` the full release. The workflow rebuilds the
+packages, compares them with `dist/` entry by entry and attaches the committed files, checksums
+and any committed `.minisig`. So run `tools/package.py` and commit `dist/` before tagging. The
+full `v0.1.7` and the library's `v0.1.0` still wait for the owner's play-test and signing.
+
+**Registry (settled 2026-11-13):** the registry takes one file per entry, each with its own id,
+through the form at playhorizon.dev/mods/submit. So there are three entries: `useful_armory`
+(content, `.hmod`), `useful_armory_native` (native, `.hnmod`; its description says it needs the
+other two) and `armory_lib` (library, category `library`). Players need all three files; the
+library's `.hnmod` goes in `horizon-native-mods/` too.
 
 ### Phase 3: creatures
 **Data side done (2026-11-12, `tools/gen_phase1.py` MOBS and SPAWNS):** entity types, loot tables,
@@ -179,7 +194,7 @@ swamps; ember brutes in badlands and savanna; lost pigmen in nether wastes. Them
 in: a shade in the crypt's collapsed room and the vault corridor, an ember brute in the
 watchtower lookout, a lost pigman in the pigman outpost.
 **Native side, done through Armory Lib (2026-11-12, type-checked, not play-tested):** looks for
-the four mobs and the two guardians, no drowned conversion, no death from burning, the tide
+the four mobs and the two guardians, no drowned conversion, no daylight burn, the tide
 lurker's slowing hit. **Still to do:** the ember brute's burning hit (see the library's limits),
 sounds, gold chicken, shadow hound, armory golem. The notes below are the earlier plan:
 - Looks: a mod living type uses its template's model and texture (`mobs.rs`), so they look like

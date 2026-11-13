@@ -147,13 +147,13 @@ pack.
 
 You need **Horizon nightly `fdc87ae`** (2026-11-08), which runs game data 26.3.
 
-From 0.1.7 on, Useful Armory comes as **two files** with the same id, attached to each
+From 0.1.7 on, Useful Armory comes as **two files**, attached to each
 [release](../../releases), and needs the library mod [Armory Lib](https://github.com/snipeparparalt2/armory_lib):
 
 | File | Put it in | What it is |
 |---|---|---|
 | `useful_armory-<version>.hmod` | `horizon-mods/` | Items, blocks, recipes, loot, places and world generation |
-| `useful_armory-<version>.hnmod` | `horizon-native-mods/` | The Rust code for glowing gear, set bonuses, tool abilities and weapon effects. The launcher compiles it into the game. |
+| `useful_armory_native-<version>.hnmod` | `horizon-native-mods/` | The Rust code for glowing gear, set bonuses, tool abilities and weapon effects. The launcher compiles it into the game. |
 | `armory_lib-<version>.hnmod` ([Armory Lib releases](https://github.com/snipeparparalt2/armory_lib/releases)) | `horizon-native-mods/` | The library the native half is built on: it draws the glow and the new mobs and keeps the settings page. |
 
 1. Open your Horizon game folder. On a default Windows install it is `%APPDATA%\horizon`.
@@ -203,6 +203,20 @@ Textures are drawn by script with Pillow: `tools/gen_textures.py` (equipment, bl
 and `tools/gen_new_art.py` (trinkets, backpacks, soul gear, waystone, soul forge, mobs). Both
 overwrite their files, so review the changes before committing. Releases are signed as described in
 [docs/SIGNING.md](docs/SIGNING.md).
+
+## Releases
+
+Every update gets a GitHub release. Pushing a version tag makes it
+(`.github/workflows/release.yml`): the workflow rebuilds the package, checks it against `dist/`
+and attaches both files, their checksums and, once committed, their signatures.
+
+```sh
+git tag v0.1.7-pre.1 && git push origin v0.1.7-pre.1   # a pre-release: a build still being tested
+git tag v0.1.7 && git push origin v0.1.7               # the full release, after it has been played
+```
+
+Only full releases are meant for the Horizon mod browser. A published version never changes: fix
+it with a new version number.
 
 ## Repository map
 
