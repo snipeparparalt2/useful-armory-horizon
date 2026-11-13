@@ -1,86 +1,71 @@
-Current distribution constraint: one standalone content .hmod; the native lighting companion has been retired. Native-render suggestions below are research notes, not a planned dependency. Unsupported visual features should wait for content-level Horizon support rather than requiring a separate library mod.
-
 # Useful Armory roadmap
 
-This is a proposal for future work, not a list of features already shipped. The published 0.1.2 content stays unchanged while these improvements are designed and tested.
+**0.1.7 is the current work** and its scope is fixed: see [HANDOFF.md](HANDOFF.md). Everything
+after it on this page is a **proposal**. The owner picks what goes in and in which order, and
+nothing below gets started before 0.1.7 is released.
 
-## 1. Ultimate RGB armor — first priority
+Tags: **[data]** content mod only (JSON, structures, loot); **[native]** needs the Rust half;
+**[art]** needs new textures or models. Size: S (a day), M (a few days), L (a week or more).
 
-**Player experience:** Ultimate equipment smoothly cycles red → orange → yellow → green → cyan → blue → purple → red. Every worn piece uses the same phase, so a full set looks intentional rather than like independently blinking parts. Preserve the texture's shading, dark outlines, and material detail while changing the colored metal areas.
+## 0.1.7: gear that does things, places, creatures, trinkets, souls (in progress)
 
-Suggested default: a gentle eight-second cycle. Add settings for cycle speed, saturation, brightness, a fixed hue, and animation off. Avoid flashing white transitions. Optional matching glow should be restrained and should use the existing native light budget.
+Places and loot, set bonuses, tool abilities, weapon effects and coloured gear light are done but
+untested in game. Creatures are partly done: the four new mobs exist as data, and their looks
+and behaviours still need native work. Still to come: trinkets, backpacks and waystones; souls,
+the soul forge and bosses; the shadow citadel; custom enchantments and armour trims. Details and
+status are in [HANDOFF.md](HANDOFF.md).
 
-### Implementation plan
+---
 
-1. Make a small prototype using only the Ultimate chestplate. Confirm how the pinned Horizon renderer handles animated equipment textures; do not assume item `.mcmeta` animation automatically works for worn armor.
-2. Prefer a content-only animated equipment strip if the renderer supports it. Worn armor frames are rectangular (currently 128×64), so set explicit frame width and height rather than treating the sheet as square item frames.
-3. If that route is unsupported, add a narrowly scoped native render hook that chooses a shared hue or animation frame for Useful Armory Ultimate equipment. Keep it separate from the colored-light code: illuminating nearby blocks does not recolor the armor itself.
-4. Use one shared world-time phase for the wearer, inventory previews, and remote players. Preserve alpha, shading, damage overlays, and enchantment glint. Avoid per-piece timers that reset when equipment changes.
-5. Extend to helmet, chestplate, leggings, boots, item icons, and displayed equipment. Verify player inventory previews, third-person view, armor stands, other players, and mobs wearing the armor.
-6. Ship the static current texture as fallback when the native companion is absent. Add synchronization only if a shared world-time phase is insufficient; cosmetic color changes must not affect game stats.
+## Proposed 0.1.8 "The Armory": show off, maintain and carry your gear
 
-**Acceptance:** a full set cycles smoothly without UV distortion, flicker, color seams, glint loss, or a visible phase reset when swapping pieces. Test mixed sets, rejoining a server, low FPS, and paused single-player. Compare frame time with the feature on and off, including a room full of armor stands. Static-color and animation-off modes must work.
+The mod is called Useful Armory, but there is nowhere to put the armory. This update is about
+displaying, maintaining and carrying gear.
 
-## 2. Give existing materials clear identities
+| Feature | What it is | Tags | Size |
+|---|---|---|---|
+| Weapon rack | Wall block that holds three weapons, drawn on the wall; take and put back with a click | data, native, art | M |
+| Armour mannequin | Block that wears a full set and swaps it with yours in one click | data, native, art | M |
+| Display case | Glass-topped block for a relic or trinket, with a soft light inside | data, native, art | S |
+| Material shields | One per set with a small perk: Obsidian ignores some knockback, Aquite works under water, Shadow hides you for a moment after a block | data, native, art | M |
+| Material arrows and a quiver | Aquite (slows), Colosifite (sets alight), Shadow (pierces) arrows; a quiver trinket that holds them | data, native, art | M |
+| Whetstone and repair kits | A whetstone gives a weapon a short sharpness boost; repair kits mend one set's gear anywhere | data, native, art | S |
+| Armorer's Codex | In-game guide book (Horizon's mod screen hook): every set, bonus, ability, ore height and place | native, art | M |
+| Ultimate colour cycle | All worn Ultimate pieces cycle colour in step, with a speed setting; the worn armour is static today | native, art | M |
 
-Keep existing item IDs and crafting progression. Review actual stats against vanilla before changing numbers; publish a before/after balance table.
+## Proposed 0.1.9 "Bounties and Trades": reasons to visit villages
 
-| Family | Proposed identity | First mechanic to prototype |
-|---|---|---|
-| Aquite | Exploration and underwater utility | Modest underwater mining bonus while wearing a set |
-| Colosifite | Heavy impact | Slow charged strike with clear windup and a short cooldown |
-| Shadow | Precise late-game offense | Short, limited mobility skill with a visible cooldown |
-| Lapis | Enchanting specialist | Better enchanting value rather than raw damage inflation |
-| Quartz | Fast, light tools | Faster use with lower durability and readable tradeoffs |
-| Redstone | Charged utility | Visible charge meter consumed by a mining burst |
-| Emerald | Reliable utility | Efficient repair and a modest durability advantage |
-| Obsidian | Defense and endurance | Knockback resistance with a mobility tradeoff |
-| Ultimate | Expensive endgame flexibility | RGB identity first; modest configurable set bonus later |
+| Feature | What it is | Tags | Size |
+|---|---|---|---|
+| Bounty board | Village block with three daily contracts (slay 8 shades, bring 16 colosifite ore, clear a bandit fort) that pay emeralds, relics and trims | data, native, art | L |
+| Travelling smith | A rare wandering trader (the wandering-trader template) who sells relics, trim templates, whetstones and rare weapon parts | data, native, art | M |
+| Armorsmith trades | The village armory blacksmith's smith trades in mod ingots and buys back worn gear | data, native | S |
+| Mini-bosses | Bandit captain (bandit fort), watch captain (colosifite watchtower), drowned admiral (aquite shrine at sea): tougher, named, with a sure relic drop | data, native, art | M |
+| Advancements | A Useful Armory advancement tab: first ore of each kind, each full set, each place found, each boss | data | S, if Horizon reads mod advancements (check first) |
 
-These are candidates, not commitments. Start with two contrasting families and playtest survival progression before expanding. Avoid making one set strictly best at everything.
+## Proposed 0.2.0 "Deep and Far": a place for every material, and the End
 
-## 3. Finish signature weapons
+| Feature | What it is | Tags | Size |
+|---|---|---|---|
+| Aquite reef | Warm-ocean ruin overgrown with aquite crystal; the tide lurkers' home | data, art | M |
+| Colosifite fissure | A badlands crack with lava falls and rich colosifite seams; ember brutes guard it | data, art | M |
+| Shadow rift | Deep dark ruin round a torn rift; shades pour out at night | data, native, art | M |
+| A ninth material, from the End | An End-only ore and full set (working name **Astralite**), with a slow-falling set bonus and a void-resistant tool line | data, native, art | L |
+| Star forge | End-island structure where Astralite is worked; a hard fight at the top | data, native, art | L |
+| Ultimate rework | Ultimate crafted from one ingot of every material, so it becomes the real endgame | data | S |
+| Materials in any world | Ore routes for flat and void worlds (a sieve, or trading with the travelling smith), so every world preset has a way to get them | data, native | M |
 
-- **Daggers:** quick attacks and a carefully bounded positional bonus. Show the condition in the tooltip.
-- **Greatswords:** readable windup and a modest sweep; no unavoidable large-area damage.
-- **Halberds:** measured reach with slower recovery. Server-side range checks must match the animation.
-- **Soul Eater:** earn limited soul charges from eligible kills; spend charges on a small heal or special strike. Cap storage and prevent trivial farming loops.
-- **The Nether's Legacy:** a heat mechanic that rewards timing, with clear overheat feedback.
-- **Reaper Scythe:** useful crop harvesting and replanting before adding more combat effects; respect protection and tool durability.
-- **Tripleslap:** revisit the original three-arrow bow after confirming its content registration, ammunition consumption, durability, cooldowns, enchantments, and server authority. A language entry alone is not an implemented weapon.
+## Ideas parking lot (not scheduled)
 
-For each weapon, implement one complete mechanic with its tooltip, sound, animation, crafting cost, cooldown display, and survival tests before adding a second mechanic.
+- **Weapon forging**: blades, guards and hilts as separate parts (The Nether's Legacy already works this way) that combine into custom weapons with mixed stats. [data, native, art] L
+- **Horse armour per material**: the eight materials as horse armour, with the set colours. [data, art] S
+- **Hound armour**: armour for the tamed shadow hound and for wolves. [data, art] S
+- **Two-piece bonuses**: a smaller bonus at two pieces, the full one at four; mixed-set combos. [native] M
+- **Material identities**: the 0.1.2 roadmap's idea of a play style per set (Quartz fast but fragile, Redstone charge meter, Colosifite charged strike). Fold this into a balance pass once 0.1.7's bonuses are tested. [native] M
+- **Sounds**: material hit and break sounds, mob voices, ability sounds. [data, art] M
 
-## 4. Reliable mining and survival progression
+## How to pick
 
-The current 0.1.2 source attaches ores only to Overworld biomes. Build a small validation matrix: default terrain, large biomes, amplified/custom terrain if supported, flat with stone layers, void, Nether, and End.
-
-- Verify new-chunk generation, height bands, harvest requirements, drops, smelting, Fortune, and Silk Touch using fixed seeds.
-- Add host-appropriate deepslate ore textures and block variants.
-- Decide whether Nether/End access means actual dimension-specific deposits or alternative crafting. Do not blindly place stone ore into every dimension.
-- Provide a craftable alloy route for worlds without suitable rock. A void or bedrock-only flat world cannot spawn underground ore without additional terrain.
-- Add recipe guidance and progression advancements. Document that existing chunks are not automatically changed.
-
-**Acceptance:** every advertised world preset has a tested acquisition path. Save migration retains existing item IDs and does not invalidate placed blocks.
-
-## 5. Presentation and quality of life
-
-- A concise in-game guide for material tiers, repairs, ore heights, and special controls.
-- Separate creative tabs only if the single tab becomes difficult to navigate; consistent names and searchable keywords first.
-- Subtle material sounds, ability feedback, and restrained particles; settings for particles and dynamic lights.
-- Recipes and repair paths for all equipment, plus config options for servers.
-- Screenshots and short clips of actual gameplay for the mod page, including a dark scene for glow and a full RGB armor cycle.
-
-## 6. Expand after the existing gear is complete
-
-First expansion candidate: a small ruined forge containing material clues and a useful crafting reward. Follow with a properly implemented Gold Chicken if it fits progression. Larger dungeons, bosses, and dimensions come later because they need substantially more art, AI, world-generation, and compatibility work.
-
-## Suggested release order
-
-1. **Publication and installation:** complete source, trustworthy downloads, clear instructions, and the native-folder error fixed.
-2. **RGB visual update:** one polished full-set color cycle, settings, multiplayer checks, and verified native compatibility if required.
-3. **Combat and progression update:** two material identities, weapon distinctions, repairs, and acquisition tests.
-4. **World expansion:** host-specific ores, forge structure, then new mobs.
-
-Treat each release as complete only when its advertised features have been seen working in-game. Track unfinished ideas separately from released functionality.
-
+Each update should be finished and seen working in game before the next one starts, and each
+feature should ship with its tooltip, recipe, sound, Codex page and a test checklist. A good
+first choice after 0.1.7 is **0.1.8**: it is mostly about the gear players already have.

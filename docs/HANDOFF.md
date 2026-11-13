@@ -1,6 +1,7 @@
 # Useful Armory 0.1.7: handoff
 
-Paste this whole file to the agent taking over. It is self-contained.
+This file is the single source of truth for whoever works on the mod next. Read it top to
+bottom before changing anything. The short prompt to give a new agent is at the end.
 
 ## What this project is
 
@@ -238,10 +239,52 @@ python3 tools/dev/preview_place.py <module> --out DIR --schema <block_schema.jso
   custom AI goals go through `native_register_goals`; the launcher builds native code only from
   `.hnmod` files.
 
+- Mod living types (more facts, checked in Horizon's source at `fdc87ae`):
+  - A living type uses its template's model, texture and sounds (`mobs.rs`). The data can't
+    point it at a texture; its look comes from `native_mob_submit`.
+  - Its `attributes` may only override attributes the template already has. An extra one is
+    refused, with an error naming it (`mod_entity_row` in `mod_content.rs`).
+  - It keeps the template's rules: zombie copies burn in daylight and turn into drowned
+    under water.
+- `neoforge:add_spawns` takes `{"type", "weight", "minCount", "maxCount"}` per spawner. A
+  modifier's `biomes` is one tag or a list of ids, not both (`mod_content_biomes.rs`).
+- Reading Horizon's source without a full clone:
+  `git init h && cd h && git remote add origin https://github.com/horizon-rust/horizon && git fetch --depth 1 origin fdc87aecdbd116bf1e08adcd062fcbaea8c2e2ca && git checkout FETCH_HEAD`
+  (46 MB). Then `git grep` it. This is how to check a data format before writing it.
+- Sandboxed agents may not reach crates.io, so they can't build Horizon or `cargo check` the
+  native bundle. Do native work where the build works (the owner's PC), or say plainly that it
+  is unchecked.
+- The GitHub CLI may not be signed in, so repo settings and releases may need the owner. Pushing
+  with git works.
+
+## After 0.1.7
+
+`docs/ROADMAP.md` holds the proposed updates after 0.1.7: 0.1.8 "The Armory" (weapon rack,
+mannequin, display case, shields, arrows, whetstones, Armorer's Codex, the Ultimate colour cycle),
+0.1.9 "Bounties and Trades", and 0.2.0 "Deep and Far" (a place per material, an End material).
+They are proposals. **Don't start any of them before 0.1.7 is released, and only once the owner
+has picked them.**
+
 ## Suggested first message to the next agent
 
-> Continue Useful Armory 0.1.7 on the `main` branch of
-> https://github.com/snipeparparalt2/useful-armory-horizon. Read `docs/HANDOFF.md` first and
-> follow it. Phases 1 and 2 are done but untested in game. Start with phase 3 (creatures), then
-> phases 4 and 5 and the extras, then the release steps. Ask me before changing any decision
-> listed under "The owner's decisions".
+> You're continuing Useful Armory, a mod for Horizon (a Rust rewrite of Minecraft: Java Edition).
+> Repo: https://github.com/snipeparparalt2/useful-armory-horizon. Always work on `main`.
+>
+> 1. Read `docs/HANDOFF.md` from top to bottom and follow it. It lists what is done, what is
+>    left, the owner's decisions, and the repo's tools and traps.
+> 2. Phases 1 and 2, the phase 3 mob data and the 0.1.7 art are done, but none of it has been
+>    tested in game.
+> 3. Next, in order: the phase 3 native work (mob looks with `native_mob_submit`, no sunburn or
+>    drowned conversion for our mobs, tide lurker slow, ember brute fire, the gold chicken,
+>    shadow hound and armory golem). Then phases 4 and 5 and the extras, then "Before release".
+>    The textures for the new mobs and items are already in `content/assets/useful_armory/textures/`.
+> 4. Check every data format against Horizon's source at commit `fdc87ae` before relying on it,
+>    run `cargo test` and the native `cargo check` described in HANDOFF, and rebuild
+>    `dist/` with `tools/package.py` after content changes.
+> 5. Commit in small steps with clear messages and push to `main`. Pushing publishes nothing;
+>    only a GitHub release does, and that waits for the owner's play-test.
+> 6. Never generate, read or commit the minisign secret key. Ask the owner before changing
+>    anything under "The owner's decisions" and before starting anything in
+>    `docs/ROADMAP.md`.
+> 7. Keep `docs/HANDOFF.md` current as you go: move finished work to "Done so far", and add any
+>    new Horizon facts you find.
