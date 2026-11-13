@@ -209,6 +209,21 @@ def structures(schema_path=None):
             print("  " + problem, file=sys.stderr)
         sys.exit(1)
 
+    # No container opens empty: a chest or barrel a builder placed as furniture gets the
+    # everyday "supplies" table.
+    for piece in built.values():
+        for pos, (block, nbt) in list(piece.cells.items()):
+            kind = block.split("[")[0]
+            if kind in ("minecraft:chest", "minecraft:trapped_chest", "minecraft:barrel") and not (nbt and nbt.get("LootTable")):
+                piece.cells[pos] = (block, {"id": kind, "LootTable": f"{NS}:chests/supplies"})
+    write_json(DATA / "loot_table/chests/supplies.json", {
+        "type": "minecraft:chest",
+        "pools": [pool(1, 3, [item("minecraft:bread", 6, 1, 2), item("minecraft:wheat", 5, 1, 4),
+                              item("minecraft:coal", 6, 1, 3), item("minecraft:stick", 6, 1, 4),
+                              item("minecraft:string", 4, 1, 3), item("minecraft:iron_nugget", 4, 1, 4),
+                              item("minecraft:leather", 3, 1, 2), item("minecraft:torch", 5, 2, 6),
+                              item("minecraft:arrow", 4, 1, 5), item("longstick", 2)], nothing=10)]})
+
     for owned in OWNED:
         shutil.rmtree(DATA / owned, ignore_errors=True)
     made = {key: piece.save(DATA / "structure" / f"{key}.nbt") for key, piece in built.items()}
